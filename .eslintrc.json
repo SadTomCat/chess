@@ -7,6 +7,16 @@
         "plugin:vue/essential",
         "airbnb-base"
     ],
+    "settings": {
+        "import/resolver": {
+            "alias": {
+                "map": [
+                    ["~", "./resources/js"]
+                ]
+            },
+            "extensions": [".js", ".scss", ".json", ".vue"]
+        }
+    },
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module"
@@ -15,9 +25,23 @@
         "vue"
     ],
     "rules": {
+        "no-trailing-spaces": "off",
         "consistent-return": 1,
         "no-useless-return": 0,
         "vue/custom-event-name-casing": 0,
-        "class-methods-use-this": 0
+        "class-methods-use-this": 0,
+        "indent": [
+            "error",
+            4
+        ],
+        "max-len": ["error", 120],
+        "import/no-extraneous-dependencies": [
+            "off",
+            {
+                "devDependencies": false,
+                "optionalDependencies": false,
+                "peerDependencies": false
+            }
+        ]
     }
 }

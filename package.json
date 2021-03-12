@@ -15,6 +15,7 @@
         "autoprefixer": "^10.1.0",
         "eslint": "^7.21.0",
         "eslint-config-airbnb": "^18.2.1",
+        "eslint-import-resolver-alias": "^1.1.2",
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-vue": "^7.7.0",
         "laravel-mix": "^6.0.6",
@@ -23,12 +24,14 @@
         "postcss-import": "^12.0.1",
         "resolve-url-loader": "^3.1.2",
         "sass-loader": "^11.0.1",
-        "tailwindcss": "^2.0.2",
         "vue-loader": "^16.1.2"
     },
     "dependencies": {
-        "sass": "^1.32.8",
         "axios": "^0.21",
-        "vue": "^3.0.7"
+        "sass": "^1.32.8",
+        "vue": "^3.0.7",
+        "vue-router": "^4.0.4",
+        "tailwindcss": "^2.0.2",
+        "vuex": "^4.0.0"
     }
 }
