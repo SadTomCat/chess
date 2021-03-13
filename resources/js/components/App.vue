@@ -1,12 +1,21 @@
 <template>
-    <div>
+    <header-block>
+
+    </header-block>
+
+    <main>
         <router-view></router-view>
-    </div>
+    </main>
+
 </template>
 
 <script>
+import HeaderBlock from './HeaderBlock.vue';
+
 export default {
     name: 'App',
+
+    components: { HeaderBlock },
 };
 </script>
 

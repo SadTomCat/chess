@@ -7,6 +7,6 @@ require('./bootstrap');
 
 const app = createApp(App);
 
-app.use(routerSettings)
-    .use(storeSettings)
+app.use(storeSettings)
+    .use(routerSettings)
     .mount('#app');

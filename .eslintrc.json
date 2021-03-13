@@ -11,10 +11,18 @@
         "import/resolver": {
             "alias": {
                 "map": [
-                    ["~", "./resources/js"]
+                    [
+                        "~",
+                        "./resources/js"
+                    ]
                 ]
             },
-            "extensions": [".js", ".scss", ".json", ".vue"]
+            "extensions": [
+                ".js",
+                ".scss",
+                ".json",
+                ".vue"
+            ]
         }
     },
     "parserOptions": {
@@ -30,11 +38,15 @@
         "no-useless-return": 0,
         "vue/custom-event-name-casing": 0,
         "class-methods-use-this": 0,
+        "no-prototype-builtins": 0,
+        "max-len": [
+            "error",
+            120
+        ],
         "indent": [
             "error",
             4
         ],
-        "max-len": ["error", 120],
         "import/no-extraneous-dependencies": [
             "off",
             {
