@@ -18,6 +18,12 @@
                     <li>
                         <router-link to="/rating">rating</router-link>
                     </li>
+                    <li>
+                        <router-link to="/rules">rules</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/support">support</router-link>
+                    </li>
                 </ul>
             </nav>
         </div>

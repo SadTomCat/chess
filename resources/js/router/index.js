@@ -12,6 +12,21 @@ const routes = [
         name: 'gameForAuth',
     },
     {
+        path: '/rating',
+        component: Home,
+        name: 'rating',
+    },
+    {
+        path: '/rules',
+        component: Home,
+        name: 'rules',
+    },
+    {
+        path: '/support',
+        component: Home,
+        name: 'support',
+    },
+    {
         path: '/login',
         component: Login,
         name: 'login',
