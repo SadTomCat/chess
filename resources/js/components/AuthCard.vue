@@ -95,4 +95,8 @@ export default {
         width: 60%;
     }
 }
+
+.auth__error-message {
+    @apply absolute text-red-500;
+}
 </style>

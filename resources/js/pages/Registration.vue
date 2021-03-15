@@ -11,7 +11,7 @@
                        @input="inputError.email = ''"
                 >
 
-                <p class="registration__error-message">{{inputError.email}}</p>
+                <p class="auth__error-message">{{inputError.email}}</p>
             </div>
 
             <div class="auth__input-wrapper">
@@ -23,7 +23,7 @@
                     v-model="userInput.name"
                     @input="inputError.name = ''"
                 >
-                <p class="registration__error-message">{{inputError.name}}</p>
+                <p class="auth__error-message">{{inputError.name}}</p>
             </div>
         </div>
 
@@ -36,7 +36,7 @@
                        v-model="userInput.password"
                        @input="inputError.password = ''"
                 >
-                <p class="registration__error-message">{{inputError.password}}</p>
+                <p class="auth__error-message">{{inputError.password}}</p>
             </div>
 
             <div class="auth__input-wrapper">
@@ -96,7 +96,8 @@ export default {
             });
 
             if (data.status) {
-                router.replace('/');
+                await router.replace('/');
+                return;
             }
 
             printError(data);
@@ -114,9 +115,5 @@ export default {
 
 .registration__bottom {
     @apply space-y-10 mb-10;
-}
-
-.registration__error-message {
-    @apply absolute text-red-500;
 }
 </style>
