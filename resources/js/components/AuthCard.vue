@@ -87,7 +87,11 @@ export default {
         }
     }
 
-    @media (max-width: 1000px) {
+    @media screen and (min-width: 1000px) and (max-width: 1500px) {
+        width: 50%;
+    }
+
+    @media screen and (max-width: 1000px) {
         width: 60%;
     }
 }

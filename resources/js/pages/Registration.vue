@@ -4,24 +4,48 @@
         <div class="registration__top">
             <div class="auth__input-wrapper">
                 <label for="email">email</label>
-                <input id="email" type="email" placeholder="email">
+                <input id="email"
+                       type="email"
+                       placeholder="email"
+                       v-model="userInput.email"
+                       @input="inputError.email = ''"
+                >
+
+                <p class="registration__error-message">{{inputError.email}}</p>
             </div>
 
             <div class="auth__input-wrapper">
                 <label for="name">name</label>
-                <input id="name" type="text" placeholder="name">
+                <input
+                    id="name"
+                    type="text"
+                    placeholder="name"
+                    v-model="userInput.name"
+                    @input="inputError.name = ''"
+                >
+                <p class="registration__error-message">{{inputError.name}}</p>
             </div>
         </div>
 
         <div class="registration__bottom">
             <div class="auth__input-wrapper">
                 <label for="password">password</label>
-                <input id="password" type="text" placeholder="password">
+                <input id="password"
+                       type="password"
+                       placeholder="password"
+                       v-model="userInput.password"
+                       @input="inputError.password = ''"
+                >
+                <p class="registration__error-message">{{inputError.password}}</p>
             </div>
 
             <div class="auth__input-wrapper">
                 <label for="confirm-password">confirm password</label>
-                <input id="confirm-password" type="text" placeholder="confirm password">
+                <input id="confirm-password"
+                       type="password"
+                       placeholder="confirm password"
+                       v-model="userInput.password_confirmation"
+                >
             </div>
         </div>
 
@@ -29,7 +53,10 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import AuthCard from '~/components/AuthCard.vue';
+import registerRequest from '~/api/registerRequest';
 
 export default {
     name: 'Registration',
@@ -37,21 +64,59 @@ export default {
     components: { AuthCard },
 
     setup() {
-        const registerHandler = () => {
-            console.log('register');
+        const router = useRouter();
+
+        const userInput = reactive({
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: '',
+        });
+
+        const inputError = reactive({
+            name: '',
+            email: '',
+            password: '',
+        });
+
+        const printError = (res) => {
+            const errors = res.errors ?? {};
+
+            for (const [key, value] of Object.entries(errors)) {
+                inputError[key] = value[0];
+            }
         };
 
-        return { registerHandler };
+        const registerHandler = async () => {
+            const data = await registerRequest({
+                name: userInput.name,
+                email: userInput.email,
+                password: userInput.password,
+                password_confirmation: userInput.password_confirmation,
+            });
+
+            if (data.status) {
+                router.replace('/');
+            }
+
+            printError(data);
+        };
+
+        return { registerHandler, userInput, inputError };
     },
 };
 </script>
 
 <style>
 .registration__top {
-    @apply flex space-x-7 mb-6;
+    @apply flex space-x-7 mb-10;
 }
 
 .registration__bottom {
-    @apply space-y-6 mb-6
+    @apply space-y-10 mb-10;
+}
+
+.registration__error-message {
+    @apply absolute text-red-500;
 }
 </style>
