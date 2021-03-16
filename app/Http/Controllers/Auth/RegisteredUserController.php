@@ -28,6 +28,9 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return response(['status' => true]);
+        return response([
+            'status' => true,
+            'user' => $user->only(['id', 'name', 'email']),
+        ]);
     }
 }

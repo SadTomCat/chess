@@ -55,6 +55,7 @@
 <script>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import AuthCard from '~/components/AuthCard.vue';
 import registerRequest from '~/api/registerRequest';
 
@@ -65,6 +66,8 @@ export default {
 
     setup() {
         const router = useRouter();
+
+        const store = useStore();
 
         const userInput = reactive({
             name: '',
@@ -95,12 +98,15 @@ export default {
                 password_confirmation: userInput.password_confirmation,
             });
 
-            if (data.status) {
-                await router.replace('/');
-                return;
+            if (!data.status) {
+                printError(data);
             }
 
-            printError(data);
+            const { user } = data;
+            user.logged = true;
+
+            store.commit('SET_USER', user);
+            await router.replace('/');
         };
 
         return { registerHandler, userInput, inputError };

@@ -21,7 +21,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return response(['status' => true]);
+        return response([
+            'status' => true,
+            'user' => $request->user()->only(['id', 'name', 'email']),
+        ]);
     }
 
     /**
@@ -51,7 +54,7 @@ class AuthenticatedSessionController extends Controller
     {
         return response([
             'status' => true,
-            'user' => $request->user()->only(['id', 'name', 'email'])
+            'user' => $request->user()->only(['id', 'name', 'email']),
         ]);
     }
 }
