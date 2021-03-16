@@ -1,12 +1,16 @@
 import { createApp } from 'vue';
 import App from './components/App.vue';
-import routerSettings from './router/index';
-import storeSettings from './store/index';
+import router from './router/index';
+import store from './store/index';
 
 require('./bootstrap');
 
 const app = createApp(App);
 
-app.use(storeSettings)
-    .use(routerSettings)
-    .mount('#app');
+app.use(store)
+    .use(router);
+
+store.dispatch('FETCH_USER')
+    .finally(() => {
+        app.mount('#app');
+    });
