@@ -32,7 +32,7 @@
         <div class="header__right-block">
 
             <!-- Auth navigation -->
-            <nav v-if="1">
+            <nav v-if="!logged">
                 <ul class="header__horizontal-list">
                     <li>
                         <router-link to="/login">login</router-link>
@@ -59,7 +59,7 @@
                         </li>
                     </ul>
 
-                    <a href="/logout">logout</a>
+                    <a href="/logout" @click.prevent="logout">logout</a>
                 </div>
             </div>
 
@@ -70,13 +70,16 @@
 <script>
 import { useStore } from 'vuex';
 import { computed, ref } from 'vue';
+import logoutRequest from '~/api/logoutRequest';
 
 export default {
     name: 'HeaderBlock',
 
     setup() {
+        // Store
         const store = useStore();
         const headerActive = computed(() => store.state.headerActive);
+        const logged = computed(() => store.state.user.logged);
 
         // Auth user menu
         const authUserMenuStatus = ref(false);
@@ -87,10 +90,21 @@ export default {
             authUserMenuStatus.value = !authUserMenuStatus.value;
         };
 
+        // Logout
+        const logout = async () => {
+            const status = await logoutRequest();
+
+            if (status) {
+                store.commit('UNSET_USER');
+            }
+        };
+
         return {
             headerActive,
             getAuthUserMenuStatus,
             switchAuthUserMenuStatus,
+            logged,
+            logout,
         };
     },
 };
@@ -98,7 +112,7 @@ export default {
 
 <style lang="scss">
 .header {
-    @apply flex justify-between shadow-md px-32 py-6;
+    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30;
 
     h1 {
         @apply text-4xl;
@@ -130,7 +144,7 @@ export default {
         &__menu {
             @apply flex flex-col justify-between;
             @apply absolute right-0 w-64 h-64 px-3 py-4 mt-1 shadow-md;
-            @apply text-lg bg-white shadow-md;
+            @apply text-lg bg-white shadow-md z-30;
         }
 
         ul {
