@@ -1,12 +1,13 @@
 <template>
-    <header-block>
+    <div class="flex flex-col h-screen">
+        <header-block>
 
-    </header-block>
+        </header-block>
 
-    <main>
-        <router-view></router-view>
-    </main>
-
+        <main class="h-full">
+            <router-view></router-view>
+        </main>
+    </div>
 </template>
 
 <script>

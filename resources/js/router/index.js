@@ -3,13 +3,19 @@ import middlewares from './middleware';
 import Home from '~/pages/Home.vue';
 import Login from '~/pages/Login.vue';
 import Registration from '~/pages/Registration.vue';
-import GameForAuth from '../pages/GameForAuth.vue';
+import Game from '~/pages/Game.vue';
+import SearchGame from '~/pages/SearchGame.vue';
 
 const routes = [
     {
         path: '/',
-        component: GameForAuth,
-        name: 'gameForAuth',
+        component: SearchGame,
+        name: 'searchGame',
+    },
+    {
+        path: '/game/:token',
+        component: Game,
+        name: 'game',
     },
     {
         path: '/rating',

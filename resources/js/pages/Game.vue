@@ -25,7 +25,7 @@ import ChessTableChat from '../components/ChessTableChat.vue';
 import ChessTableTopPanel from '../components/ChessTableTopPanel.vue';
 
 export default {
-    name: 'GameForAuth',
+    name: 'Game',
 
     components: { ChessTable, ChessTableChat, ChessTableTopPanel },
 };

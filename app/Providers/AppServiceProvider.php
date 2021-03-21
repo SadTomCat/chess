@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\Websockets\IWebsocketManager;
+use App\Websockets\PusherManager;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public $bindings = [
+        IWebsocketManager::class => PusherManager::class
+    ];
+
     /**
      * Register any application services.
      *

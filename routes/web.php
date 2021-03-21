@@ -1,6 +1,12 @@
 <?php
 
+use App\Events\JoinToGameEvent;
+use App\Events\JoinToSearchGameEvent;
+use App\Http\Controllers\SubscribedOnChannelController;
+use App\Models\User;
+use App\Websockets\IWebsocketManager;
 use Illuminate\Support\Facades\Route;
+use App\Websockets\PusherManager;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,9 +18,15 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/welcome', function () {
-    return view('welcome');
+/*
+ * Route for test, need only while develop
+ * */
+Route::get('/websocket', function (IWebsocketManager $manager) {
+    dd($manager->getAllPresenceChannels());
 });
+
+Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
+    ->middleware('auth');
 
 Route::get('/{path}', function () {
     return view('index');
@@ -24,4 +36,4 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

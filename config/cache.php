@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    'default' => env('CACHE_DRIVER', 'none'),
 
     /*
     |--------------------------------------------------------------------------
@@ -88,6 +88,9 @@ return [
             'endpoint' => env('DYNAMODB_ENDPOINT'),
         ],
 
+        'none' => [
+            'driver' => 'null',
+        ]
     ],
 
     /*
