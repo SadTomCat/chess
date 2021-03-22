@@ -3,11 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\JoinToGameEvent;
+use App\Models\Game;
 use App\Models\User;
 use App\Websockets\IWebsocketManager;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GameVerifyService;
 use function Symfony\Component\Translation\t;
 
 class JoinToSearchGameListener
@@ -30,7 +32,7 @@ class JoinToSearchGameListener
      * @param object $event
      * @return void
      */
-    public function handle($event)
+    public function handle($event): void
     {
         $channels = $this->manager->getAllPresenceChannels('search-game')['presence'];
 
@@ -38,11 +40,50 @@ class JoinToSearchGameListener
             return;
         }
 
-        $mapChannels = array_map(function ($el) {
+        $mapChannels = $this->getMapChannel($channels);
+
+        $userW = User::find($mapChannels[0]);
+        $userB = User::find($mapChannels[1]);
+
+        if (($userW === $userB) || !GameVerifyService::notInGame($userW) || !GameVerifyService::notInGame($userB)) {
+            return;
+        }
+
+        $token = $this->createGame($userW->id, $userB->id);
+
+        event(new JoinToGameEvent($userW, $token));
+        event(new JoinToGameEvent($userB, $token));
+    }
+
+    /**
+     * @param array $channels
+     * @return array|string[]|\string[][]
+     */
+    private function getMapChannel(array $channels): array
+    {
+        return array_map(static function ($el) {
             return str_replace('presence-search-game-', '', $el);
         }, $channels);
+    }
 
-        event(new JoinToGameEvent(User::find($mapChannels[0]), 'tempToken'));
-        event(new JoinToGameEvent(User::find($mapChannels[1]), 'tempToken'));
+    /**
+     * Create token and return token
+     *
+     * @param $userW
+     * @param $userB
+     * @return string
+     */
+    private function createGame(int $userW, int $userB): string
+    {
+        $token = date('YmdHis') . "-W-$userW-B-$userB";
+
+        $game = Game::create(['token' => $token]);
+
+        $game->users()->sync([
+            $userW => ['color' => 'white'],
+            $userB => ['color' => 'black'],
+        ]);
+
+        return $token;
     }
 }

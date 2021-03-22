@@ -1,6 +1,10 @@
 <?php
 
+use App\Broadcasting\GameChannel;
 use App\Broadcasting\SearchGameChannel;
+use App\Models\Game;
+use App\Models\User;
+use App\Services\GameVerifyService;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -19,3 +23,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('search-game-{id}', SearchGameChannel::class);
+
+Broadcast::channel('game-{token}', GameChannel::class);
