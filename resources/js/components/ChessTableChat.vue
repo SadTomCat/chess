@@ -4,7 +4,12 @@
         <!-- Top -->
         <div class="chess-chat__top">
             <h1>Chat</h1>
-            <span class="material-icons chess-chat__icon-btn">person_off</span>
+            <span class="material-icons chess-chat__icon-btn"
+                  :class="{'text-red-600': opponentMuted}"
+                  @click="opponentMuted = !opponentMuted"
+            >
+                person_off
+            </span>
         </div>
 
         <!-- Chat content -->
@@ -12,7 +17,7 @@
             <chess-table-chat-message
                 v-for="(message, index) in messages"
                 :message="message.message"
-                :fromOpponent="message.formOpponent"
+                :fromOpponent="message.fromOpponent"
                 :key="index"
             >
             </chess-table-chat-message>
@@ -20,52 +25,73 @@
 
         <!-- Bottom -->
         <div class="chess-chat__input-block">
-            <textarea rows="2" maxlength="100"></textarea>
-            <span class="chess-chat__icon-btn material-icons">send</span>
+            <textarea rows="2" maxlength="255" v-model="message" :disabled="sending"></textarea>
+            <span class="chess-chat__icon-btn material-icons" @click="sendMessage">send</span>
         </div>
     </div>
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { reactive, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import ChessTableChatMessage from './ChessTableChatMessage.vue';
+import sendGameMessage from '~/api/sendGameMessage';
 
 export default {
     name: 'ChessTableChat',
 
     props: {
         opponentName: String,
+
+        opponentMessages: {
+            type: Array,
+        },
     },
 
-    setup() {
-        const messages = reactive([
-            {
-                message: 'test',
-            },
-            {
-                message: 'test',
-                formOpponent: true,
-            },
-            {
-                message: 'test',
-            },
-            {
-                message: 'test',
-            },
-            {
-                message: 'test',
-                formOpponent: true,
-            },
-            {
-                message: 'test',
-                formOpponent: true,
-            },
-            {
-                message: 'test',
-            },
-        ]);
+    setup(props) {
+        const route = useRoute();
+        const gameToken = route.params.token;
 
-        return { messages };
+        const opponentMuted = ref(false);
+
+        const message = ref('');
+        const messages = reactive([...props.opponentMessages]);
+
+        const sending = ref(false);
+
+        const sendMessage = async () => {
+            if (message.value.length < 1 || message.value.length > 255 || sending.value) {
+                return;
+            }
+
+            sending.value = true;
+
+            const res = await sendGameMessage(gameToken, message.value);
+
+            if (res.status === true) {
+                messages.push({ message: message.value });
+                message.value = '';
+            }
+
+            sending.value = false;
+        };
+
+        watch(props.opponentMessages, (opponentMessages) => {
+            if (opponentMuted.value === true) {
+                return;
+            }
+
+            const newMessage = opponentMessages[opponentMessages.length - 1];
+            messages.push(newMessage);
+        });
+
+        return {
+            message,
+            messages,
+            sending,
+            sendMessage,
+            opponentMuted,
+        };
     },
 
     components: { ChessTableChatMessage },

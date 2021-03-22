@@ -11,7 +11,7 @@
                 <chess-table></chess-table>
 
                 <!-- Chat -->
-                <chess-table-chat></chess-table-chat>
+                <chess-table-chat :opponent-messages="messages"></chess-table-chat>
             </div>
 
         </div>
@@ -24,7 +24,9 @@
 </template>
 
 <script>
-import { onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import {
+    onBeforeMount, onBeforeUnmount, ref, reactive,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ChessTable from '../components/ChessTable.vue';
 import ChessTableChat from '../components/ChessTableChat.vue';
@@ -39,6 +41,8 @@ export default {
         const gameToken = route.params.token;
         const loading = ref(true);
 
+        const messages = reactive([]);
+
         onBeforeMount(async () => {
             echo.join(`game-${gameToken}`)
                 .subscribed(() => {
@@ -51,7 +55,10 @@ export default {
                     console.log(data);
                 })
                 .listen('GameNewMessageEvent', (data) => {
-                    console.log(data);
+                    messages.push({
+                        message: data.message,
+                        fromOpponent: true,
+                    });
                 })
                 .error((e) => {
                     console.log(e);
@@ -63,7 +70,7 @@ export default {
             echo.leave(`game-${gameToken}`);
         });
 
-        return { loading };
+        return { loading, messages };
     },
 
     components: {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -51,5 +52,13 @@ class User extends Authenticatable
     public function games(): BelongsToMany
     {
         return $this->belongsToMany(Game::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function gameChatMessages(): HasMany
+    {
+        return $this->hasMany(GameMessage::class);
     }
 }

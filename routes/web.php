@@ -2,7 +2,10 @@
 
 use App\Events\JoinToGameEvent;
 use App\Events\JoinToSearchGameEvent;
+use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\SubscribedOnChannelController;
+use App\Models\Game;
+use App\Models\GameMessage;
 use App\Models\User;
 use App\Websockets\IWebsocketManager;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +30,9 @@ Route::get('/websocket', function (IWebsocketManager $manager) {
 
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
     ->middleware('auth');
+
+Route::post('/game/{token}/message', [GameChatController::class, 'newMessage'])
+    ->middleware(['auth', 'belongs.game']);
 
 Route::get('/{path}', function () {
     return view('index');
