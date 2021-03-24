@@ -1,7 +1,7 @@
 <template>
     <div class="chess-game-wrapper">
 
-        <div class="chess-game" v-if="!loading">
+        <div class="chess-game" v-if="canPlay">
 
             <!-- Top -->
             <chess-table-top-panel :opponent-name="'test'"></chess-table-top-panel>
@@ -25,9 +25,10 @@
 
 <script>
 import {
-    onBeforeMount, onBeforeUnmount, ref, reactive,
+    onBeforeMount, onBeforeUnmount, ref, reactive, computed,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import ChessTable from '../components/ChessTable.vue';
 import ChessTableChat from '../components/ChessTableChat.vue';
 import ChessTableTopPanel from '../components/ChessTableTopPanel.vue';
@@ -38,10 +39,15 @@ export default {
     setup() {
         const route = useRoute();
         const router = useRouter();
+        const store = useStore();
+
         const gameToken = route.params.token;
+
         const loading = ref(true);
 
         const messages = reactive([]);
+
+        const canPlay = computed(() => !loading.value && store.state.user.logged);
 
         onBeforeMount(async () => {
             echo.join(`game-${gameToken}`)
@@ -70,7 +76,7 @@ export default {
             echo.leave(`game-${gameToken}`);
         });
 
-        return { loading, messages };
+        return { loading, messages, canPlay };
     },
 
     components: {
