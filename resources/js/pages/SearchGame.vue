@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -24,11 +24,9 @@ export default {
 
     setup() {
         const store = useStore();
-
         const router = useRouter();
 
         const canSearch = computed(() => store.state.user.logged);
-
         const searching = ref(false);
 
         const searchGameHandle = () => {
@@ -50,6 +48,10 @@ export default {
             searching.value = false;
             echo.leave(`search-game-${store.state.user.id}`);
         };
+
+        onBeforeUnmount(() => {
+            echo.leave(`search-game-${store.state.user.id}`);
+        });
 
         return {
             canSearch,

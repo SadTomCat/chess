@@ -71,6 +71,7 @@
 import { useStore } from 'vuex';
 import { computed, ref } from 'vue';
 import logoutRequest from '~/api/logoutRequest';
+import useEchoHelper from '~/helpers/useEchoHelper';
 
 export default {
     name: 'HeaderBlock',
@@ -80,6 +81,8 @@ export default {
         const store = useStore();
         const headerActive = computed(() => store.state.headerActive);
         const logged = computed(() => store.state.user.logged);
+
+        const { closeAllEchoChannels } = useEchoHelper();
 
         // Auth user menu
         const authUserMenuStatus = ref(false);
@@ -92,6 +95,7 @@ export default {
 
         // Logout
         const logout = async () => {
+            closeAllEchoChannels();
             const status = await logoutRequest();
 
             if (status) {
