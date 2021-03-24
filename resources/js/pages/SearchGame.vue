@@ -3,7 +3,7 @@
         <!-- Authorized user -->
         <div class="search-game__authorized" v-if="canSearch">
             <h1 class="search-game__title">Do You wanna play?</h1>
-            <button @click="searchGameHandle" v-if="!searching">Search game</button>
+            <button @click="searchGameHandle" v-if="!searching" :disabled="disableSearchBtn">Search game</button>
             <button @click="cancelHandle" v-else>cancel</button>
         </div>
 
@@ -11,13 +11,24 @@
         <div class="search-game__unauthorized" v-else>
             <h1 class="search-game__title">Login for search game</h1>
         </div>
+
+        <!--  Error  -->
+        <teleport to="body">
+            <error-pop-up v-if="errorPopUpOpen" @closeErrorPopUp="closeErrorPopUp">
+                <search-game-error :reasons="errorReasons" :solutions="errorSolutions"></search-game-error>
+            </error-pop-up>
+        </teleport>
     </div>
 </template>
 
 <script>
-import { computed, ref, onBeforeUnmount } from 'vue';
+import {
+    computed, ref, onBeforeUnmount, reactive,
+} from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import ErrorPopUp from '~/components/ErrorPopUp.vue';
+import SearchGameError from '~/components/errors/SearchGameError.vue';
 
 export default {
     name: 'SearchGame',
@@ -28,11 +39,17 @@ export default {
 
         const canSearch = computed(() => store.state.user.logged);
         const searching = ref(false);
+        const disableSearchBtn = ref(false);
+
+        /* Search game */
 
         const searchGameHandle = () => {
+            disableSearchBtn.value = true;
+
             echo.join(`search-game-${store.state.user.id}`)
                 .subscribed(async () => {
                     searching.value = true;
+                    disableSearchBtn.value = false;
                     await axios.post('/subscribed/search-game');
                 })
                 .listen('JoinToGameEvent', (data) => {
@@ -40,16 +57,38 @@ export default {
                     router.replace(`/game/${data.gameToken}`);
                 })
                 .error((e) => {
-                    console.log(e);
+                    errorPopUpOpen.value = true;
                     echo.leave(`search-game-${store.state.user.id}`);
+
+                    if (e.status === 403) {
+                        errorReasons.push('You logout', 'You are searching game', 'You in the game');
+                        errorSolutions.push('Reload page', 'Check other page', 'Click on search game again');
+                    }
+
+                    disableSearchBtn.value = false;
                 });
         };
 
         const cancelHandle = () => {
-            searching.value = false;
             echo.leave(`search-game-${store.state.user.id}`);
+            searching.value = false;
         };
 
+        /* Error pop up */
+
+        const errorPopUpOpen = ref(false);
+
+        const errorReasons = reactive([]);
+
+        const errorSolutions = reactive([]);
+
+        const closeErrorPopUp = () => {
+            errorReasons.length = 0;
+            errorSolutions.length = 0;
+            errorPopUpOpen.value = false;
+        };
+
+        /* Hooks */
         onBeforeUnmount(() => {
             echo.leave(`search-game-${store.state.user.id}`);
         });
@@ -57,9 +96,19 @@ export default {
         return {
             canSearch,
             searching,
+            disableSearchBtn,
             searchGameHandle,
             cancelHandle,
+            errorPopUpOpen,
+            errorReasons,
+            errorSolutions,
+            closeErrorPopUp,
         };
+    },
+
+    components: {
+        ErrorPopUp,
+        SearchGameError,
     },
 };
 </script>
