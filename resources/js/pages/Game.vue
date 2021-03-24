@@ -68,6 +68,7 @@ export default {
                 })
                 .error((e) => {
                     console.log(e);
+                    echo.leave(`game-${gameToken}`);
                     router.replace('/');
                 });
         });

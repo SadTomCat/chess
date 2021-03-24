@@ -41,6 +41,7 @@ export default {
                 })
                 .error((e) => {
                     console.log(e);
+                    echo.leave(`search-game-${store.state.user.id}`);
                 });
         };
 
