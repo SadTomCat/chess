@@ -50,15 +50,26 @@
                 <!-- Menu -->
                 <div class="auth-user__menu" v-if="getAuthUserMenuStatus">
 
-                    <ul>
-                        <li>
-                            <router-link to="/settings">settings</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/statistic">statistic</router-link>
-                        </li>
-                    </ul>
+                    <div class="auth-user-menu__top">
 
+                        <!-- Welcome user-->
+                        <div class="auth-user-menu__welcome">
+                            <h1>Hi, {{ user.name }}</h1>
+                        </div>
+
+                        <!-- List of links -->
+                        <ul>
+                            <li>
+                                <router-link to="/settings">settings</router-link>
+                            </li>
+                            <li>
+                                <router-link to="/statistic">statistic</router-link>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <!-- Logout -->
                     <a href="/logout" @click.prevent="logout">logout</a>
                 </div>
             </div>
@@ -79,6 +90,7 @@ export default {
     setup() {
         // Store
         const store = useStore();
+        const user = computed(() => store.state.user);
         const headerActive = computed(() => store.state.headerActive);
         const logged = computed(() => store.state.user.logged);
 
@@ -105,6 +117,7 @@ export default {
 
         return {
             headerActive,
+            user,
             getAuthUserMenuStatus,
             switchAuthUserMenuStatus,
             logged,
@@ -118,11 +131,13 @@ export default {
 .header {
     @apply bg-white flex justify-between shadow-md px-32 py-6 z-30;
 
-    h1 {
-        @apply text-4xl;
-        @apply bg-gradient-to-r from-yellow-500 to-pink-500;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    &__logo {
+        h1 {
+            @apply text-4xl;
+            @apply bg-gradient-to-r from-yellow-500 to-pink-500;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     }
 
     &__horizontal-list {
@@ -149,6 +164,14 @@ export default {
             @apply flex flex-col justify-between;
             @apply absolute right-0 w-64 h-64 px-3 py-4 mt-1 shadow-md;
             @apply text-lg bg-white shadow-md z-30;
+
+            .auth-user-menu__top {
+                @apply space-y-6;
+            }
+
+            .auth-user-menu__welcome {
+                @apply whitespace-nowrap overflow-x-hidden font-bold;
+            }
         }
 
         ul {
