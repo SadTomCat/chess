@@ -5,6 +5,7 @@ import Login from '~/pages/Login.vue';
 import Registration from '~/pages/Registration.vue';
 import Game from '~/pages/Game.vue';
 import SearchGame from '~/pages/SearchGame.vue';
+import ForgotPassword from '~/pages/ForgotPassword.vue';
 
 const routes = [
     {
@@ -42,6 +43,12 @@ const routes = [
         path: '/registration',
         component: Registration,
         name: 'register',
+        meta: { needHeader: false },
+    },
+    {
+        path: '/forgot-password',
+        component: ForgotPassword,
+        name: 'forgotPassword',
         meta: { needHeader: false },
     },
 ];

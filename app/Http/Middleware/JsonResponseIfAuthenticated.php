@@ -22,7 +22,7 @@ class JsonResponseIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return response(['status' => false, 'errors' => ['authorized' => ['user\'s authorized']]]);
+                return response(['status' => false, 'errors' => 'user\'s authorized']);
             }
         }
 

@@ -34,8 +34,9 @@ Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'sub
 Route::post('/game/{token}/message', [GameChatController::class, 'newMessage'])
     ->middleware(['auth', 'belongs.game']);
 
+require __DIR__ . '/auth.php';
+
 Route::get('/{path}', function () {
     return view('index');
 })->where('path', '.*');
 
-require __DIR__ . '/auth.php';

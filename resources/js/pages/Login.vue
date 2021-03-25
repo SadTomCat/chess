@@ -5,20 +5,28 @@
         <div class="auth__input-wrapper login__email-block">
             <label for="email">email</label>
             <input id="email" type="email" placeholder="email" v-model="userInput.email">
-            <p class="auth__error-message">{{inputError.email}}</p>
+            <p class="auth__error-message">{{ inputError.email }}</p>
         </div>
 
         <!-- Password input  -->
         <div class="auth__input-wrapper login__password-block">
             <label for="password">password</label>
             <input id="password" type="password" placeholder="password" v-model="userInput.password">
-            <p class="auth__error-message">{{inputError.password}}</p>
+            <p class="auth__error-message">{{ inputError.password }}</p>
         </div>
 
-        <!-- Remember me checkbox  -->
-        <div class="login__remember-block">
-            <input id="remember" type="checkbox" v-model="userInput.remember">
-            <label for="remember">remember me</label>
+        <!--  Remember me and forgot password      -->
+        <div class="login__remember-and-forgot">
+
+            <!-- Remember me checkbox  -->
+            <div class="login__remember-block">
+                <input id="remember" type="checkbox" v-model="userInput.remember">
+                <label for="remember">remember me</label>
+            </div>
+
+            <!-- Forgot password  -->
+            <router-link to="/forgot-password" class="underline">forgot password</router-link>
+
         </div>
 
     </auth-card>
@@ -41,9 +49,16 @@ export default {
 
         const store = useStore();
 
-        const userInput = reactive({ email: '', password: '', remember: false });
+        const userInput = reactive({
+            email: '',
+            password: '',
+            remember: false,
+        });
 
-        const inputError = reactive({ email: '', password: '' });
+        const inputError = reactive({
+            email: '',
+            password: '',
+        });
 
         const printError = (res) => {
             const errors = res.errors ?? {};
@@ -68,7 +83,11 @@ export default {
             await router.replace('/');
         };
 
-        return { loginHandler, userInput, inputError };
+        return {
+            loginHandler,
+            userInput,
+            inputError,
+        };
     },
 };
 </script>
@@ -80,6 +99,10 @@ export default {
 
 .login__password-block {
     @apply mb-10;
+}
+
+.login__remember-and-forgot {
+    @apply flex justify-between;
 }
 
 .login__remember-block {
