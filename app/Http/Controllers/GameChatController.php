@@ -6,18 +6,20 @@ use App\Events\GameNewMessageEvent;
 use App\Http\Requests\GameChatRequest;
 use App\Models\Game;
 use App\Models\GameMessage;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 
 class GameChatController extends Controller
 {
     /**
+     * This route send message in chat
+     *
+     * Auth and BelongsGame middlewares were called before this route.
+     *
      * @param GameChatRequest $request
      * @param string $token
-     * @return Response|Application|ResponseFactory
+     * @return JsonResponse
      */
-    public function newMessage(GameChatRequest $request, string $token): Response|Application|ResponseFactory
+    public function newMessage(GameChatRequest $request, string $token): JsonResponse
     {
         $message = $request->message;
         $user = $request->user();
@@ -32,6 +34,6 @@ class GameChatController extends Controller
 
         broadcast(new GameNewMessageEvent($user, $token, $message))->toOthers();
 
-        return response(['status' => true]);
+        return response()->json(['status' => true]);
     }
 }

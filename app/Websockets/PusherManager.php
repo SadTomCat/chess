@@ -95,7 +95,7 @@ class PusherManager implements IWebsocketManager
                 $channelsInfo[$channel] = $info;
             }
 
-        } catch (PusherException|ApiErrorException $e) {
+        } catch (PusherException | ApiErrorException $e) {
             throw new WebsocketControlException('Exception in pusher', 500);
         }
 
@@ -121,7 +121,7 @@ class PusherManager implements IWebsocketManager
                 }
             }
 
-        } catch (ApiErrorException|PusherException $e) {
+        } catch (ApiErrorException | PusherException $e) {
             throw new WebsocketControlException('Exception in pusher', 500);
         }
 
@@ -142,7 +142,7 @@ class PusherManager implements IWebsocketManager
             $fullPrefix = $type . $prefix;
             $channels = (array)$this->conn->get_channels(['filter_by_prefix' => $fullPrefix]);
 
-        } catch (PusherException|ApiErrorException $e) {
+        } catch (PusherException | ApiErrorException $e) {
             throw new WebsocketControlException('Exception in pusher', 500);
         }
 

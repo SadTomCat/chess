@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,15 +14,15 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      *
      * @param \App\Http\Requests\Auth\LoginRequest $request
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequest $request): JsonResponse
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return response([
+        return response()->json([
             'status' => true,
             'user' => $request->user()->only(['id', 'name', 'email']),
         ]);
@@ -31,9 +32,9 @@ class AuthenticatedSessionController extends Controller
      * Destroy an authenticated session.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
+     * @return JsonResponse
      */
-    public function destroy(Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
+    public function destroy(Request $request): JsonResponse
     {
         Auth::guard('web')->logout();
 
@@ -41,18 +42,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response(['status' => true]);
+        return response()->json(['status' => true]);
     }
 
     /**
      * Send true if user is logged. Before this method needs to be called auth middleware.
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function userLogged(Request $request)
+    public function userLogged(Request $request): JsonResponse
     {
-        return response([
+        return response()->json([
             'status' => true,
             'user' => $request->user()->only(['id', 'name', 'email']),
         ]);

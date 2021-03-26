@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GameChatRequest extends FormRequest
+class PasswordResetLinkRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,7 @@ class GameChatRequest extends FormRequest
     public function rules()
     {
         return [
-            'message' => 'required|string|min:1|max:255'
+            'email' => 'required|email|exists:users',
         ];
     }
 
@@ -42,7 +42,7 @@ class GameChatRequest extends FormRequest
     {
         $response = new JsonResponse([
             'status' => false,
-            'errors' => $validator->errors()
+            'errors' => $validator->errors()->first()
         ], 422);
 
         throw new ValidationException($validator, $response);

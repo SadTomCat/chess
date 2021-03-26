@@ -21,7 +21,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         JoinToSearchGameEvent::class => [
-          JoinToSearchGameListener::class,
+            JoinToSearchGameListener::class,
         ],
     ];
 
