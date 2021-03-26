@@ -3,6 +3,7 @@
 use App\Events\JoinToGameEvent;
 use App\Events\JoinToSearchGameEvent;
 use App\Http\Controllers\GameChatController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
 use App\Models\Game;
 use App\Models\GameMessage;
@@ -33,6 +34,9 @@ Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'sub
 
 Route::post('/game/{token}/message', [GameChatController::class, 'newMessage'])
     ->middleware(['auth', 'belongs.game']);
+
+Route::post('/settings', [SettingsController::class, 'update'])
+    ->middleware('auth');
 
 require __DIR__ . '/auth.php';
 

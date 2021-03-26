@@ -36,6 +36,14 @@ export default createStore({
                 logged: false,
             };
         },
+
+        UPDATE_USER: (state, user) => {
+            for (const field in user) {
+                if (state.user.hasOwnProperty(field)) {
+                    state.user[field] = user[field];
+                }
+            }
+        },
     },
 
     actions: {

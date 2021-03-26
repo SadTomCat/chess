@@ -6,6 +6,7 @@ import Registration from '~/pages/Registration.vue';
 import Game from '~/pages/Game.vue';
 import SearchGame from '~/pages/SearchGame.vue';
 import ForgotPassword from '~/pages/ForgotPassword.vue';
+import Settings from '~/pages/Settings.vue';
 
 const routes = [
     {
@@ -32,6 +33,11 @@ const routes = [
         path: '/support',
         component: Home,
         name: 'support',
+    },
+    {
+        path: '/settings',
+        component: Settings,
+        name: 'settings',
     },
     {
         path: '/login',
