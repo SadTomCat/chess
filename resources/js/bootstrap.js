@@ -18,10 +18,18 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.Pusher = require('pusher-js');
 
-window.echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    forceTLS: true,
-    authEndpoint: '/broadcasting/auth',
-});
+function echoLoad() {
+    window.echo = new Echo({
+        broadcaster: 'pusher',
+        key: process.env.MIX_PUSHER_APP_KEY,
+        cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+        forceTLS: true,
+        authEndpoint: '/broadcasting/auth',
+    });
+
+    window.echo.connector.pusher.bind('pusher:error', () => {
+        echoLoad();
+    });
+}
+
+echoLoad();
