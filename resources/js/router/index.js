@@ -18,6 +18,9 @@ const routes = [
         path: '/game/:token',
         component: Game,
         name: 'game',
+        meta: {
+            auth: true,
+        },
     },
     {
         path: '/rating',
@@ -38,24 +41,44 @@ const routes = [
         path: '/settings',
         component: Settings,
         name: 'settings',
+        meta: {
+            auth: true,
+        },
+    },
+    {
+        path: '/statistic',
+        component: Home,
+        name: 'statistic',
+        meta: {
+            auth: true,
+        },
     },
     {
         path: '/login',
         component: Login,
         name: 'login',
-        meta: { needHeader: false },
+        meta: {
+            needHeader: false,
+            guest: true,
+        },
     },
     {
         path: '/registration',
         component: Registration,
         name: 'register',
-        meta: { needHeader: false },
+        meta: {
+            needHeader: false,
+            guest: true,
+        },
     },
     {
         path: '/forgot-password',
         component: ForgotPassword,
         name: 'forgotPassword',
-        meta: { needHeader: false },
+        meta: {
+            needHeader: false,
+            guest: true,
+        },
     },
 ];
 

@@ -7,10 +7,10 @@ require('./bootstrap');
 
 const app = createApp(App);
 
-app.use(store)
-    .use(router);
-
 store.dispatch('FETCH_USER')
     .finally(() => {
+        app.use(store)
+            .use(router);
+        
         app.mount('#app');
     });
