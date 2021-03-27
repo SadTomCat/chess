@@ -12,6 +12,8 @@
 
                 <p class="settings-card__user-email">Email: {{ editedFields.email }}</p>
 
+                <p class="settings-card__error-message">{{ errors.message }}</p>
+
                 <form>
 
                     <div class="settings-card__input-block">
@@ -20,24 +22,24 @@
                                :disabled="disabled"
                                v-model="editedFields.name"
                         >
+                        <p class="settings-card__input-error">{{ errors.name }}</p>
                     </div>
 
-                    <div class="settings-card__password-inputs">
-                        <div class="settings-card__input-block">
-                            <label for="new-password">New password</label>
-                            <input type="password" id="new-password"
-                                   :disabled="disabled"
-                                   v-model="editedFields.newPassword"
-                            >
-                        </div>
+                    <div class="settings-card__input-block">
+                        <label for="new-password">New password</label>
+                        <input type="password" id="new-password"
+                               :disabled="disabled"
+                               v-model="editedFields.newPassword"
+                        >
+                        <p class="settings-card__input-error">{{ errors.newPassword }}</p>
+                    </div>
 
-                        <div class="settings-card__input-block">
-                            <label for="new-password-confirmation">New password confirmation</label>
-                            <input type="password" id="new-password-confirmation"
-                                   :disabled="disabled"
-                                   v-model="editedFields.newPasswordConfirmation"
-                            >
-                        </div>
+                    <div class="settings-card__input-block">
+                        <label for="new-password-confirmation">New password confirmation</label>
+                        <input type="password" id="new-password-confirmation"
+                               :disabled="disabled"
+                               v-model="editedFields.newPasswordConfirmation"
+                        >
                     </div>
 
                     <div class="settings-card__input-block">
@@ -46,6 +48,7 @@
                                :disabled="disabled"
                                v-model="currentPassword"
                         >
+                        <p class="settings-card__input-error">{{ errors.password }}</p>
                     </div>
 
                 </form>
@@ -84,6 +87,37 @@ export default {
 
         const disabled = ref(true);
 
+        /* Errors */
+        const errors = reactive({
+            message: '',
+            name: '',
+            newPassword: '',
+            password: '',
+        });
+
+        const printErrors = (resErrors) => {
+            if (resErrors instanceof String) {
+                errors.message = resErrors;
+                return;
+            }
+
+            for (const key in resErrors) {
+                if (errors.hasOwnProperty(key) && resErrors.hasOwnProperty(key)) {
+                    errors[key] = resErrors[key];
+                } else {
+                    errors.message = resErrors[key];
+                }
+            }
+        };
+
+        const clearErrors = () => {
+            for (const key in errors) {
+                if (errors.hasOwnProperty(key)) {
+                    errors[key] = '';
+                }
+            }
+        };
+
         /* Editing */
 
         const editing = ref(false);
@@ -105,16 +139,28 @@ export default {
         };
 
         const fieldsValid = () => {
+            if (currentPassword.value === '') {
+                errors.password = 'Password must be required';
+                return false;
+            }
+
             if (currentPassword.value.length < 8) {
+                errors.password = 'Password must be more 8 characters';
                 return false;
             }
 
             if (editedFields.name < 1) {
+                errors.name = 'Name must be required';
                 return false;
             }
 
-            if (editedFields.newPassword !== '' && (editedFields.newPassword < 8
-                || editedFields.newPassword !== editedFields.newPasswordConfirmation)) {
+            if (editedFields.newPassword !== '' && editedFields.newPassword.length < 8) {
+                errors.newPassword = 'Password must be more 8 characters';
+                return false;
+            }
+
+            if (editedFields.newPassword !== editedFields.newPasswordConfirmation) {
+                errors.newPassword = 'New password and password confirmation not same';
                 return false;
             }
 
@@ -148,12 +194,14 @@ export default {
         const cancelHandler = () => {
             editedFields.name = beforeEdit.name;
             clearPasswordInputs();
+            clearErrors();
             editing.value = false;
             disabled.value = true;
         };
 
         const saveHandler = async () => {
             disabled.value = true;
+            clearErrors();
 
             if (!fieldsValid()) {
                 disabled.value = false;
@@ -164,13 +212,14 @@ export default {
 
             if (Object.keys(fields).length === 1) {
                 disabled.value = false;
+                errors.message = 'You have nothing edited';
                 return;
             }
 
             const res = await settingsRequest(fields);
 
             if (!res.status) {
-                // TODO: add error output
+                printErrors(res.errors);
                 disabled.value = false;
                 return;
             }
@@ -182,6 +231,7 @@ export default {
 
         return {
             disabled,
+            errors,
             editing,
             editedFields,
             currentPassword,
@@ -216,8 +266,12 @@ export default {
         }
     }
 
+    &__input-block:not(&__input-block:first-child) {
+        @apply mt-9;
+    }
+
     &__input-block {
-        @apply mt-5;
+        @apply relative;
 
         input {
             @apply w-full mt-1;
@@ -228,6 +282,15 @@ export default {
         label {
             @apply block font-medium text-sm text-gray-700;
         }
+    }
+
+    &__error-message {
+        @apply text-red-600;
+    }
+
+    &__input-error {
+        @apply absolute text-sm text-red-600;
+        bottom: -1.4rem;
     }
 
     &__btn-menu {
