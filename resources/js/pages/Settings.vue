@@ -84,6 +84,20 @@ export default {
 
         const disabled = ref(true);
 
+        /* Editing */
+
+        const editing = ref(false);
+        const beforeEdit = reactive(store.state.user);
+
+        const editedFields = reactive({
+            name: store.state.user.name,
+            email: store.state.user.email,
+            newPassword: '',
+            newPasswordConfirmation: '',
+        });
+
+        const currentPassword = ref('');
+
         const clearPasswordInputs = () => {
             editedFields.newPassword = '';
             editedFields.newPasswordConfirmation = '';
@@ -123,20 +137,6 @@ export default {
 
             return data;
         };
-
-        /* Editing */
-
-        const editing = ref(false);
-        const beforeEdit = reactive(store.state.user);
-
-        const editedFields = reactive({
-            name: store.state.user.name,
-            email: store.state.user.email,
-            newPassword: '',
-            newPasswordConfirmation: '',
-        });
-
-        const currentPassword = ref('');
 
         /* Handler */
 

@@ -43,51 +43,31 @@
                 </ul>
             </nav>
 
-            <!-- User block-->
-            <div class="auth-user" v-else>
-                <img src="" class="auth-user__img" @click="switchAuthUserMenuStatus">
-
-                <!-- Menu -->
-                <div class="auth-user__menu" v-if="getAuthUserMenuStatus">
-
-                    <div class="auth-user-menu__top">
-
-                        <!-- Welcome user-->
-                        <div class="auth-user-menu__welcome">
-                            <h1>Hi, {{ user.name }}</h1>
-                        </div>
-
-                        <!-- List of links -->
-                        <ul>
-                            <li>
-                                <router-link to="/settings">settings</router-link>
-                            </li>
-                            <li>
-                                <router-link to="/statistic">statistic</router-link>
-                            </li>
-                        </ul>
-
-                    </div>
-
-                    <!-- Logout -->
-                    <a href="/logout" @click.prevent="logout">logout</a>
-                </div>
-            </div>
-
+            <!-- View profile block-->
+            <view-profile v-else
+                          :user="user"
+                          @logout="logout"
+            >
+            </view-profile>
         </div>
     </header>
 </template>
 
 <script>
 import { useStore } from 'vuex';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import logoutRequest from '~/api/logoutRequest';
 import useEchoHelper from '~/helpers/useEchoHelper';
+import ViewProfile from './ViewProfile.vue';
 
 export default {
     name: 'HeaderBlock',
 
     setup() {
+        const router = useRouter();
+        const route = useRoute();
+
         // Store
         const store = useStore();
         const user = computed(() => store.state.user);
@@ -96,15 +76,6 @@ export default {
 
         const { closeAllEchoChannels } = useEchoHelper();
 
-        // Auth user menu
-        const authUserMenuStatus = ref(false);
-
-        const getAuthUserMenuStatus = computed(() => authUserMenuStatus.value);
-
-        const switchAuthUserMenuStatus = () => {
-            authUserMenuStatus.value = !authUserMenuStatus.value;
-        };
-
         // Logout
         const logout = async () => {
             closeAllEchoChannels();
@@ -112,18 +83,24 @@ export default {
 
             if (status) {
                 store.commit('UNSET_USER');
+
+                if (route.meta.auth === undefined) {
+                    return;
+                }
+
+                await router.replace('/');
             }
         };
 
         return {
             headerActive,
             user,
-            getAuthUserMenuStatus,
-            switchAuthUserMenuStatus,
             logged,
             logout,
         };
     },
+
+    components: { ViewProfile },
 };
 </script>
 
@@ -150,37 +127,6 @@ export default {
 
     &__left-block {
         @apply space-x-32;
-    }
-
-    .auth-user {
-        @apply relative;
-
-        &__img {
-            @apply w-10 h-10 rounded-full cursor-pointer overflow-hidden;
-            @apply border border-gray-300;
-        }
-
-        &__menu {
-            @apply flex flex-col justify-between;
-            @apply absolute right-0 w-64 h-64 px-3 py-4 mt-1 shadow-md;
-            @apply text-lg bg-white shadow-md z-30;
-
-            .auth-user-menu__top {
-                @apply space-y-6;
-            }
-
-            .auth-user-menu__welcome {
-                @apply whitespace-nowrap overflow-x-hidden font-bold;
-            }
-        }
-
-        ul {
-            @apply space-y-5;
-
-            li {
-                @apply border-b border-gray-400;
-            }
-        }
     }
 }
 </style>

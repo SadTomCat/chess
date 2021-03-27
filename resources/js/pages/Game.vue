@@ -50,7 +50,7 @@ export default {
         const canPlay = computed(() => !loading.value && store.state.user.logged);
 
         onBeforeMount(async () => {
-            echo.join(`game-${gameToken}`)
+            window.echo.join(`game-${gameToken}`)
                 .subscribed(() => {
                     loading.value = false;
                 })
@@ -68,13 +68,13 @@ export default {
                 })
                 .error((e) => {
                     console.log(e);
-                    echo.leave(`game-${gameToken}`);
+                    window.echo.leave(`game-${gameToken}`);
                     router.replace('/');
                 });
         });
 
         onBeforeUnmount(() => {
-            echo.leave(`game-${gameToken}`);
+            window.echo.leave(`game-${gameToken}`);
         });
 
         return { loading, messages, canPlay };

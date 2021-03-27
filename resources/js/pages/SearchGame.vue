@@ -41,39 +41,6 @@ export default {
         const searching = ref(false);
         const disableSearchBtn = ref(false);
 
-        /* Search game */
-
-        const searchGameHandle = () => {
-            disableSearchBtn.value = true;
-
-            echo.join(`search-game-${store.state.user.id}`)
-                .subscribed(async () => {
-                    searching.value = true;
-                    disableSearchBtn.value = false;
-                    await axios.post('/subscribed/search-game');
-                })
-                .listen('JoinToGameEvent', (data) => {
-                    echo.leave(`search-game-${store.state.user.id}`);
-                    router.replace(`/game/${data.gameToken}`);
-                })
-                .error((e) => {
-                    errorPopUpOpen.value = true;
-                    echo.leave(`search-game-${store.state.user.id}`);
-
-                    if (e.status === 403) {
-                        errorReasons.push('You logout', 'You are searching game', 'You in the game');
-                        errorSolutions.push('Reload page', 'Check other page', 'Click on search game again');
-                    }
-
-                    disableSearchBtn.value = false;
-                });
-        };
-
-        const cancelHandle = () => {
-            echo.leave(`search-game-${store.state.user.id}`);
-            searching.value = false;
-        };
-
         /* Error pop up */
 
         const errorPopUpOpen = ref(false);
@@ -88,9 +55,42 @@ export default {
             errorPopUpOpen.value = false;
         };
 
+        /* Search game */
+
+        const searchGameHandle = () => {
+            disableSearchBtn.value = true;
+
+            window.echo.join(`search-game-${store.state.user.id}`)
+                .subscribed(async () => {
+                    searching.value = true;
+                    disableSearchBtn.value = false;
+                    await window.axios.post('/subscribed/search-game');
+                })
+                .listen('JoinToGameEvent', (data) => {
+                    window.echo.leave(`search-game-${store.state.user.id}`);
+                    router.replace(`/game/${data.gameToken}`);
+                })
+                .error((e) => {
+                    errorPopUpOpen.value = true;
+                    window.echo.leave(`search-game-${store.state.user.id}`);
+
+                    if (e.status === 403) {
+                        errorReasons.push('You logout', 'You are searching game', 'You in the game');
+                        errorSolutions.push('Reload page', 'Check other page', 'Click on search game again');
+                    }
+
+                    disableSearchBtn.value = false;
+                });
+        };
+
+        const cancelHandle = () => {
+            window.echo.leave(`search-game-${store.state.user.id}`);
+            searching.value = false;
+        };
+
         /* Hooks */
         onBeforeUnmount(() => {
-            echo.leave(`search-game-${store.state.user.id}`);
+            window.echo.leave(`search-game-${store.state.user.id}`);
         });
 
         return {
