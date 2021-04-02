@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,20 +10,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GameNewMessageEvent implements ShouldBroadcast
+class GameStartEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @param User $user
      * @param string $gameToken
-     * @param string $message
      */
-    public function __construct(public User $user, public string $gameToken, public string $message)
+    public function __construct(public string $gameToken)
     {
-
+        //
     }
 
     /**
@@ -35,13 +32,5 @@ class GameNewMessageEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         return new PresenceChannel('game-' . $this->gameToken);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function broadcastWith(): array
-    {
-        return ['message' => $this->message];
     }
 }

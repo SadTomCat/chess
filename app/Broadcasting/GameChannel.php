@@ -9,16 +9,6 @@ use App\Services\GameVerifyService;
 class GameChannel
 {
     /**
-     * Create a new channel instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Authenticate the user's access to the channel.
      *
      * @param \App\Models\User $user
@@ -45,6 +35,8 @@ class GameChannel
             return false;
         }
 
-        return ['id' => $user->id, 'name' => $user->name];
+        $color = $user->games()->firstWhere('token', $token)->pivot->color;
+
+        return ['id' => $user->id, 'name' => $user->name, 'color' => $color];
     }
 }

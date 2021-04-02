@@ -2,29 +2,28 @@
 
 namespace App\Events;
 
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GameNewMessageEvent implements ShouldBroadcast
+class GameMoveEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @param User $user
      * @param string $gameToken
-     * @param string $message
+     * @param array $move
      */
-    public function __construct(public User $user, public string $gameToken, public string $message)
+    public function __construct(public string $gameToken, public array $move)
     {
-
+        //
     }
 
     /**
@@ -38,10 +37,10 @@ class GameNewMessageEvent implements ShouldBroadcast
     }
 
     /**
-     * @return string[]
+     * @return array[]
      */
     public function broadcastWith(): array
     {
-        return ['message' => $this->message];
+        return $this->move;
     }
 }

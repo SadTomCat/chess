@@ -4,7 +4,7 @@
             <div class="h-20 w-20 cursor-pointer"
                  v-for="j in 8" :key="j"
                  :class="cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700'"
-                 @click="move(i - 1, j - 1)"
+                 @click="moveHandler(i - 1, j - 1)"
             >
                 <p class="chess-table__figure"
                    v-html="getFigure(i, j)"
@@ -13,18 +13,36 @@
                 </p>
             </div>
         </div>
+
+        <chess-table-loader v-if="tableLoading"></chess-table-loader>
     </div>
 </template>
 
 <script>
-import { onBeforeUnmount, reactive } from 'vue';
+import { onBeforeUnmount, reactive, watch } from 'vue';
+import ChessTableLoader from './ChessTableLoader.vue';
 
 export default {
     name: 'ChessTable',
 
-    setup() {
+    props: {
+        color: {
+            type: String,
+        },
+        canMove: {
+            type: Boolean,
+        },
+        tableLoading: {
+            type: Boolean,
+        },
+        opponentMove: {
+            type: Object,
+        },
+    },
+
+    setup(props, { emit }) {
         /* Table Settings */
-        const playerColor = 'w';
+        const playerColor = props.color;
 
         const figurinesCode = {
             p: '&#9817;',
@@ -77,30 +95,36 @@ export default {
         };
 
         const selectedOwnFigure = (x, y) => {
-            if (playerColor === 'w' && figuresPosition[x][y].toUpperCase() !== figuresPosition[x][y]) {
-                return false;
+            if (playerColor === 'white' && figuresPosition[x][y].toUpperCase() === figuresPosition[x][y]) {
+                return true;
             }
 
-            if (playerColor === 'b' && figuresPosition[x][y].toLowerCase() !== figuresPosition[x][y]) {
-                return false;
+            if (playerColor === 'black' && figuresPosition[x][y].toLowerCase() === figuresPosition[x][y]) {
+                return true;
             }
 
-            return true;
+            return false;
         };
 
-        /*
-        * 1. Select - set from
-        * 2. Make request?
-        * 3. Move or not
-        * */
-        const move = (x, y) => {
-            if (fromMove.x > -1 && fromMove.y > -1) {
-                const tmp = figuresPosition[fromMove.x][fromMove.y];
-                figuresPosition[fromMove.x][fromMove.y] = figuresPosition[x][y];
-                figuresPosition[x][y] = tmp;
+        const move = (from, to) => {
+            const tmp = figuresPosition[from.x][from.y];
+            figuresPosition[from.x][from.y] = figuresPosition[to.x][to.y];
+            figuresPosition[to.x][to.y] = tmp;
 
-                fromMove.x = -1;
-                fromMove.y = -1;
+            fromMove.x = -1;
+            fromMove.y = -1;
+        };
+
+        const moveHandler = (x, y) => {
+            if (!props.canMove) {
+                return;
+            }
+
+            if (fromMove.x > -1 && fromMove.y > -1) {
+                emit('move', {
+                    from: { x: fromMove.x, y: fromMove.y },
+                    to: { x, y },
+                });
             } else if (figuresPosition[x][y] !== '') {
                 if (!selectedOwnFigure(x, y)) {
                     return;
@@ -110,6 +134,10 @@ export default {
                 fromMove.y = y;
             }
         };
+
+        watch(props.opponentMove, (opponentMove) => {
+            move(opponentMove.from, opponentMove.to);
+        });
 
         /* Listener */
         function escHandler(e) {
@@ -134,10 +162,12 @@ export default {
             cellColor,
             figuresPosition,
             fromMove,
-            move,
+            moveHandler,
             getFigure,
         };
     },
+
+    components: { ChessTableLoader },
 };
 </script>
 

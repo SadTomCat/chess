@@ -2,20 +2,16 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class JoinToGameEvent implements ShouldBroadcast
+class JoinToGameEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $user;
-    public $gameToken;
 
     /**
      * Create a new event instance.
@@ -23,10 +19,8 @@ class JoinToGameEvent implements ShouldBroadcast
      * @param $user
      * @param string $gameToken
      */
-    public function __construct($user, string $gameToken)
+    public function __construct(public User $user, public string $gameToken)
     {
-        $this->user = $user;
-        $this->gameToken = $gameToken;
     }
 
     /**

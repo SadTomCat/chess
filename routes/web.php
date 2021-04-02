@@ -1,16 +1,12 @@
 <?php
 
-use App\Events\JoinToGameEvent;
-use App\Events\JoinToSearchGameEvent;
 use App\Http\Controllers\GameChatController;
+use App\Http\Controllers\GameMoveController;
+use App\Http\Controllers\GameStartController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
-use App\Models\Game;
-use App\Models\GameMessage;
-use App\Models\User;
 use App\Websockets\IWebsocketManager;
 use Illuminate\Support\Facades\Route;
-use App\Websockets\PusherManager;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +18,7 @@ use App\Websockets\PusherManager;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 /*
  * Route for test, need only while develop
  * */
@@ -32,8 +29,13 @@ Route::get('/websocket', function (IWebsocketManager $manager) {
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
     ->middleware('auth');
 
-Route::post('/game/{token}/message', [GameChatController::class, 'newMessage'])
-    ->middleware(['auth', 'belongs.game']);
+Route::middleware(['auth', 'belongs.game'])->group(function () {
+    Route::post('/game/{token}/join', GameStartController::class);
+
+    Route::post('/game/{token}/move', GameMoveController::class);
+
+    Route::post('/game/{token}/message', [GameChatController::class, 'newMessage']);
+});
 
 Route::post('/settings', [SettingsController::class, 'update'])
     ->middleware('auth');

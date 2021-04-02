@@ -31,4 +31,12 @@ class Game extends Model
     {
         return $this->hasMany(GameMessage::class);
     }
+
+    /**
+     * @return HasMany
+     */
+    public function moves(): HasMany
+    {
+        return $this->hasMany(GameMove::class);
+    }
 }
