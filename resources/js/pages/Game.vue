@@ -4,7 +4,11 @@
         <div class="chess-game" v-if="showTable">
 
             <!-- Top -->
-            <chess-table-top-panel :canMoveByColor="canMoveByColor" :moveNum="moveNum"></chess-table-top-panel>
+            <chess-table-top-panel :canMoveByColor="canMoveByColor"
+                                   :moveNum="moveNum"
+                                   @timeEnded="timeEndedHandler"
+            >
+            </chess-table-top-panel>
 
             <div class="chess-game__game-and-chat">
                 <!-- Chess table -->
@@ -56,9 +60,11 @@ export default {
 
         const messages = reactive([]);
 
+        const timeEnded = ref(false);
         const moving = ref(false);
         const moveNum = ref(0);
-        const tableLoading = computed(() => moveNum.value === 0 || moving.value === true);
+        const tableLoading = computed(() => moveNum.value === 0 || moving.value === true
+            || timeEnded.value === true);
 
         const canMoveByColor = computed(() => ((color.value === 'white' && moveNum.value % 2 !== 0)
             || (color.value === 'black' && moveNum.value % 2 === 0)));
@@ -71,6 +77,10 @@ export default {
         const moveHandler = async (move) => {
             moving.value = true;
             const res = await gameMoveRequest(gameToken, { move });
+        };
+
+        const timeEndedHandler = () => {
+            timeEnded.value = true;
         };
 
         onBeforeMount(async () => {
@@ -87,6 +97,7 @@ export default {
                     opponentMove.to = move.to;
                     moveNum.value++;
                     moving.value = false;
+                    timeEnded.value = false;
                 })
                 .listen('GameIncorrectMoveEvent', (data) => {
                     console.log(data);
@@ -120,6 +131,7 @@ export default {
             canMoveByColor,
             canMove,
             moveHandler,
+            timeEndedHandler,
             opponentMove,
             moveNum,
         };
