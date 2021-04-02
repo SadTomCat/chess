@@ -18,8 +18,9 @@ class GameStartEvent implements ShouldBroadcast
      * Create a new event instance.
      *
      * @param string $gameToken
+     * @param int $moveNum
      */
-    public function __construct(public string $gameToken)
+    public function __construct(public string $gameToken, public int $moveNum)
     {
         //
     }
@@ -32,5 +33,10 @@ class GameStartEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         return new PresenceChannel('game-' . $this->gameToken);
+    }
+
+    public function broadcastWith()
+    {
+        return ['moveNum' => $this->moveNum];
     }
 }

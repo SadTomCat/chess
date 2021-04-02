@@ -109,7 +109,7 @@ export default {
                     });
                 })
                 .listen('GameStartEvent', (data) => {
-                    moveNum.value = data.moveNum ?? 1;
+                    moveNum.value = data.moveNum + 1;
                 })
                 .error((e) => {
                     console.log(e);
