@@ -18,11 +18,10 @@ class GameStartEvent implements ShouldBroadcast
      * Create a new event instance.
      *
      * @param string $gameToken
-     * @param int $moveNum
+     * @param array $moves
      */
-    public function __construct(public string $gameToken, public int $moveNum)
+    public function __construct(public string $gameToken, public array $moves)
     {
-        //
     }
 
     /**
@@ -37,6 +36,6 @@ class GameStartEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['moveNum' => $this->moveNum];
+        return ['moves' => $this->moves];
     }
 }

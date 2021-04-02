@@ -22,4 +22,20 @@ class GameMove extends Model
     {
         return $this->hasOne(Game::class);
     }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getFromAttribute($value) {
+        return json_decode($value);
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getToAttribute($value) {
+        return json_decode($value);
+    }
 }

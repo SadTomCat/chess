@@ -29,6 +29,9 @@ export default {
         color: {
             type: String,
         },
+        moves: {
+            type: Array,
+        },
         canMove: {
             type: Boolean,
         },
@@ -137,6 +140,12 @@ export default {
 
         watch(props.opponentMove, (opponentMove) => {
             move(opponentMove.from, opponentMove.to);
+        });
+
+        watch(props.moves, (moves) => {
+            moves.forEach((el) => {
+                move(el.from, el.to);
+            });
         });
 
         /* Listener */

@@ -13,6 +13,7 @@
             <div class="chess-game__game-and-chat">
                 <!-- Chess table -->
                 <chess-table :color="color"
+                             :moves="moves"
                              :canMove="canMove"
                              :tableLoading="tableLoading"
                              :opponentMove="opponentMove"
@@ -57,6 +58,8 @@ export default {
         const showTable = computed(() => !loading.value && store.state.user.logged);
 
         const color = ref('');
+
+        const moves = reactive([]);
 
         const messages = reactive([]);
 
@@ -109,7 +112,13 @@ export default {
                     });
                 })
                 .listen('GameStartEvent', (data) => {
-                    moveNum.value = data.moveNum + 1;
+                    if (data.moves !== undefined && moves.length === 0) {
+                        data.moves.forEach((el) => {
+                            moves.push(el);
+                        });
+
+                        moveNum.value = data.moves.length + 1;
+                    }
                 })
                 .error((e) => {
                     console.log(e);
@@ -127,6 +136,7 @@ export default {
             messages,
             showTable,
             color,
+            moves,
             tableLoading,
             canMoveByColor,
             canMove,

@@ -18,8 +18,9 @@ class GameStartController extends Controller
                 return response()->json(['status' => true]);
             }
 
-            $moveNum = Game::where('token', $token)->first()->moves()->count();
-            event(new GameStartEvent($token, $moveNum));
+            $moves = Game::where('token', $token)->firstOrFail()->moves()->get(['from', 'to', 'type'])->toArray();
+
+            event(new GameStartEvent($token, $moves));
 
         } catch (\Exception $e) {
             return response()->json(['status' => false]);
