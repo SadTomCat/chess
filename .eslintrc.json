@@ -39,6 +39,7 @@
         "vue/custom-event-name-casing": 0,
         "class-methods-use-this": 0,
         "no-prototype-builtins": 0,
+        "no-plusplus": 0,
         "max-len": [
             "error",
             120
