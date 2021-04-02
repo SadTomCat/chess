@@ -1,8 +1,8 @@
 <template>
     <div class="chess-table-top-panel">
         <p>
-            <span class="chess-table-top-panel__opponent-name">Opponent name:</span>
-            {{ opponentName }}
+            <span class="chess-table-top-panel__opponent-name">Moving: </span>
+            {{ canMoveByColor ? 'you' : 'opponent' }}
         </p>
 
         <chess-timer :moveNum="moveNum" @timeEnded="$emit('timeEnded')"></chess-timer>
@@ -16,7 +16,7 @@ export default {
     name: 'ChessTableTopPanel',
 
     props: {
-        opponentName: String,
+        canMoveByColor: Boolean,
         moveNum: Number,
     },
 

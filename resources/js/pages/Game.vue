@@ -4,7 +4,7 @@
         <div class="chess-game" v-if="showTable">
 
             <!-- Top -->
-            <chess-table-top-panel :opponent-name="'test'" :moveNum="moveNum"></chess-table-top-panel>
+            <chess-table-top-panel :canMoveByColor="canMoveByColor" :moveNum="moveNum"></chess-table-top-panel>
 
             <div class="chess-game__game-and-chat">
                 <!-- Chess table -->
@@ -60,9 +60,11 @@ export default {
         const moveNum = ref(0);
         const tableLoading = computed(() => moveNum.value === 0 || moving.value === true);
 
+        const canMoveByColor = computed(() => ((color.value === 'white' && moveNum.value % 2 !== 0)
+            || (color.value === 'black' && moveNum.value % 2 === 0)));
+
         const canMove = computed(() => moveNum.value !== 0 && tableLoading.value === false
-            && ((color.value === 'white' && moveNum.value % 2 !== 0)
-                || (color.value === 'black' && moveNum.value % 2 === 0)));
+            && canMoveByColor.value === true);
 
         const opponentMove = reactive({});
 
@@ -115,6 +117,7 @@ export default {
             showTable,
             color,
             tableLoading,
+            canMoveByColor,
             canMove,
             moveHandler,
             opponentMove,
