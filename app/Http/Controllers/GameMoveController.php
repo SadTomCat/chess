@@ -26,8 +26,8 @@ class GameMoveController extends Controller
                 'user_id' => $user->id,
                 'game_id' => $game->id,
                 'type' => 'move',
-                'from' => json_encode($request->move['from'], JSON_THROW_ON_ERROR),
-                'to' => json_encode($request->move['to'], JSON_THROW_ON_ERROR),
+                'from' => $request->move['from'],
+                'to' => $request->move['to'],
             ]);
 
             broadcast(new GameMoveEvent($token, $request->move));
