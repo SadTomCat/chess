@@ -6,9 +6,9 @@
                  :class="cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700'"
                  @click="moveHandler(i - 1, j - 1)"
             >
-                <p class="chess-board__figure"
-                   v-html="getFigure(i, j)"
-                   :class="i - 1 === fromMove.x && j - 1 === fromMove.y ? 'chess-board__figure_selected' : ''"
+                <p class="chess-board__chessman"
+                   v-html="getChessman(i, j)"
+                   :class="i - 1 === fromMove.x && j - 1 === fromMove.y ? 'chess-board__chessman_selected' : ''"
                 >
                 </p>
             </div>
@@ -47,7 +47,7 @@ export default {
         /* Board Settings */
         const playerColor = props.color;
 
-        const figurinesCode = {
+        const chessmenCode = {
             p: '&#9817;',
             k: '&#9818;',
             q: '&#9819;',
@@ -67,8 +67,8 @@ export default {
             return (index + numRow) % 2 === 0;
         };
 
-        /* Figures move */
-        const figuresPosition = reactive([
+        /* Chessmen move */
+        const chessmenPosition = reactive([
             ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
             ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
             ['', '', '', '', '', '', '', ''],
@@ -84,25 +84,25 @@ export default {
             y: -1,
         });
 
-        const getFigure = (i, j) => {
-            const figure = figuresPosition[i - 1][j - 1];
+        const getChessman = (i, j) => {
+            const chessman = chessmenPosition[i - 1][j - 1];
             let color = 'text-white';
 
-            if (figure === figure.toLowerCase()) {
+            if (chessman === chessman.toLowerCase()) {
                 color = 'text-black';
             }
 
-            const code = figurinesCode[figure.toLowerCase()] ?? '';
+            const code = chessmenCode[chessman.toLowerCase()] ?? '';
 
             return `<span class="${color}">${code}</span>`;
         };
 
-        const selectedOwnFigure = (x, y) => {
-            if (playerColor === 'white' && figuresPosition[x][y].toUpperCase() === figuresPosition[x][y]) {
+        const selectedOwnChessman = (x, y) => {
+            if (playerColor === 'white' && chessmenPosition[x][y].toUpperCase() === chessmenPosition[x][y]) {
                 return true;
             }
 
-            if (playerColor === 'black' && figuresPosition[x][y].toLowerCase() === figuresPosition[x][y]) {
+            if (playerColor === 'black' && chessmenPosition[x][y].toLowerCase() === chessmenPosition[x][y]) {
                 return true;
             }
 
@@ -110,9 +110,8 @@ export default {
         };
 
         const move = (from, to) => {
-            const tmp = figuresPosition[from.x][from.y];
-            figuresPosition[from.x][from.y] = figuresPosition[to.x][to.y];
-            figuresPosition[to.x][to.y] = tmp;
+            chessmenPosition[to.x][to.y] = chessmenPosition[from.x][from.y];
+            chessmenPosition[from.x][from.y] = '';
 
             fromMove.x = -1;
             fromMove.y = -1;
@@ -128,8 +127,8 @@ export default {
                     from: { x: fromMove.x, y: fromMove.y },
                     to: { x, y },
                 });
-            } else if (figuresPosition[x][y] !== '') {
-                if (!selectedOwnFigure(x, y)) {
+            } else if (chessmenPosition[x][y] !== '') {
+                if (!selectedOwnChessman(x, y)) {
                     return;
                 }
 
@@ -169,10 +168,10 @@ export default {
 
         return {
             cellColor,
-            figuresPosition,
+            chessmenPosition,
             fromMove,
             moveHandler,
-            getFigure,
+            getChessman,
         };
     },
 
@@ -181,7 +180,7 @@ export default {
 </script>
 
 <style lang="scss">
-.chess-board__figure {
+.chess-board__chessman {
     @apply block h-full flex justify-center items-center text-6xl select-none;
 
     &_selected {
