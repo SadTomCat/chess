@@ -17,7 +17,7 @@ class CreateGameMovesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('game_id')->constrained();
-            $table->enum('type', ['move', 'capture', 'promotion', 'castling']);
+            $table->enum('type', ['peace', 'capture', 'promotion', 'castling']);
             $table->json('from');
             $table->json('to');
             $table->timestamps();

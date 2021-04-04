@@ -25,7 +25,7 @@ class GameMoveController extends Controller
             GameMove::create([
                 'user_id' => $user->id,
                 'game_id' => $game->id,
-                'type' => 'move',
+                'type' => 'peace',
                 'from' => $request->move['from'],
                 'to' => $request->move['to'],
             ]);
