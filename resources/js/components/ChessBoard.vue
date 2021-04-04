@@ -1,29 +1,29 @@
 <template>
-    <div class="chess-table relative">
+    <div class="chess-board relative">
         <div class="flex " v-for="i in 8" :key="i">
             <div class="h-20 w-20 cursor-pointer"
                  v-for="j in 8" :key="j"
                  :class="cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700'"
                  @click="moveHandler(i - 1, j - 1)"
             >
-                <p class="chess-table__figure"
+                <p class="chess-board__figure"
                    v-html="getFigure(i, j)"
-                   :class="i - 1 === fromMove.x && j - 1 === fromMove.y ? 'chess-table__figure_selected' : ''"
+                   :class="i - 1 === fromMove.x && j - 1 === fromMove.y ? 'chess-board__figure_selected' : ''"
                 >
                 </p>
             </div>
         </div>
 
-        <chess-table-loader v-if="tableLoading"></chess-table-loader>
+        <chess-board-loader v-if="boardLoading"></chess-board-loader>
     </div>
 </template>
 
 <script>
 import { onBeforeUnmount, reactive, watch } from 'vue';
-import ChessTableLoader from './ChessTableLoader.vue';
+import ChessBoardLoader from './ChessBoardLoader.vue';
 
 export default {
-    name: 'ChessTable',
+    name: 'ChessBoard',
 
     props: {
         color: {
@@ -35,7 +35,7 @@ export default {
         canMove: {
             type: Boolean,
         },
-        tableLoading: {
+        boardLoading: {
             type: Boolean,
         },
         opponentMove: {
@@ -44,7 +44,7 @@ export default {
     },
 
     setup(props, { emit }) {
-        /* Table Settings */
+        /* Board Settings */
         const playerColor = props.color;
 
         const figurinesCode = {
@@ -176,12 +176,12 @@ export default {
         };
     },
 
-    components: { ChessTableLoader },
+    components: { ChessBoardLoader },
 };
 </script>
 
 <style lang="scss">
-.chess-table__figure {
+.chess-board__figure {
     @apply block h-full flex justify-center items-center text-6xl select-none;
 
     &_selected {

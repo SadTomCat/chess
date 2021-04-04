@@ -1,28 +1,28 @@
 <template>
     <div class="chess-game-wrapper">
 
-        <div class="chess-game" v-if="showTable">
+        <div class="chess-game" v-if="showBoard">
 
             <!-- Top -->
-            <chess-table-top-panel :canMoveByColor="canMoveByColor"
+            <chess-board-top-panel :canMoveByColor="canMoveByColor"
                                    :moveNum="moveNum"
                                    @timeEnded="timeEndedHandler"
             >
-            </chess-table-top-panel>
+            </chess-board-top-panel>
 
             <div class="chess-game__game-and-chat">
-                <!-- Chess table -->
-                <chess-table :color="color"
+                <!-- Chess board -->
+                <chess-board :color="color"
                              :moves="moves"
                              :canMove="canMove"
-                             :tableLoading="tableLoading"
+                             :boardLoading="boardLoading"
                              :opponentMove="opponentMove"
                              @move="moveHandler"
                 >
-                </chess-table>
+                </chess-board>
 
                 <!-- Chat -->
-                <chess-table-chat :opponent-messages="messages"></chess-table-chat>
+                <chess-board-chat :opponent-messages="messages"></chess-board-chat>
             </div>
 
         </div>
@@ -40,9 +40,9 @@ import {
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import ChessTable from '~/components/ChessTable.vue';
-import ChessTableChat from '~/components/ChessTableChat.vue';
-import ChessTableTopPanel from '~/components/ChessTableTopPanel.vue';
+import ChessBoard from '~/components/ChessBoard.vue';
+import ChessBoardChat from '~/components/ChessBoardChat.vue';
+import ChessBoardTopPanel from '~/components/ChessBoardTopPanel.vue';
 import gameMoveRequest from '~/api/gameMoveRequest';
 import joinedToGameRequest from '~/api/joinedToGameRequest';
 
@@ -55,7 +55,7 @@ export default {
         const store = useStore();
         const loading = ref(true);
         const gameToken = route.params.token;
-        const showTable = computed(() => !loading.value && store.state.user.logged);
+        const showBoard = computed(() => !loading.value && store.state.user.logged);
 
         const color = ref('');
 
@@ -66,13 +66,13 @@ export default {
         const timeEnded = ref(false);
         const moving = ref(false);
         const moveNum = ref(0);
-        const tableLoading = computed(() => moveNum.value === 0 || moving.value === true
+        const boardLoading = computed(() => moveNum.value === 0 || moving.value === true
             || timeEnded.value === true);
 
         const canMoveByColor = computed(() => ((color.value === 'white' && moveNum.value % 2 !== 0)
             || (color.value === 'black' && moveNum.value % 2 === 0)));
 
-        const canMove = computed(() => moveNum.value !== 0 && tableLoading.value === false
+        const canMove = computed(() => moveNum.value !== 0 && boardLoading.value === false
             && canMoveByColor.value === true);
 
         const opponentMove = reactive({});
@@ -134,10 +134,10 @@ export default {
         return {
             loading,
             messages,
-            showTable,
+            showBoard,
             color,
             moves,
-            tableLoading,
+            boardLoading,
             canMoveByColor,
             canMove,
             moveHandler,
@@ -148,9 +148,9 @@ export default {
     },
 
     components: {
-        ChessTable,
-        ChessTableChat,
-        ChessTableTopPanel,
+        ChessBoard,
+        ChessBoardChat,
+        ChessBoardTopPanel,
     },
 };
 </script>

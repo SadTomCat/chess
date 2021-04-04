@@ -1,16 +1,16 @@
 <template>
-    <div class="chess-table-loader">
-        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>    </div>
+    <div class="chess-board-loader">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>
 </template>
 
 <script>
 export default {
-    name: 'ChessTableLoader',
+    name: 'ChessBoardLoader',
 };
 </script>
 
 <style lang="scss">
-.chess-table-loader {
+.chess-board-loader {
     height: 40rem;
     width: 40rem;
     background: rgba(60, 66, 90, 0.4);

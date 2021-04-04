@@ -14,13 +14,13 @@
 
         <!-- Chat content -->
         <div class="chess-chat__messages">
-            <chess-table-chat-message
+            <chess-board-chat-message
                 v-for="(message, index) in messages"
                 :message="message.message"
                 :fromOpponent="message.fromOpponent"
                 :key="index"
             >
-            </chess-table-chat-message>
+            </chess-board-chat-message>
         </div>
 
         <!-- Bottom -->
@@ -34,11 +34,11 @@
 <script>
 import { reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import ChessTableChatMessage from './ChessTableChatMessage.vue';
+import ChessBoardChatMessage from './ChessBoardChatMessage.vue';
 import sendGameMessage from '~/api/sendGameMessage';
 
 export default {
-    name: 'ChessTableChat',
+    name: 'ChessBoardChat',
 
     props: {
         opponentName: String,
@@ -94,7 +94,7 @@ export default {
         };
     },
 
-    components: { ChessTableChatMessage },
+    components: { ChessBoardChatMessage },
 };
 </script>
 

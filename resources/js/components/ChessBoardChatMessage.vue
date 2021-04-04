@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    name: 'ChessTableChatMessage',
+    name: 'ChessBoardChatMessage',
 
     props: {
         message: String,

@@ -1,7 +1,7 @@
 <template>
-    <div class="chess-table-top-panel">
+    <div class="chess-board-top-panel">
         <p>
-            <span class="chess-table-top-panel__opponent-name">Moving: </span>
+            <span class="chess-board-top-panel__opponent-name">Moving: </span>
             {{ canMoveByColor ? 'you' : 'opponent' }}
         </p>
 
@@ -13,7 +13,7 @@
 import ChessTimer from './ChessTimer.vue';
 
 export default {
-    name: 'ChessTableTopPanel',
+    name: 'ChessBoardTopPanel',
 
     props: {
         canMoveByColor: Boolean,
@@ -25,7 +25,7 @@ export default {
 </script>
 
 <style lang="scss">
-.chess-table-top-panel {
+.chess-board-top-panel {
     width: 40rem;
 
     @apply flex h-12 items-center justify-between;
@@ -33,7 +33,7 @@ export default {
     p {
         @apply text-2xl;
 
-        .chess-table-top-panel__opponent-name {
+        .chess-board-top-panel__opponent-name {
             @apply text-indigo-600;
         }
     }
