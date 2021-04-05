@@ -56,6 +56,7 @@ export default {
         const loading = ref(true);
         const gameToken = route.params.token;
         const showBoard = computed(() => !loading.value && store.state.user.logged);
+        let gameStarted = false;
 
         const color = ref('');
 
@@ -80,6 +81,10 @@ export default {
         const moveHandler = async (move) => {
             moving.value = true;
             const res = await gameMoveRequest(gameToken, { move });
+
+            if (res.status === false) {
+                moving.value = res.status;
+            }
         };
 
         const timeEndedHandler = () => {
@@ -112,12 +117,13 @@ export default {
                     });
                 })
                 .listen('GameStartEvent', (data) => {
-                    if (data.moves !== undefined && moves.length === 0) {
+                    if (gameStarted === false && data.moves !== undefined && moves.length === 0) {
                         data.moves.forEach((el) => {
                             moves.push(el);
                         });
 
                         moveNum.value = data.moves.length + 1;
+                        gameStarted = true;
                     }
                 })
                 .error((e) => {

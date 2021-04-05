@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -60,5 +61,20 @@ class User extends Authenticatable
     public function gameChatMessages(): HasMany
     {
         return $this->hasMany(GameMessage::class);
+    }
+
+    /**
+     * @param $token
+     * @return Game
+     */
+    public function getGameByToken($token): Game
+    {
+        $game = $this->games->where('token', $token)->first();
+
+        if ($game === null) {
+            throw new ModelNotFoundException();
+        }
+
+        return $game;
     }
 }

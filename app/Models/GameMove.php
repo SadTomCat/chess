@@ -15,45 +15,24 @@ class GameMove extends Model
 
     protected $fillable = ['user_id', 'game_id', 'type', 'from', 'to'];
 
+    protected $casts = [
+        'from' => 'array',
+        'to' => 'array',
+    ];
+
+    /**
+     * @return HasOne
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
+
     /**
      * @return HasOne
      */
     public function game(): HasOne
     {
         return $this->hasOne(Game::class);
-    }
-
-    /**
-     * @param $value
-     */
-    public function setFromAttribute($value): void
-    {
-        $this->attributes['from'] = json_encode($value);
-    }
-
-    /**
-     * @param $value
-     */
-    public function setToAttribute($value): void
-    {
-        $this->attributes['to'] = json_encode($value);
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function getFromAttribute($value)
-    {
-        return json_decode($value);
-    }
-
-    /**
-     * @param $value
-     * @return mixed
-     */
-    public function getToAttribute($value)
-    {
-        return json_decode($value);
     }
 }

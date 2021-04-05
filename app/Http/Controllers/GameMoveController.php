@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\GameMoveEvent;
-use App\Models\Game;
+use App\Game\MoveValidation;
 use App\Models\GameMove;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +20,13 @@ class GameMoveController extends Controller
     {
         try {
             $user = $request->user();
-            $game = Game::where('token', $token)->firstOrFail();
+            $game = $user->getGameByToken($token);
+            $moveValidator = new MoveValidation($user->id, $game, ...$request->move);
+            $moveInfo = $moveValidator->validate();
+
+            if ($moveInfo->getStatus() === false) {
+                return response()->json($moveInfo->getArrayFailed());
+            }
 
             GameMove::create([
                 'user_id' => $user->id,
@@ -37,10 +43,11 @@ class GameMoveController extends Controller
                 'status' => false,
                 'message' => 'Game not exist'
             ]);
+
         } catch (\Exception $e) {
             return response()->json(['status' => false]);
         }
 
-        return response()->json(['status' => true]);
+        return response()->json(['status' => true, 'message' => 'What went wrong']);
     }
 }

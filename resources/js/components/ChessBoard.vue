@@ -68,7 +68,7 @@ export default {
         };
 
         /* Chessmen move */
-        const chessmenPosition = reactive([
+        const board = reactive([
             ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
             ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
             ['', '', '', '', '', '', '', ''],
@@ -85,7 +85,7 @@ export default {
         });
 
         const getChessman = (i, j) => {
-            const chessman = chessmenPosition[i - 1][j - 1];
+            const chessman = board[i - 1][j - 1];
             let color = 'text-white';
 
             if (chessman === chessman.toLowerCase()) {
@@ -98,11 +98,11 @@ export default {
         };
 
         const selectedOwnChessman = (x, y) => {
-            if (playerColor === 'white' && chessmenPosition[x][y].toUpperCase() === chessmenPosition[x][y]) {
+            if (playerColor === 'white' && board[x][y].toUpperCase() === board[x][y]) {
                 return true;
             }
 
-            if (playerColor === 'black' && chessmenPosition[x][y].toLowerCase() === chessmenPosition[x][y]) {
+            if (playerColor === 'black' && board[x][y].toLowerCase() === board[x][y]) {
                 return true;
             }
 
@@ -110,8 +110,12 @@ export default {
         };
 
         const move = (from, to) => {
-            chessmenPosition[to.x][to.y] = chessmenPosition[from.x][from.y];
-            chessmenPosition[from.x][from.y] = '';
+            if (from.x === to.x && from.y === to.y) {
+                return;
+            }
+
+            board[to.x][to.y] = board[from.x][from.y];
+            board[from.x][from.y] = '';
 
             fromMove.x = -1;
             fromMove.y = -1;
@@ -127,7 +131,10 @@ export default {
                     from: { x: fromMove.x, y: fromMove.y },
                     to: { x, y },
                 });
-            } else if (chessmenPosition[x][y] !== '') {
+
+                fromMove.x = -1;
+                fromMove.y = -1;
+            } else if (board[x][y] !== '') {
                 if (!selectedOwnChessman(x, y)) {
                     return;
                 }
@@ -168,7 +175,7 @@ export default {
 
         return {
             cellColor,
-            chessmenPosition,
+            board,
             fromMove,
             moveHandler,
             getChessman,
