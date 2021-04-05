@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Chessmen;
 
 use App\Game\GameBoard;
 use PHPUnit\Framework\TestCase;

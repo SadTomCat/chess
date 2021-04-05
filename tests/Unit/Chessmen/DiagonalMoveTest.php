@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Chessmen;
 
 use App\Game\GameBoard;
-use PHPUnit\Framework\TestCase;
 
-class BishopMoveTest extends TestCase
+trait DiagonalMoveTest
 {
     /**
      * A basic unit test example.
@@ -14,12 +13,15 @@ class BishopMoveTest extends TestCase
      */
     public function test_diagonal_peace_true(): void
     {
+        $w = ucfirst($this->chessman);
+        $b = lcfirst($this->chessman);
+
         $board = GameBoard::createByBoard([
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['', '', '', 'b', 'B', '', '', ''],
+            ['', '', '', "$b", "$w", '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
@@ -65,14 +67,17 @@ class BishopMoveTest extends TestCase
      */
     public function test_diagonal_peace_false(): void
     {
+        $w = ucfirst($this->chessman);
+        $b = lcfirst($this->chessman);
+
         $board = GameBoard::createByBoard([
             ['', '', '', '', '', '', '', ''],
-            ['', 'Q', '', '', '', '', '', ''],
-            ['', '', '', '', '', 'Q', '', ''],
-            ['', '', 'q', '', '', 'q', '', ''],
-            ['', '', '', 'b', 'B', '', '', ''],
+            ['', 'N', '', '', '', '', '', ''],
+            ['', '', '', '', '', 'N', '', ''],
+            ['', '', 'n', '', '', 'n', '', ''],
+            ['', '', '', "$b", "$w", '', '', ''],
             ['', '', '', 'q', '', '', '', ''],
-            ['', 'Q', '', '', '', 'q', 'Q', ''],
+            ['', 'N', '', '', '', 'n', 'N', ''],
             ['', '', '', '', '', '', '', ''],
         ]);
 
@@ -116,15 +121,18 @@ class BishopMoveTest extends TestCase
      */
     public function test_diagonal_capture_true(): void
     {
+        $w = ucfirst($this->chessman);
+        $b = lcfirst($this->chessman);
+
         $board = GameBoard::createByBoard([
-            ['q', '', '', '', '', '', '', 'Q'],
-            ['Q', '', '', '', '', '', '', 'q'],
+            ['n', '', '', '', '', '', '', 'N'],
+            ['N', '', '', '', '', '', '', 'n'],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['', '', '', 'b', 'B', '', '', ''],
+            ['', '', '', "$b", "$w", '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['Q', 'q', '', '', '', '', 'Q', 'q'],
+            ['N', 'n', '', '', '', '', 'N', 'n'],
         ]);
 
         /* white */
@@ -167,15 +175,18 @@ class BishopMoveTest extends TestCase
      */
     public function test_diagonal_capture_false(): void
     {
+        $w = ucfirst($this->chessman);
+        $b = lcfirst($this->chessman);
+
         $board = GameBoard::createByBoard([
-            ['Q', '', '', '', '', '', '', 'Q'],
-            ['q', '', '', '', '', '', '', 'q'],
+            ['N', '', '', '', '', '', '', 'N'],
+            ['n', '', '', '', '', '', '', 'n'],
             ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', 'q', 'Q', '', ''],
-            ['', '', '', 'b', 'B', '', '', ''],
+            ['', '', '', '', 'n', 'N', '', ''],
+            ['', '', '', "$b", "$w", '', '', ''],
             ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', 'q', 'q', ''],
-            ['q', 'Q', '', '', '', '', 'Q', 'q'],
+            ['', '', '', '', '', 'n', 'n', ''],
+            ['n', 'N', '', '', '', '', 'N', 'n'],
         ]);
 
         /* white */
@@ -208,69 +219,6 @@ class BishopMoveTest extends TestCase
         $this->assertFalse($moveInfo->getStatus());
 
         $moveInfo = $chessman->canMove(['x' => 7, 'y' => 0]);
-        $this->assertFalse($moveInfo->getStatus());
-    }
-
-    public function test_cannot(): void
-    {
-        $board = GameBoard::createByBoard([
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', 'q', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', 'q', '', '', '', 'q', ''],
-            ['', '', '', '', 'B', '', '', ''],
-            ['', '', '', '', '', '', 'q', ''],
-            ['', '', '', '', 'q', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-        ]);
-
-        /* white  */
-
-        $chessman = $board->getChessman(['x' => 4, 'y' => 4]);
-
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 0]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 4]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 2]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 2]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 4]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $board = GameBoard::createByBoard([
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', 'q', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', 'q', '', '', '', 'q', ''],
-            ['', '', '', '', 'b', '', '', ''],
-            ['', '', '', '', '', '', 'q', ''],
-            ['', '', '', '', 'q', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-        ]);
-
-        /* black  */
-
-        $chessman = $board->getChessman(['x' => 4, 'y' => 4]);
-
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 0]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 4]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 2]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 2]);
-        $this->assertFalse($moveInfo->getStatus());
-
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
     }
 }
