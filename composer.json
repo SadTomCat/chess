@@ -66,6 +66,9 @@
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:model -M",
             "@php artisan ide-helper:meta"
+        ],
+        "unit": [
+            "php artisan test --testsuite=Unit"
         ]
     }
 }

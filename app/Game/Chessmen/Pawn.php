@@ -53,7 +53,8 @@ class Pawn extends AbstractChessman
 
         /* capture */
         if ($difY === -1 || $difY === 1) {
-            $status = !($this->board->getChessman($to) instanceof NullChessman);
+            $toChessman = $this->board->getChessman($to);
+            $status = !($toChessman instanceof NullChessman) && $toChessman->getColor() !== $this->color;
             $this->wrongMoveMessage = $status ? '' : 'You can move so if you capture opponent chessman';
 
             return $status;
@@ -74,7 +75,10 @@ class Pawn extends AbstractChessman
             return false;
         }
 
-        return $this->checkToPos($to);
+        $status = ($this->board->getChessman($to) instanceof NullChessman);
+        $this->wrongMoveMessage = 'You cannot move so';
+
+        return $status;
     }
 
     /**
