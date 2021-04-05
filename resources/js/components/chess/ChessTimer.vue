@@ -6,7 +6,7 @@
 
 <script>
 import { reactive, watch } from 'vue';
-import useTimer from '../helpers/useTimer';
+import useTimer from '~/helpers/useTimer';
 
 export default {
     name: 'ChessTimer',

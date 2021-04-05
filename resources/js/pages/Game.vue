@@ -40,9 +40,9 @@ import {
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import ChessBoard from '~/components/ChessBoard.vue';
-import ChessBoardChat from '~/components/ChessBoardChat.vue';
-import ChessBoardTopPanel from '~/components/ChessBoardTopPanel.vue';
+import ChessBoard from '~/components/chess/ChessBoard.vue';
+import ChessBoardChat from '~/components/chess/ChessBoardChat.vue';
+import ChessBoardTopPanel from '~/components/chess/ChessBoardTopPanel.vue';
 import gameMoveRequest from '~/api/gameMoveRequest';
 import joinedToGameRequest from '~/api/joinedToGameRequest';
 
