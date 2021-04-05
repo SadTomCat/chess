@@ -4,6 +4,7 @@ export default async (token, data) => {
 
     if (res.status !== 200 || !res.data.status) {
         return {
+            message: res.data.message ?? 'What went wrong',
             status: false,
         };
     }

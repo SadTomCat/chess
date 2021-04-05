@@ -10,6 +10,7 @@
             >
             </chess-board-top-panel>
 
+            <!-- Game -->
             <div class="chess-game__game-and-chat">
                 <!-- Chess board -->
                 <chess-board :color="color"
@@ -25,6 +26,8 @@
                 <chess-board-chat :opponent-messages="messages"></chess-board-chat>
             </div>
 
+            <!-- Bottom -->
+            <chess-board-bottom :message="errorMessage"></chess-board-bottom>
         </div>
 
         <div class="chess-game__loading" v-else>
@@ -43,6 +46,7 @@ import { useStore } from 'vuex';
 import ChessBoard from '~/components/chess/ChessBoard.vue';
 import ChessBoardChat from '~/components/chess/ChessBoardChat.vue';
 import ChessBoardTopPanel from '~/components/chess/ChessBoardTopPanel.vue';
+import ChessBoardBottom from '~/components/chess/ChessBoardBottom.vue';
 import gameMoveRequest from '~/api/gameMoveRequest';
 import joinedToGameRequest from '~/api/joinedToGameRequest';
 
@@ -56,6 +60,7 @@ export default {
         const loading = ref(true);
         const gameToken = route.params.token;
         const showBoard = computed(() => !loading.value && store.state.user.logged);
+        const errorMessage = ref('');
         let gameStarted = false;
 
         const color = ref('');
@@ -79,10 +84,12 @@ export default {
         const opponentMove = reactive({});
 
         const moveHandler = async (move) => {
+            errorMessage.value = '';
             moving.value = true;
             const res = await gameMoveRequest(gameToken, { move });
 
             if (res.status === false) {
+                errorMessage.value = res.message;
                 moving.value = res.status;
             }
         };
@@ -144,6 +151,7 @@ export default {
             color,
             moves,
             boardLoading,
+            errorMessage,
             canMoveByColor,
             canMove,
             moveHandler,
@@ -157,13 +165,14 @@ export default {
         ChessBoard,
         ChessBoardChat,
         ChessBoardTopPanel,
+        ChessBoardBottom,
     },
 };
 </script>
 
 <style lang="scss">
 .chess-game-wrapper {
-    @apply flex justify-center py-24 px-10;
+    @apply flex justify-center py-16 px-10;
 }
 
 .chess-game {
