@@ -127,15 +127,13 @@ abstract class AbstractChessman
 
     /**
      * Colors of chessman in start position and chessman in 'to' position must be different
-     * or in 'to' position chessman shouldn't exist
      *
      * @param $to
      * @return bool
      */
     protected function checkToPos(array $to): bool
     {
-        if ($this->board->getChessman($to)->color !== $this->color
-            || $this->board->getChessman($to) instanceof NullChessman) {
+        if ($this->board->getChessman($to)->color !== $this->color) {
             return true;
         }
 

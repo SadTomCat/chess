@@ -2,10 +2,24 @@
 
 namespace App\Game\Chessmen;
 
+use App\Game\GameBoard;
 use App\Game\MoveInfo;
 
 class NullChessman extends AbstractChessman
 {
+    /**
+     * NullChessman constructor.
+     * @param array $pos
+     * @param string $color
+     * @param GameBoard $board
+     */
+    public function __construct(array $pos, string $color, GameBoard $board)
+    {
+        $this->pos = $pos;
+        $this->color = 'none';
+        $this->board = $board;
+    }
+
     /**
      * @param array $to
      * @return MoveInfo
