@@ -2,6 +2,7 @@
 
 namespace App\Game\Chessmen;
 
+use App\Game\GameBoard;
 use App\Game\MoveInfo;
 
 class King extends AbstractChessman
@@ -24,5 +25,27 @@ class King extends AbstractChessman
         }
 
         return $this->createMoveInfo($to);
+    }
+
+    /**
+     * Return all opponent chessmen positions that can capture the king.
+     *
+     * @return array
+     */
+    public function inSafety(): array
+    {
+        $canCapture = [];
+        $oppColor = $this->color === 'white' ? 'black' : 'white';
+        $oppChessmen = $this->board->getAllChessmenByColor($oppColor);
+
+        foreach ($oppChessmen as $oppPos) {
+            $opp = $this->board->getChessman($oppPos);
+
+            if ($opp->canMove($this->pos)->getStatus()) {
+                $canCapture[] = $oppPos;
+            }
+        }
+
+        return $canCapture;
     }
 }

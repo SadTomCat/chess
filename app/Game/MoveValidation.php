@@ -4,6 +4,7 @@ namespace App\Game;
 
 use App\Game\Chessmen\AbstractChessman;
 use App\Models\Game;
+use Illuminate\Support\Str;
 
 class MoveValidation
 {
@@ -25,21 +26,36 @@ class MoveValidation
 
     /**
      * @return MoveInfo
+     * @throws \Exception
      */
     public function validate(): MoveInfo
     {
-        $userColor = $this->game->users()
+        $color = $this->game->users()
             ->where('user_id', $this->userId)
             ->withPivot('color')
             ->first()->pivot->color;
 
         $moveCount = $this->game->moves()->count();
 
-        if (($moveCount % 2 === 0 && $userColor === 'black') || ($moveCount % 2 !== 0 && $userColor === 'white')
-            || $userColor !== $this->fromChessman->getColor()) {
+        if (($moveCount % 2 === 0 && $color === 'black') || ($moveCount % 2 !== 0 && $color === 'white')
+            || $color !== $this->fromChessman->getColor()) {
             return (new MoveInfo(status: false, message: self::NOT_YOU_MOVE));
         }
 
-        return $this->fromChessman->canMove($this->to);
+        $canMove = $this->fromChessman->canMove($this->to);
+
+        if ($canMove->getStatus() === false) {
+            return $canMove;
+        }
+
+
+        $boardAfterMove = $this->board->createAfterMove($this->from, $this->to);
+        $kingAfterMove = $boardAfterMove->getKing($color);
+
+        if (empty($kingAfterMove->inSafety()) === false) {
+            return (new MoveInfo(status: false, message: "Dangerous move"));
+        }
+
+        return $canMove;
     }
 }
