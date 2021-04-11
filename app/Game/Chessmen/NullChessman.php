@@ -31,4 +31,24 @@ class NullChessman extends AbstractChessman
             message: 'This is empty cell',
         ));
     }
+
+    public function safetyMoveOnHorizontal(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function safetyMoveOnVertical(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function safetyMoveOnMainDiagonal(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function safetyMoveOnAntiDiagonal(array $kingPos): bool
+    {
+        return false;
+    }
 }

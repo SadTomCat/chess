@@ -5,10 +5,13 @@ namespace App\Game;
 use App\Game\Chessmen\AbstractChessman;
 use App\Models\Game;
 use Illuminate\Support\Str;
+use function Symfony\Component\Translation\t;
 
 class MoveValidation
 {
     public const NOT_YOU_MOVE = 'Not you move';
+
+    public const IN_CHECK = 'Your king in check';
 
     private AbstractChessman $fromChessman;
 
@@ -42,20 +45,6 @@ class MoveValidation
             return (new MoveInfo(status: false, message: self::NOT_YOU_MOVE));
         }
 
-        $canMove = $this->fromChessman->canMove($this->to);
-
-        if ($canMove->getStatus() === false) {
-            return $canMove;
-        }
-
-
-        $boardAfterMove = $this->board->createAfterMove($this->from, $this->to);
-        $kingAfterMove = $boardAfterMove->getKing($color);
-
-        if (empty($kingAfterMove->inSafety()) === false) {
-            return (new MoveInfo(status: false, message: "Dangerous move"));
-        }
-
-        return $canMove;
+        return $this->fromChessman->moveValidation($this->to);
     }
 }

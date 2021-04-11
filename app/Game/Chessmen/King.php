@@ -2,7 +2,6 @@
 
 namespace App\Game\Chessmen;
 
-use App\Game\GameBoard;
 use App\Game\MoveInfo;
 
 class King extends AbstractChessman
@@ -47,5 +46,34 @@ class King extends AbstractChessman
         }
 
         return $canCapture;
+    }
+
+    public function willKingSafeAfterMove(array $to): bool
+    {
+        $kingAfterMove = $this->board
+            ->createAfterMove($this->pos, $to)
+            ->getKing($this->color);
+
+        return empty($kingAfterMove->inSafety());
+    }
+
+    public function safetyMoveOnHorizontal(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function safetyMoveOnVertical(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function safetyMoveOnMainDiagonal(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function safetyMoveOnAntiDiagonal(array $kingPos): bool
+    {
+        return false;
     }
 }
