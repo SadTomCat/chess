@@ -10,7 +10,7 @@ class King extends AbstractChessman
      * @param array $to
      * @return MoveInfo
      */
-    public function canMove(array $to): MoveInfo
+    public function validMoveByRule(array $to): MoveInfo
     {
         $difX = $this->pos['x'] - $to['x'];
         $difY = $this->pos['y'] - $to['y'];
@@ -40,12 +40,34 @@ class King extends AbstractChessman
         foreach ($oppChessmen as $oppPos) {
             $opp = $this->board->getChessman($oppPos);
 
-            if ($opp->canMove($this->pos)->getStatus()) {
+            if ($opp->validMoveByRule($this->pos)->getStatus()) {
                 $canCapture[] = $oppPos;
             }
         }
 
         return $canCapture;
+    }
+
+    /**
+     * canMoveSomewhere check exists at least one move for king and automatically check king will be in safe.
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function canMoveSomewhere(): bool
+    {
+        $moves = [
+            ['x' => $this->pos['x'] - 1, 'y' => $this->pos['y'] - 1],
+            ['x' => $this->pos['x'] - 1, 'y' => $this->pos['y']],
+            ['x' => $this->pos['x'] - 1, 'y' => $this->pos['y'] + 1],
+            ['x' => $this->pos['x'], 'y' => $this->pos['y'] + 1],
+            ['x' => $this->pos['x'] + 1, 'y' => $this->pos['y'] + 1],
+            ['x' => $this->pos['x'] + 1, 'y' => $this->pos['y']],
+            ['x' => $this->pos['x'] + 1, 'y' => $this->pos['y'] - 1],
+            ['x' => $this->pos['x'], 'y' => $this->pos['y'] - 1],
+        ];
+
+        return $this->canAnyByMoves($moves);
     }
 
     public function willKingSafeAfterMove(array $to): bool

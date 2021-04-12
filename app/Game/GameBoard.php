@@ -84,6 +84,14 @@ class GameBoard
         return static::createByBoard($newBoard);
     }
 
+    /**
+     * @return array
+     */
+    public function getBoard(): array
+    {
+        return $this->board;
+    }
+
     public function getAllChessmenByColor($color): array
     {
         $chessmen = [];
@@ -382,7 +390,7 @@ class GameBoard
     }
 
     /**
-     * This method dont check last diagonal because it got one cell
+     * This method doesn't check the last diagonal because it got one cell.
      *
      * @param array $startPos
      * @param array $endPos
@@ -429,7 +437,7 @@ class GameBoard
     }
 
     /**
-     * This method dont check last diagonal because it got one cell
+     * This method doesn't check the last diagonal because it got one cell.
      *
      * @param array $startPos
      * @param array $endPos
@@ -477,12 +485,15 @@ class GameBoard
     }
 
     /**
+     * Recovery board to current condition
+     *
      * @param Game $game
      */
     private function recovery(Game $game): void
     {
         foreach ($game->moves()->cursor() as $move) {
             switch ($move['type']) {
+                case 'mate':
                 case 'capture':
                 case 'peace':
                     $this->move($move['from'], $move['to']);
@@ -508,14 +519,6 @@ class GameBoard
         }
 
         return true;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBoard(): array
-    {
-        return $this->board;
     }
 
     /**

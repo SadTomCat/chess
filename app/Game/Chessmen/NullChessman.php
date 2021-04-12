@@ -4,6 +4,7 @@ namespace App\Game\Chessmen;
 
 use App\Game\GameBoard;
 use App\Game\MoveInfo;
+use JetBrains\PhpStorm\Pure;
 
 class NullChessman extends AbstractChessman
 {
@@ -24,7 +25,7 @@ class NullChessman extends AbstractChessman
      * @param array $to
      * @return MoveInfo
      */
-    public function canMove(array $to): MoveInfo
+    public function validMoveByRule(array $to): MoveInfo
     {
         return (new MoveInfo(
             status: false,
@@ -48,6 +49,11 @@ class NullChessman extends AbstractChessman
     }
 
     public function safetyMoveOnAntiDiagonal(array $kingPos): bool
+    {
+        return false;
+    }
+
+    public function canMoveSomewhere(): bool
     {
         return false;
     }

@@ -21,10 +21,37 @@ abstract class AbstractChessman
     /**
      * Rules validation
      *
-     * @param object $to
+     * @param array $to
+     * @return MoveInfo
+     */
+    abstract public function validMoveByRule(array $to): MoveInfo;
+
+    /**
      * @return bool
      */
-    abstract public function canMove(array $to): MoveInfo;
+    abstract public function canMoveSomewhere(): bool;
+
+    /**
+     * checks if the move conforms to the rules and will be safe for the king.
+     *
+     * @param $to
+     * @return MoveInfo
+     * @throws \Exception
+     */
+    public function moveValidation($to): MoveInfo
+    {
+        $canMoveInfo = $this->validMoveByRule($to);
+
+        if ($canMoveInfo->getStatus() === false) {
+            return $canMoveInfo;
+        }
+
+        if ($this->willKingSafeAfterMove($to) === false) {
+            return (new MoveInfo(status: false, message: self::DANGEROUS_FOR_KING));
+        }
+
+        return $this->createMoveInfo($to, true);
+    }
 
     /**
      * @param array $kingPos
@@ -300,30 +327,6 @@ abstract class AbstractChessman
     }
 
     /**
-     * This method makes validation of rules and king safety
-     *
-     * @param $to
-     * @return MoveInfo
-     * @throws \Exception
-     */
-    public function moveValidation($to): MoveInfo
-    {
-        $canMoveInfo = $this->canMove($to);
-
-        // validation move by rules
-        if ($canMoveInfo->getStatus() === false) {
-            return $canMoveInfo;
-        }
-
-        // validation move on safe for king
-        if ($this->willKingSafeAfterMove($to) === false) {
-            return (new MoveInfo(status: false, message: self::DANGEROUS_FOR_KING));
-        }
-
-        return $this->createMoveInfo($to, true);
-    }
-
-    /**
      * @return string
      */
     public function getColor(): string
@@ -471,6 +474,12 @@ abstract class AbstractChessman
         return 'capture';
     }
 
+    /**
+     * @param array $to
+     * @param bool $status
+     * @param string $message
+     * @return MoveInfo
+     */
     protected function createMoveInfo(array $to, $status = true, string $message = ''): MoveInfo
     {
         if ($status === true) {
@@ -481,5 +490,99 @@ abstract class AbstractChessman
             status: false,
             message: $message === '' ? $this->wrongMoveMessage : $message
         ));
+    }
+
+    /**
+     * @param $moves
+     * @return bool
+     * @throws \Exception
+     */
+    protected function canAnyByMoves($moves): bool
+    {
+        foreach ($moves as $move) {
+            if ($move['x'] === 8 || $move['y'] === 8 || $move['x'] === -1 || $move['y'] === -1) {
+                continue;
+            }
+
+            if ($this->moveValidation($move)->getStatus()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    protected function anyOnHorizontal(): bool
+    {
+        $x = $this->pos['x'];
+
+        for ($i = 0; $i < 8; $i++) {
+            if ($this->moveValidation(['x' => $x, 'y' => $i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    protected function anyOnVertical(): bool
+    {
+        $y = $this->pos['y'];
+
+        for ($i = 0; $i < 8; $i++) {
+            if ($this->moveValidation(['x' => $i, 'y' => $y])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    protected function anyOnMainDiagonal(): bool
+    {
+        $diagonal = $this->board->getMainDiagonal($this->pos);
+        $startX = $diagonal >= 0 ? 0 : abs($diagonal);
+        $startY = $diagonal > 0 ? $diagonal : 0;
+        $end = 8 - abs($diagonal);
+
+        for ($x = $startX, $y = $startY; $x !== $end; $x++, $y++) {
+            if ($this->moveValidation(['x' => $x, 'y' => $y])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    protected function anyOnAntiDiagonal(): bool
+    {
+        $diagonal = $this->board->getMainDiagonal($this->pos);
+        $startX = $diagonal >= 0 ? 0 : abs($diagonal);
+        $startY = $diagonal > 0 ? 7 - $diagonal : 7;
+        $end = abs($diagonal);
+
+        for ($x = $startX, $y = $startY; $x !== $end; $x++, $y--) {
+            if ($this->moveValidation(['x' => $x, 'y' => $y])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

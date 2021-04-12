@@ -10,7 +10,7 @@ class Queen extends AbstractChessman
      * @param array $to
      * @return MoveInfo
      */
-    public function canMove(array $to): MoveInfo
+    public function validMoveByRule(array $to): MoveInfo
     {
         $difX = $this->pos['x'] - $to['x'];
         $difY = $this->pos['y'] - $to['y'];
@@ -31,5 +31,15 @@ class Queen extends AbstractChessman
             status: false,
             message: 'You cannot move so'
         ));
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function canMoveSomewhere(): bool
+    {
+        return $this->anyOnMainDiagonal() || $this->anyOnAntiDiagonal() || $this->anyOnHorizontal()
+            || $this->anyOnVertical();
     }
 }

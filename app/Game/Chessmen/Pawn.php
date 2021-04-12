@@ -10,7 +10,7 @@ class Pawn extends AbstractChessman
      * @param array $to
      * @return MoveInfo
      */
-    public function canMove(array $to): MoveInfo
+    public function validMoveByRule(array $to): MoveInfo
     {
         $direction = $this->color === 'white' ? -1 : 1;
 
@@ -88,5 +88,21 @@ class Pawn extends AbstractChessman
     {
         return ($this->color === 'white' && $this->pos['x'] === 6)
             || ($this->color === 'black' && $this->pos['x'] === 1);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function canMoveSomewhere(): bool
+    {
+        $dir = $this->color === 'white' ? -1 : 1;
+
+        $moves = [
+            ['x' => $this->pos['x'] + $dir, 'y' => $this->pos['y']],
+            ['x' => $this->pos['x'] + $dir, 'y' => $this->pos['y'] + 1],
+            ['x' => $this->pos['x'] + $dir, 'y' => $this->pos['y'] - 1],
+        ];
+
+        return $this->canAnyByMoves($moves);
     }
 }

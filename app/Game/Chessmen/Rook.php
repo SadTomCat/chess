@@ -10,7 +10,7 @@ class Rook extends AbstractChessman
      * @param array $to
      * @return MoveInfo
      */
-    public function canMove(array $to): MoveInfo
+    public function validMoveByRule(array $to): MoveInfo
     {
         if ($to['x'] === $this->pos['x']) {
             return $this->createMoveInfo($to, $this->canHorizontal($to));
@@ -24,5 +24,14 @@ class Rook extends AbstractChessman
             status: false,
             message: 'You cannot move so'
         ));
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function canMoveSomewhere(): bool
+    {
+        return $this->anyOnHorizontal() || $this->anyOnVertical();
     }
 }

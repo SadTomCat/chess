@@ -25,15 +25,15 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 0]);
         $this->assertTrue($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -54,20 +54,20 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 1]);
         $this->assertTrue($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 3]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 3]);
         $this->assertFalse($moveInfo->getStatus());
 
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 4]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 5]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 5]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 7]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 6]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 6]);
         $this->assertTrue($moveInfo->getStatus());
 
         $board = GameBoard::createByBoard([
@@ -82,11 +82,11 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 0]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 3]);
-        $moveInfo = $chessman->canMove(['x' => 5, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 5, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -107,23 +107,23 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 0]);
         $this->assertTrue($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 3]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 4]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 5]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 5]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -144,15 +144,15 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 0]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
 
         $board = GameBoard::createByBoard([
@@ -167,7 +167,7 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 6, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -185,13 +185,13 @@ class PawnMoveTest extends TestCase
         ]);
         $chessman = $board->getChessman(['x' => 6, 'y' => 3]);
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 7, 'y' => 3]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 7, 'y' => 3]);
         $this->assertFalse($moveInfo->getStatus());
 
         $board = GameBoard::createByBoard([
@@ -206,22 +206,22 @@ class PawnMoveTest extends TestCase
         ]);
         $chessman = $board->getChessman(['x' => 6, 'y' => 3]);
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 5]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 5]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 0]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 6]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 6]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 7, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 7, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 7, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 7, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -243,15 +243,15 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 0]);
         $this->assertTrue($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -272,20 +272,20 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 1]);
         $this->assertTrue($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 3]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 3]);
         $this->assertFalse($moveInfo->getStatus());
 
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 4]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 5]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 5]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 7]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 6]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 6]);
         $this->assertTrue($moveInfo->getStatus());
 
         $board = GameBoard::createByBoard([
@@ -300,11 +300,11 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 0]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 3]);
-        $moveInfo = $chessman->canMove(['x' => 2, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 2, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -325,23 +325,23 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 0]);
         $this->assertTrue($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 3]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 4]);
-        $moveInfo = $chessman->canMove(['x' => 3, 'y' => 5]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 3, 'y' => 5]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -362,15 +362,15 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 0]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 1]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 2]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
 
         $board = GameBoard::createByBoard([
@@ -385,7 +385,7 @@ class PawnMoveTest extends TestCase
         ]);
 
         $chessman = $board->getChessman(['x' => 1, 'y' => 0]);
-        $moveInfo = $chessman->canMove(['x' => 4, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 4, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
     }
 
@@ -403,13 +403,13 @@ class PawnMoveTest extends TestCase
         ]);
         $chessman = $board->getChessman(['x' => 6, 'y' => 3]);
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 6, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 6, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 7, 'y' => 3]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 7, 'y' => 3]);
         $this->assertFalse($moveInfo->getStatus());
 
         $board = GameBoard::createByBoard([
@@ -424,22 +424,22 @@ class PawnMoveTest extends TestCase
         ]);
         $chessman = $board->getChessman(['x' => 1, 'y' => 3]);
 
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 1]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 1, 'y' => 1]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 5]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 1, 'y' => 5]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 0]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 1, 'y' => 0]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 1, 'y' => 6]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 1, 'y' => 6]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 0, 'y' => 2]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 0, 'y' => 2]);
         $this->assertFalse($moveInfo->getStatus());
 
-        $moveInfo = $chessman->canMove(['x' => 0, 'y' => 4]);
+        $moveInfo = $chessman->validMoveByRule(['x' => 0, 'y' => 4]);
         $this->assertFalse($moveInfo->getStatus());
     }
 }

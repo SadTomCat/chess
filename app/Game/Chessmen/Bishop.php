@@ -10,8 +10,17 @@ class Bishop extends AbstractChessman
      * @param array $to
      * @return MoveInfo
      */
-    public function canMove(array $to): MoveInfo
+    public function validMoveByRule(array $to): MoveInfo
     {
         return $this->createMoveInfo($to, $this->canDiagonal($to));
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function canMoveSomewhere(): bool
+    {
+        return $this->anyOnMainDiagonal() || $this->anyOnAntiDiagonal();
     }
 }
