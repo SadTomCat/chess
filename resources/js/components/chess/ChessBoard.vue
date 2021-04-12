@@ -109,7 +109,7 @@ export default {
             return false;
         };
 
-        const move = (from, to) => {
+        const move = (from, to, type = 'peace') => {
             if (from.x === to.x && from.y === to.y) {
                 return;
             }
@@ -119,6 +119,11 @@ export default {
 
             fromMove.x = -1;
             fromMove.y = -1;
+
+            if (type === 'aisle') {
+                const dir = to.x > from.x ? 1 : -1;
+                board[to.x - dir][to.y] = '';
+            }
         };
 
         const moveHandler = (x, y) => {
@@ -145,12 +150,12 @@ export default {
         };
 
         watch(props.opponentMove, (opponentMove) => {
-            move(opponentMove.from, opponentMove.to);
+            move(opponentMove.from, opponentMove.to, opponentMove.type);
         });
 
         watch(props.moves, (moves) => {
             moves.forEach((el) => {
-                move(el.from, el.to);
+                move(el.from, el.to, el.type);
             });
         });
 

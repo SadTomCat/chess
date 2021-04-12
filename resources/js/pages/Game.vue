@@ -110,6 +110,7 @@ export default {
                 .listen('GameMoveEvent', (move) => {
                     opponentMove.from = move.from;
                     opponentMove.to = move.to;
+                    opponentMove.type = move.type;
                     moveNum.value++;
                     moving.value = false;
                     timeEnded.value = false;

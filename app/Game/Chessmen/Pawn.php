@@ -3,6 +3,7 @@
 namespace App\Game\Chessmen;
 
 use App\Game\MoveInfo;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 class Pawn extends AbstractChessman
 {
@@ -12,7 +13,7 @@ class Pawn extends AbstractChessman
      */
     public function validMoveByRule(array $to): MoveInfo
     {
-        $direction = $this->color === 'white' ? -1 : 1;
+        $dir = $this->color === 'white' ? -1 : 1;
 
         /* Back or only horizontal */
         if (($this->color === 'white' && $this->pos['x'] <= $to['x'])
@@ -21,12 +22,12 @@ class Pawn extends AbstractChessman
         }
 
         /* One x */
-        if (($this->pos['x'] - $to['x'] === -$direction)) {
+        if (($this->pos['x'] - $to['x'] === -$dir)) {
             return $this->createMoveInfo($to, $this->oneX($to));
         }
 
         /* Two x */
-        if (($this->pos['x'] - $to['x'] === -$direction * 2) && $this->pos['y'] === $to['y']) {
+        if (($this->pos['x'] - $to['x'] === -$dir * 2) && $this->pos['y'] === $to['y']) {
             return $this->createMoveInfo($to, $this->twoX($to));
         }
 
@@ -54,6 +55,12 @@ class Pawn extends AbstractChessman
         /* capture */
         if ($difY === -1 || $difY === 1) {
             $toChessman = $this->board->getChessman($to);
+
+            if (($toChessman instanceof NullChessman) && $this->takingOnAisle($to)) {
+                $this->moveType = 'aisle';
+                return true;
+            }
+
             $status = !($toChessman instanceof NullChessman) && $toChessman->getColor() !== $this->color;
             $this->wrongMoveMessage = $status ? '' : 'You can move so if you capture opponent chessman';
 
@@ -62,6 +69,28 @@ class Pawn extends AbstractChessman
 
         $this->wrongMoveMessage = 'You cannot move so';
         return false;
+    }
+
+    /**
+     * Before using this method make sure the $to cell is empty
+     *
+     * @param array $to
+     * @return bool
+     */
+    private function takingOnAisle(array $to): bool
+    {
+        $lastMoveChessman = $this->board->getLastMoveChessman();
+        $lastMoveChessmanPos = $lastMoveChessman->getPosition();
+
+        if (($lastMoveChessman instanceof self) === false || $to['y'] !== $lastMoveChessmanPos['y']) {
+            return false;
+        }
+
+        $lastMove = $this->board->getLastMoveInfo();
+        $lastMoveFrom = $lastMove->getFrom();
+        $lastMoveTo = $lastMove->getTo();
+
+        return abs($lastMoveFrom['x'] - $lastMoveTo['x']) === 2;
     }
 
     /**

@@ -11,6 +11,8 @@ abstract class AbstractChessman
 
     protected string $wrongMoveMessage = '';
 
+    protected string $moveType = '';
+
     public function __construct(
         protected array $pos,
         protected string $color,
@@ -467,6 +469,10 @@ abstract class AbstractChessman
      */
     protected function defineType(array $to): string
     {
+        if ($this->moveType !== '') {
+            return $this->moveType;
+        }
+
         if ($this->board->getChessman($to) instanceof NullChessman) {
             return 'peace';
         }

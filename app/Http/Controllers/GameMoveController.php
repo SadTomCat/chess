@@ -28,15 +28,15 @@ class GameMoveController extends Controller
                 return response()->json($moveInfo->getArrayFailed());
             }
 
-            GameMove::create([
-                'user_id' => $user->id,
-                'game_id' => $game->id,
+            $move = [
                 'type' => $moveInfo->getType(),
                 'from' => $moveInfo->getFrom(),
                 'to' => $moveInfo->getTo(),
-            ]);
+            ];
 
-            broadcast(new GameMoveEvent($token, $request->move));
+            GameMove::create(array_merge(['user_id' => $user->id, 'game_id' => $game->id,], $move));
+
+            broadcast(new GameMoveEvent($token, $move));
 
         } catch (ModelNotFoundException $e) {
             return response()->json([

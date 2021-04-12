@@ -36,6 +36,8 @@ class GameBoard
         '' => NullChessman::class
     ];
 
+    private array $lastMove = [];
+
     /**
      * GameBoard factory.
      * @param Game $game
@@ -156,6 +158,28 @@ class GameBoard
         }
 
         throw (new Exception('King isn\'t exist'));
+    }
+
+    /**
+     * @return MoveInfo
+     */
+    public function getLastMoveInfo(): MoveInfo
+    {
+        return (new MoveInfo(
+           $this->lastMove['type'] ?? '',
+            $this->lastMove['from'] ?? [],
+            $this->lastMove['to'] ?? [],
+        ));
+    }
+
+    /**
+     * @return AbstractChessman
+     */
+    public function getLastMoveChessman(): AbstractChessman
+    {
+        return empty($this->lastMove['to'])
+            ? (new NullChessman([], 'none', $this))
+            : $this->getChessman(['x' => $this->lastMove['to']['x'], 'y' => $this->lastMove['to']['y']]);
     }
 
     /**
@@ -498,8 +522,13 @@ class GameBoard
                 case 'peace':
                     $this->move($move['from'], $move['to']);
                     break;
+                case 'aisle':
+                    $this->aisleMove($move['from'], $move['to']);
+                    break;
             }
         }
+
+        $this->lastMove = $game->moves()->latest()->first(['from', 'to', 'type'])?->toArray() ?? [];
     }
 
     /**
@@ -531,5 +560,18 @@ class GameBoard
     {
         $this->board[$to['x']][$to['y']] = $this->board[$from['x']][$from['y']];
         $this->board[$from['x']][$from['y']] = '';
+    }
+
+    /**
+     * @param array $from
+     * @param array $to
+     */
+    private function aisleMove(array $from, array $to): void
+    {
+        $dir = $to['x'] > $from['x'] ? 1 : -1;
+
+        $this->board[$to['x']][$to['y']] = $this->board[$from['x']][$from['y']];
+        $this->board[$from['x']][$from['y']] = '';
+        $this->board[$to['x'] - $dir][$to['y']] = '';
     }
 }
