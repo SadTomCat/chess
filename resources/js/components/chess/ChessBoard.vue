@@ -124,6 +124,24 @@ export default {
                 const dir = to.x > from.x ? 1 : -1;
                 board[to.x - dir][to.y] = '';
             }
+
+            // At this moment the king is in a needle cell.
+            if (type === 'castling') {
+                let rook;
+                let dir;
+
+                if (to.y === 6) /* short */ {
+                    rook = board[from.x][7];
+                    board[from.x][7] = '';
+                    dir = 1;
+                } else /* long */ {
+                    rook = board[from.x][0];
+                    board[from.x][0] = '';
+                    dir = -1;
+                }
+
+                board[from.x][from.y + dir] = rook;
+            }
         };
 
         const moveHandler = (x, y) => {
@@ -133,8 +151,14 @@ export default {
 
             if (fromMove.x > -1 && fromMove.y > -1) {
                 emit('move', {
-                    from: { x: fromMove.x, y: fromMove.y },
-                    to: { x, y },
+                    from: {
+                        x: fromMove.x,
+                        y: fromMove.y,
+                    },
+                    to: {
+                        x,
+                        y,
+                    },
                 });
 
                 fromMove.x = -1;

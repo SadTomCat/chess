@@ -39,6 +39,24 @@ class GameBoard
     private array $lastMove = [];
 
     /**
+     * k - king, lr - left rook, rr - right rook
+     *
+     * @var array|\bool[][]
+     */
+    private array $castlingAvailable = [
+        'white' => [
+            'k' => true,
+            'lr' => true,
+            'rr' => true,
+        ],
+        'black' => [
+            'k' => true,
+            'lr' => true,
+            'rr' => true,
+        ],
+    ];
+
+    /**
      * GameBoard factory.
      * @param Game $game
      * @return GameBoard
@@ -94,7 +112,7 @@ class GameBoard
         return $this->board;
     }
 
-    public function getAllChessmenByColor($color): array
+    public function getAllChessmenByColor(string $color): array
     {
         $chessmen = [];
 
@@ -145,7 +163,7 @@ class GameBoard
      * @return King
      * @throws Exception
      */
-    public function getKing($color): King
+    public function getKing(string $color): King
     {
         $need = $color === 'white' ? 'K' : 'k';
 
@@ -166,7 +184,7 @@ class GameBoard
     public function getLastMoveInfo(): MoveInfo
     {
         return (new MoveInfo(
-           $this->lastMove['type'] ?? '',
+            $this->lastMove['type'] ?? '',
             $this->lastMove['from'] ?? [],
             $this->lastMove['to'] ?? [],
         ));
@@ -180,6 +198,18 @@ class GameBoard
         return empty($this->lastMove['to'])
             ? (new NullChessman([], 'none', $this))
             : $this->getChessman(['x' => $this->lastMove['to']['x'], 'y' => $this->lastMove['to']['y']]);
+    }
+
+    /**
+     * Check if player can make castling
+     *
+     * @param string $color
+     * @param string $wing - wing for castling can be 'l' or 'r'
+     * @return bool
+     */
+    public function isCastlingAvailable(string $color, string $wing): bool
+    {
+        return $this->castlingAvailable[$color][$wing . 'r'] === true && $this->castlingAvailable[$color]['k'] === true;
     }
 
     /**
@@ -525,9 +555,11 @@ class GameBoard
                 case 'aisle':
                     $this->aisleMove($move['from'], $move['to']);
                     break;
+                case 'castling':
+                    $this->castlingMove($move['from'], $move['to']);
+                    break;
             }
         }
-
         $this->lastMove = $game->moves()->latest()->first(['from', 'to', 'type'])?->toArray() ?? [];
     }
 
@@ -558,6 +590,22 @@ class GameBoard
      */
     private function move(array $from, array $to): void
     {
+        $fromChessmanInLower = lcfirst($this->board[$from['x']][$from['y']]);
+        $color = $fromChessmanInLower === $this->board[$from['x']][$from['y']] ? 'black' : 'white';
+
+        // Castling set
+        switch ($fromChessmanInLower) {
+            case 'k':
+                $this->castlingAvailable[$color]['k'] = false;
+                break;
+            case 'r':
+                if ($from['y'] === 0 || $from['y'] === 7) {
+                    $dir = $from['y'] === 0 ? 'l' : 'r';
+                    $this->castlingAvailable[$color][$dir . 'r'] = false;
+                }
+                break;
+        }
+
         $this->board[$to['x']][$to['y']] = $this->board[$from['x']][$from['y']];
         $this->board[$from['x']][$from['y']] = '';
     }
@@ -573,5 +621,32 @@ class GameBoard
         $this->board[$to['x']][$to['y']] = $this->board[$from['x']][$from['y']];
         $this->board[$from['x']][$from['y']] = '';
         $this->board[$to['x'] - $dir][$to['y']] = '';
+    }
+
+    /**
+     * @param array $from
+     * @param array $to
+     */
+    private function castlingMove(array $from, array $to): void
+    {
+        $color = $from['x'] === 7 ? 'white' : 'black';
+
+        if ($to['y'] === 6) /* short */ {
+            $rook = $this->board[$from['x']][7];
+            $this->board[$from['x']][7] = '';
+            $dir = 1;
+        } else  /* long */ {
+            $rook = $this->board[$from['x']][0];
+            $this->board[$from['x']][0] = '';
+            $dir = -1;
+        }
+
+        // new king cell
+        $this->board[$from['x']][$from['y'] + ($dir * 2)] = $this->board[$from['x']][$from['y']];
+        $this->board[$from['x']][$from['y']] = '';
+
+        // new rook cell
+        $this->board[$from['x']][$from['y'] + $dir] = $rook;
+        $this->castlingAvailable[$color]['k'] = false;
     }
 }

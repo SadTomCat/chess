@@ -15,6 +15,11 @@ class King extends AbstractChessman
         $difX = $this->pos['x'] - $to['x'];
         $difY = $this->pos['y'] - $to['y'];
 
+        // castling
+        if ($difX === 0 && abs($difY) === 2) {
+            return $this->canCastling($to);
+        }
+
         if (!$this->checkToPos($to)) {
             return $this->createMoveInfo($to, false);
         }
@@ -97,5 +102,41 @@ class King extends AbstractChessman
     public function safetyMoveOnAntiDiagonal(array $kingPos): bool
     {
         return false;
+    }
+
+    /**
+     * @param array $to
+     * @return MoveInfo
+     */
+    private function canCastling(array $to): MoveInfo
+    {
+        if (empty($this->inSafety()) === false) {
+            return $this->createMoveInfo($to, false, 'You in check');
+        }
+
+        $wing = $to['y'] === 6 ? 'r' : 'l';
+        $endY = $wing === 'r' ? 6 : 1;
+
+        $toChessman = $this->board->getChessman([
+            'x' => $to['x'],
+            'y' => $endY === 6 ? 7 : 0,
+        ]);
+
+        if (($toChessman instanceof Rook) === false || $this->color !== $toChessman->getColor()) {
+            return $this->createMoveInfo($to, false, 'You can not castling so');
+        }
+
+        if ($this->canHorizontal(['x' => $to['x'], 'y' => $endY]) === false) {
+            return $this->createMoveInfo($to, false, $this->wrongMoveMessage);
+        }
+
+        $isCastlingAvailable = $this->board->isCastlingAvailable($this->color, $wing);
+
+        if ($isCastlingAvailable === true) {
+            $this->moveType = 'castling';
+            return $this->createMoveInfo($to);
+        }
+
+        return $this->createMoveInfo($to, false, 'Castling not available');
     }
 }

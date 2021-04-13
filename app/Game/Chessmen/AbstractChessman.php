@@ -449,6 +449,7 @@ abstract class AbstractChessman
 
     /**
      * Colors of chessman in start position and chessman in 'to' position must be different
+     * or 'to' position are empty
      *
      * @param $to
      * @return bool
