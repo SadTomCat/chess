@@ -15,6 +15,19 @@ use Exception;
 
 class GameBoard
 {
+    private const CASTLING_AVAILABLE_DEFAULT =[
+        'white' => [
+            'k' => true,
+            'lr' => true,
+            'rr' => true,
+        ],
+        'black' => [
+            'k' => true,
+            'lr' => true,
+            'rr' => true,
+        ],
+    ];
+
     private array $board = [
         ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
         ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
@@ -43,18 +56,7 @@ class GameBoard
      *
      * @var array|\bool[][]
      */
-    private array $castlingAvailable = [
-        'white' => [
-            'k' => true,
-            'lr' => true,
-            'rr' => true,
-        ],
-        'black' => [
-            'k' => true,
-            'lr' => true,
-            'rr' => true,
-        ],
-    ];
+    private array $castlingAvailable = self::CASTLING_AVAILABLE_DEFAULT;
 
     /**
      * GameBoard factory.
@@ -75,7 +77,7 @@ class GameBoard
      * @param array $board Should be  8 - x and 8 - y
      * @return null|GameBoard
      */
-    public static function createByBoard(array $board): ?GameBoard
+    public static function createByBoard(array $board, $lastMove = [], $castlingAvailable = []): ?GameBoard
     {
         $instance = new self();
 
@@ -84,6 +86,8 @@ class GameBoard
         }
 
         $instance->board = $board;
+        $instance->lastMove = $lastMove;
+        $instance->castlingAvailable = empty($castlingAvailable) ? self::CASTLING_AVAILABLE_DEFAULT : $castlingAvailable;
 
         return $instance;
     }
@@ -94,14 +98,14 @@ class GameBoard
      * @param $to
      * @return GameBoard|null
      */
-    public function createAfterMove(array $from, $to): ?GameBoard
+    public function createAfterMove(array $from, $to, $lastMove = [], $castlingAvailable = []): ?GameBoard
     {
         $newBoard = $this->board;
 
         $newBoard[$to['x']][$to['y']] = $newBoard[$from['x']][$from['y']];
         $newBoard[$from['x']][$from['y']] = '';
 
-        return static::createByBoard($newBoard);
+        return static::createByBoard($newBoard, $lastMove, $castlingAvailable);
     }
 
     /**
