@@ -3,7 +3,6 @@
 namespace App\Game\Chessmen;
 
 use App\Game\MoveInfo;
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 class Pawn extends AbstractChessman
 {
@@ -44,12 +43,13 @@ class Pawn extends AbstractChessman
     private function oneX(array $to): bool
     {
         $difY = $this->pos['y'] - $to['y'];
+        $lastVertical = $this->color === 'white' ? 0 : 7;
+        $status = false;
 
+        /* peace forward */
         if ($difY === 0) {
             $status = $this->board->getChessman($to) instanceof NullChessman;
             $this->wrongMoveMessage = $status ? '' : 'You can not move because in this cell exist chessman';
-
-            return $status;
         }
 
         /* capture */
@@ -63,12 +63,18 @@ class Pawn extends AbstractChessman
 
             $status = !($toChessman instanceof NullChessman) && $toChessman->getColor() !== $this->color;
             $this->wrongMoveMessage = $status ? '' : 'You can move so if you capture opponent chessman';
-
-            return $status;
         }
 
-        $this->wrongMoveMessage = 'You cannot move so';
-        return false;
+        if ($status === true && $lastVertical === $to['x']) {
+            $this->moveType = 'promotion';
+            return true;
+        }
+
+        if ($status === false && $this->wrongMoveMessage === '') {
+            $this->wrongMoveMessage = 'You cannot move so';
+        }
+
+        return $status;
     }
 
     /**

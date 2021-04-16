@@ -562,8 +562,12 @@ class GameBoard
                 case 'castling':
                     $this->castlingMove($move['from'], $move['to']);
                     break;
+                case 'promotion':
+                    $this->promotionMove($move['from'], $move['to']);
+                    break;
             }
         }
+
         $this->lastMove = $game->moves()->latest()->first(['from', 'to', 'type'])?->toArray() ?? [];
     }
 
@@ -652,5 +656,15 @@ class GameBoard
         // new rook cell
         $this->board[$from['x']][$from['y'] + $dir] = $rook;
         $this->castlingAvailable[$color]['k'] = false;
+    }
+
+    /**
+     * @param array $from
+     * @param array $to
+     */
+    private function promotionMove(array $from, array $to): void
+    {
+        $this->board[$to['x']][$to['y']] = $this->getColor($from) === 'white' ? 'Q' : 'q';
+        $this->board[$from['x']][$from['y']] = '';
     }
 }

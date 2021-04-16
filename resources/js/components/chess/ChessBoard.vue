@@ -142,6 +142,10 @@ export default {
 
                 board[from.x][from.y + dir] = rook;
             }
+
+            if (type === 'promotion') {
+                board[to.x][to.y] = to.x === 0 ? 'Q' : 'q';
+            }
         };
 
         const moveHandler = (x, y) => {
