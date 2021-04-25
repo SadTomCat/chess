@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\GameMoveController;
-use App\Http\Controllers\GameStartController;
+use App\Http\Controllers\UserJoinedToGame;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
 use App\Websockets\IWebsocketManager;
@@ -30,7 +30,7 @@ Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'sub
     ->middleware('auth');
 
 Route::middleware(['auth', 'belongs.game'])->group(function () {
-    Route::post('/game/{token}/join', GameStartController::class);
+    Route::post('/game/{token}/join', UserJoinedToGame::class);
 
     Route::post('/game/{token}/move', GameMoveController::class);
 

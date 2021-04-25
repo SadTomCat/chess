@@ -16,8 +16,9 @@ class CreateGamesTable extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->string('token')->unique();
-            $table->unsignedBigInteger('winner')->nullable();
-            $table->foreign('winner')->on('users')->references('id');
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
+            $table->enum('winner_color', ['white', 'black'])->nullable();
             $table->timestamps();
         });
     }

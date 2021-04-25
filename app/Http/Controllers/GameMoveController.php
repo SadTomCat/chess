@@ -2,52 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\GameMoveEvent;
 use App\Game\MoveValidation;
-use App\Models\GameMove;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Game;
+use App\Models\User;
+use App\Services\GameService;
+use App\Services\MoveTimeEndService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GameMoveController extends Controller
 {
     /**
+     * @var User
+     */
+    private User $user;
+
+    /**
+     * @var Game
+     */
+    private Game $game;
+
+    /**
      * @param Request $request
      * @param string $token
      * @return JsonResponse
+     * @throws Exception
      */
     public function __invoke(Request $request, string $token): JsonResponse
     {
         try {
-            $user = $request->user();
-            $game = $user->getGameByToken($token);
-            $moveValidator = new MoveValidation($user->id, $game, ...$request->move);
+            $this->initial($request, $token);
+
+            if ($this->game->end_at !== null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Game has ended'
+                ]);
+            }
+
+            MoveTimeEndService::softDeleteLast($this->game->id);
+
+            $moveValidator = new MoveValidation($this->user->id, $this->game, ...$request->move);
             $moveInfo = $moveValidator->validate();
 
             if ($moveInfo->getStatus() === false) {
+                MoveTimeEndService::recoveryLast($this->game->id);
                 return response()->json($moveInfo->getArrayFailed());
             }
 
-            $move = [
-                'type' => $moveInfo->getType(),
-                'from' => $moveInfo->getFrom(),
-                'to' => $moveInfo->getTo(),
-            ];
+            GameService::successfulMove($this->game, $this->user, $moveInfo);
 
-            GameMove::create(array_merge(['user_id' => $user->id, 'game_id' => $game->id,], $move));
-
-            broadcast(new GameMoveEvent($token, $move));
-
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Game not exist'
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json(['status' => false]);
+        } catch (Exception $e) {
+            MoveTimeEndService::recoveryLast($this->game->id);
+            return response()->json(['status' => false, 'message' => 'Some thing went wrong']);
         }
 
         return response()->json(['status' => true, 'message' => 'What went wrong']);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $token
+     */
+    private function initial(Request $request, string $token): void
+    {
+        $this->user = $request->user();
+        $this->game = $this->user->getGameByToken($token);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserStatisticsTable extends Migration
+class CreateGameJobs extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateUserStatisticsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_statistics', function (Blueprint $table) {
+        Schema::create('game_jobs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedSmallInteger('wins');
-            $table->unsignedSmallInteger('games');
-            $table->unsignedSmallInteger('not_counted');
-            $table->foreignId('user_id')->constrained();
+            $table->enum('job_type', ['move_time_end']);
+            $table->unsignedBigInteger('job_id');
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->foreignId('game_id')->constrained();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateUserStatisticsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_statistics');
+        Schema::dropIfExists('game_jobs');
     }
 }

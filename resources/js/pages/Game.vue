@@ -105,7 +105,18 @@ export default {
 
                     const user = data.filter((el) => el.id === store.state.user.id);
                     color.value = user[0].color;
-                    await joinedToGameRequest(gameToken);
+
+                    const res = await joinedToGameRequest(gameToken);
+
+                    if (res.status === false) {
+                        return;
+                    }
+
+                    res.moves.forEach((el) => {
+                        moves.push(el);
+                    });
+                    moveNum.value = res.moves.length + 1;
+                    gameStarted = res.gameStarted;
                 })
                 .listen('GameMoveEvent', (move) => {
                     opponentMove.from = move.from;
@@ -115,24 +126,18 @@ export default {
                     moving.value = false;
                     timeEnded.value = false;
                 })
-                .listen('GameIncorrectMoveEvent', (data) => {
-                    console.log(data);
-                })
                 .listen('GameNewMessageEvent', (data) => {
                     messages.push({
                         message: data.message,
                         fromOpponent: true,
                     });
                 })
-                .listen('GameStartEvent', (data) => {
-                    if (gameStarted === false && data.moves !== undefined && moves.length === 0) {
-                        data.moves.forEach((el) => {
-                            moves.push(el);
-                        });
-
-                        moveNum.value = data.moves.length + 1;
-                        gameStarted = true;
-                    }
+                .listen('GameStartEvent', () => {
+                    gameStarted = true;
+                    console.log(gameStarted);
+                })
+                .listen('GameEndEvent', (data) => {
+                    console.log('GameEnd:  ', data);
                 })
                 .error((e) => {
                     console.log(e);

@@ -2,15 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\JoinToGameEvent;
+use App\Events\GameFoundEvent;
 use App\Models\Game;
 use App\Models\User;
-use App\Websockets\IWebsocketManager;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Auth;
 use App\Services\GameVerifyService;
-use function Symfony\Component\Translation\t;
+use App\Websockets\IWebsocketManager;
 
 class JoinToSearchGameListener
 {
@@ -51,8 +47,8 @@ class JoinToSearchGameListener
 
         $token = $this->createGame($userW->id, $userB->id);
 
-        event(new JoinToGameEvent($userW, $token));
-        event(new JoinToGameEvent($userB, $token));
+        event(new GameFoundEvent($userW, $token));
+        event(new GameFoundEvent($userB, $token));
     }
 
     /**

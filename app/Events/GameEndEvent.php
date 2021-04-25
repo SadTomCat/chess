@@ -2,23 +2,25 @@
 
 namespace App\Events;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GameStartEvent implements ShouldBroadcastNow
+class GameEndEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @param string $gameToken
-     * @param array $moves
+     * @return void
      */
-    public function __construct(public string $gameToken)
+    public function __construct(public string $gameToken, public string $winnerColor, public array $move = [])
     {
     }
 
@@ -30,5 +32,10 @@ class GameStartEvent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         return new PresenceChannel('game-' . $this->gameToken);
+    }
+
+    public function broadcastWith()
+    {
+        return ['move' => $this->move, 'winnerColor' => $this->winnerColor];
     }
 }

@@ -66,7 +66,7 @@ export default {
                     disableSearchBtn.value = false;
                     await window.axios.post('/subscribed/search-game');
                 })
-                .listen('JoinToGameEvent', (data) => {
+                .listen('GameFoundEvent', (data) => {
                     window.echo.leave(`search-game-${store.state.user.id}`);
                     router.replace(`/game/${data.gameToken}`);
                 })

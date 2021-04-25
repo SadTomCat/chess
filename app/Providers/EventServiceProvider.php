@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\GameEndEvent;
+use App\Events\GameMoveEvent;
+use App\Events\GameStartEvent;
 use App\Events\JoinToSearchGameEvent;
+use App\Listeners\GameEndListener;
+use App\Listeners\UpdateMoveTimeEndListener;
 use App\Listeners\JoinToSearchGameListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +27,15 @@ class EventServiceProvider extends ServiceProvider
         ],
         JoinToSearchGameEvent::class => [
             JoinToSearchGameListener::class,
+        ],
+        GameStartEvent::class => [
+            UpdateMoveTimeEndListener::class,
+        ],
+        GameMoveEvent::class => [
+            UpdateMoveTimeEndListener::class,
+        ],
+        GameEndEvent::class => [
+            GameEndListener::class,
         ],
     ];
 

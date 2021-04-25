@@ -8,7 +8,5 @@ export default async (token) => {
         };
     }
 
-    return {
-        status: true,
-    };
+    return res.data;
 };

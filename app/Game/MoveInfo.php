@@ -48,6 +48,20 @@ class MoveInfo
     }
 
     /**
+     * Contains type, from, to.
+     *
+     * @return array
+     */
+    public function getMoveArray(): array
+    {
+        return [
+            'type' => $this->getType(),
+            'from' => $this->getFrom(),
+            'to' => $this->getTo(),
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getType(): string
