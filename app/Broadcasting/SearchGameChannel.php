@@ -3,9 +3,8 @@
 namespace App\Broadcasting;
 
 use App\Models\User;
-use App\Services\GameVerifyService;
+use App\Services\GameService;
 use App\Websockets\IWebsocketManager;
-use App\Websockets\PusherManager;
 use Illuminate\Support\Facades\Auth;
 
 class SearchGameChannel
@@ -24,7 +23,7 @@ class SearchGameChannel
         $usersInfo = $manager->getUsers('presence-search-game-' . $id);
         $val = array_values($usersInfo)[0];
         $alreadySearch = array_search($id, $val, true);
-        $notInGame = GameVerifyService::notInGame($user);
+        $notInGame = GameService::notInGame($user);
 
         if (!$logged || $alreadySearch !== false || !$notInGame) {
             return false;

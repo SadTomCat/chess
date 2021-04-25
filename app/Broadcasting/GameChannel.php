@@ -4,7 +4,7 @@ namespace App\Broadcasting;
 
 use App\Models\Game;
 use App\Models\User;
-use App\Services\GameVerifyService;
+use App\Services\GameService;
 
 class GameChannel
 {
@@ -17,7 +17,7 @@ class GameChannel
      */
     public function join(User $user, string $token): bool|array
     {
-        $notInOtherGame = GameVerifyService::notInGame($user, $token);
+        $notInOtherGame = GameService::notInGame($user, $token);
 
         if (!$notInOtherGame) {
             return false;

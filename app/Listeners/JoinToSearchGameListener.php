@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\GameFoundEvent;
 use App\Models\Game;
 use App\Models\User;
-use App\Services\GameVerifyService;
+use App\Services\GameService;
 use App\Websockets\IWebsocketManager;
 
 class JoinToSearchGameListener
@@ -41,7 +41,7 @@ class JoinToSearchGameListener
         $userW = User::find($mapChannels[0]);
         $userB = User::find($mapChannels[1]);
 
-        if (($userW === $userB) || !GameVerifyService::notInGame($userW) || !GameVerifyService::notInGame($userB)) {
+        if (($userW === $userB) || !GameService::notInGame($userW) || !GameService::notInGame($userB)) {
             return;
         }
 
