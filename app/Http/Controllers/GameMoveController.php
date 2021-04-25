@@ -34,13 +34,6 @@ class GameMoveController extends Controller
         try {
             $this->initial($request, $token);
 
-            if ($this->game->end_at !== null) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Game has ended'
-                ]);
-            }
-
             MoveTimeEndService::softDeleteLast($this->game->id);
 
             $moveValidator = new MoveValidation($this->user->id, $this->game, ...$request->move);
@@ -58,7 +51,7 @@ class GameMoveController extends Controller
             return response()->json(['status' => false, 'message' => 'Some thing went wrong']);
         }
 
-        return response()->json(['status' => true, 'message' => 'What went wrong']);
+        return response()->json(['status' => true]);
     }
 
     /**

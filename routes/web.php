@@ -29,7 +29,7 @@ Route::get('/websocket', function (IWebsocketManager $manager) {
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
     ->middleware('auth');
 
-Route::middleware(['auth', 'belongs.game'])->group(function () {
+Route::middleware(['auth', 'belongs.game', 'game.not.ended'])->group(function () {
     Route::post('/game/{token}/join', UserJoinedToGame::class);
 
     Route::post('/game/{token}/move', GameMoveController::class);
