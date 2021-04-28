@@ -1,9 +1,12 @@
 <template>
     <div class="chess-board relative">
         <div class="flex " v-for="i in 8" :key="i">
-            <div class="h-20 w-20 cursor-pointer"
+            <div class="h-20 w-20"
                  v-for="j in 8" :key="j"
-                 :class="cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700'"
+                 :class="[
+                     cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700',
+                     store.getters.CAN_MOVE ? 'cursor-pointer' : '',
+                 ]"
                  @click="moveHandler(i - 1, j - 1)"
             >
                 <p class="chess-board__chessman"
@@ -14,38 +17,22 @@
             </div>
         </div>
 
-        <chess-board-loader v-if="boardLoading"></chess-board-loader>
+        <chess-board-loader v-if="store.getters.BOARD_LOADER_SHOWN"></chess-board-loader>
     </div>
 </template>
 
 <script>
+import { useStore } from 'vuex';
 import { onBeforeUnmount, reactive, watch } from 'vue';
 import ChessBoardLoader from './ChessBoardLoader.vue';
 
 export default {
     name: 'ChessBoard',
 
-    props: {
-        color: {
-            type: String,
-        },
-        moves: {
-            type: Array,
-        },
-        canMove: {
-            type: Boolean,
-        },
-        boardLoading: {
-            type: Boolean,
-        },
-        opponentMove: {
-            type: Object,
-        },
-    },
-
     setup(props, { emit }) {
-        /* Board Settings */
-        const playerColor = props.color;
+        const store = useStore();
+
+        let printFrom = 0;
 
         const chessmenCode = {
             p: '&#9817;',
@@ -86,31 +73,24 @@ export default {
 
         const getChessman = (i, j) => {
             const chessman = board[i - 1][j - 1];
-            let color = 'text-white';
+            let colorClass = 'text-white';
 
             if (chessman === chessman.toLowerCase()) {
-                color = 'text-black';
+                colorClass = 'text-black';
             }
 
-            const code = chessmenCode[chessman.toLowerCase()] ?? '';
+            const chessmanCode = chessmenCode[chessman.toLowerCase()] ?? '';
 
-            return `<span class="${color}">${code}</span>`;
+            return `<span class="${colorClass}">${chessmanCode}</span>`;
         };
 
-        const selectedOwnChessman = (x, y) => {
-            if (playerColor === 'white' && board[x][y].toUpperCase() === board[x][y]) {
-                return true;
-            }
-
-            if (playerColor === 'black' && board[x][y].toLowerCase() === board[x][y]) {
-                return true;
-            }
-
-            return false;
-        };
+        const selectedOwnChessman = (x, y) => (
+            (store.state.game.color === 'white' && board[x][y].toUpperCase() === board[x][y])
+            || (store.state.game.color === 'black' && board[x][y].toLowerCase() === board[x][y])
+        );
 
         const move = (from, to, type = 'peace') => {
-            if (from.x === to.x && from.y === to.y) {
+            if ((from.x === to.x && from.y === to.y) || board[from.x][from.y] === '') {
                 return;
             }
 
@@ -149,7 +129,7 @@ export default {
         };
 
         const moveHandler = (x, y) => {
-            if (!props.canMove) {
+            if (store.getters.CAN_MOVE === false) {
                 return;
             }
 
@@ -177,14 +157,12 @@ export default {
             }
         };
 
-        watch(props.opponentMove, (opponentMove) => {
-            move(opponentMove.from, opponentMove.to, opponentMove.type);
-        });
+        watch(store.state.game.moves, () => {
+            const { moves } = store.state.game;
 
-        watch(props.moves, (moves) => {
-            moves.forEach((el) => {
-                move(el.from, el.to, el.type);
-            });
+            for (printFrom; printFrom < moves.length; printFrom++) {
+                move(moves[printFrom].from, moves[printFrom].to, moves[printFrom].type);
+            }
         });
 
         /* Listener */
@@ -207,6 +185,7 @@ export default {
         });
 
         return {
+            store,
             cellColor,
             board,
             fromMove,

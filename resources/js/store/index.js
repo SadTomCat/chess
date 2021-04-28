@@ -1,8 +1,9 @@
 import { createStore } from 'vuex';
 import userLoggedRequest from '~/api/userLoggedRequest';
+import gameModule from './modules/gameModule';
 
 export default createStore({
-    state: {
+    state: () => ({
         headerActive: true,
 
         user: {
@@ -11,7 +12,7 @@ export default createStore({
             email: '',
             logged: false,
         },
-    },
+    }),
 
     getters: {
         HEADER_ACTIVE: (state) => state.headerActive,
@@ -54,5 +55,9 @@ export default createStore({
                 ? context.commit('UNSET_USER')
                 : context.commit('SET_USER', user);
         },
+    },
+
+    modules: {
+        game: gameModule,
     },
 });

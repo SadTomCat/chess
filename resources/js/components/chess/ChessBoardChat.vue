@@ -5,8 +5,8 @@
         <div class="chess-chat__top">
             <h1>Chat</h1>
             <span class="material-icons chess-chat__icon-btn"
-                  :class="{'text-red-600': opponentMuted}"
-                  @click="opponentMuted = !opponentMuted"
+                  :class="{'text-red-600': store.state.game.chatMute}"
+                  @click="store.commit('SWITCH_CHAT_MUTE')"
             >
                 person_off
             </span>
@@ -15,7 +15,7 @@
         <!-- Chat content -->
         <div class="chess-chat__messages">
             <chess-board-chat-message
-                v-for="(message, index) in messages"
+                v-for="(message, index) in store.state.game.messages"
                 :message="message.message"
                 :fromOpponent="message.fromOpponent"
                 :key="index"
@@ -32,31 +32,21 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 import ChessBoardChatMessage from './ChessBoardChatMessage.vue';
 import sendGameMessage from '~/api/sendGameMessage';
 
 export default {
     name: 'ChessBoardChat',
 
-    props: {
-        opponentName: String,
-
-        opponentMessages: {
-            type: Array,
-        },
-    },
-
-    setup(props) {
+    setup() {
         const route = useRoute();
+        const store = useStore();
+
         const gameToken = route.params.token;
-
-        const opponentMuted = ref(false);
-
         const message = ref('');
-        const messages = reactive([...props.opponentMessages]);
-
         const sending = ref(false);
 
         const sendMessage = async () => {
@@ -69,28 +59,20 @@ export default {
             const res = await sendGameMessage(gameToken, message.value);
 
             if (res.status === true) {
-                messages.push({ message: message.value });
+                store.commit('PUSH_MESSAGE', { message: message.value });
                 message.value = '';
             }
 
             sending.value = false;
         };
 
-        watch(props.opponentMessages, (opponentMessages) => {
-            if (opponentMuted.value === true) {
-                return;
-            }
-
-            const newMessage = opponentMessages[opponentMessages.length - 1];
-            messages.push(newMessage);
-        });
+        /* TODO: add mute */
 
         return {
+            store,
             message,
-            messages,
             sending,
             sendMessage,
-            opponentMuted,
         };
     },
 

@@ -1,33 +1,23 @@
 <template>
     <div class="chess-game-wrapper">
 
-        <div class="chess-game" v-if="showBoard">
+        <div class="chess-game" v-if="store.getters.CAN_SHOW_BOARD">
 
             <!-- Top -->
-            <chess-board-top-panel :canMoveByColor="canMoveByColor"
-                                   :moveNum="moveNum"
-                                   @timeEnded="timeEndedHandler"
-            >
-            </chess-board-top-panel>
+            <chess-board-top-panel></chess-board-top-panel>
 
             <!-- Game -->
             <div class="chess-game__game-and-chat">
                 <!-- Chess board -->
-                <chess-board :color="color"
-                             :moves="moves"
-                             :canMove="canMove"
-                             :boardLoading="boardLoading"
-                             :opponentMove="opponentMove"
-                             @move="moveHandler"
-                >
+                <chess-board @move="moveHandler">
                 </chess-board>
 
                 <!-- Chat -->
-                <chess-board-chat :opponent-messages="messages"></chess-board-chat>
+                <chess-board-chat></chess-board-chat>
             </div>
 
             <!-- Bottom -->
-            <chess-board-bottom :message="errorMessage"></chess-board-bottom>
+            <chess-board-bottom></chess-board-bottom>
         </div>
 
         <div class="chess-game__loading" v-else>
@@ -39,131 +29,59 @@
 
 <script>
 import {
-    onBeforeMount, onBeforeUnmount, ref, reactive, computed,
+    onBeforeMount, onBeforeUnmount,
 } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import ChessBoard from '~/components/chess/ChessBoard.vue';
 import ChessBoardChat from '~/components/chess/ChessBoardChat.vue';
 import ChessBoardTopPanel from '~/components/chess/ChessBoardTopPanel.vue';
 import ChessBoardBottom from '~/components/chess/ChessBoardBottom.vue';
+import gameEventsHelper from '~/helpers/gameEventsHelper';
 import gameMoveRequest from '~/api/gameMoveRequest';
-import joinedToGameRequest from '~/api/joinedToGameRequest';
 
 export default {
     name: 'Game',
 
     setup() {
         const route = useRoute();
-        const router = useRouter();
         const store = useStore();
-        const loading = ref(true);
-        const gameToken = route.params.token;
-        const showBoard = computed(() => !loading.value && store.state.user.logged);
-        const errorMessage = ref('');
-        let gameStarted = false;
 
-        const color = ref('');
+        // Need before component created
+        store.commit('UNSET_GAME');
+        store.commit('SET_GAME_TOKEN', route.params.token);
 
-        const moves = reactive([]);
-
-        const messages = reactive([]);
-
-        const timeEnded = ref(false);
-        const moving = ref(false);
-        const moveNum = ref(0);
-        const boardLoading = computed(() => moveNum.value === 0 || moving.value === true
-            || timeEnded.value === true);
-
-        const canMoveByColor = computed(() => ((color.value === 'white' && moveNum.value % 2 !== 0)
-            || (color.value === 'black' && moveNum.value % 2 === 0)));
-
-        const canMove = computed(() => moveNum.value !== 0 && boardLoading.value === false
-            && canMoveByColor.value === true);
-
-        const opponentMove = reactive({});
+        const gameEvents = gameEventsHelper();
 
         const moveHandler = async (move) => {
-            errorMessage.value = '';
-            moving.value = true;
-            const res = await gameMoveRequest(gameToken, { move });
+            store.commit('SET_MOVE_ERROR_MESSAGE', '');
+            store.commit('SET_MOVE_HANDLING', true);
+            const res = await gameMoveRequest(store.state.game.gameToken, { move });
 
             if (res.status === false) {
-                errorMessage.value = res.message;
-                moving.value = res.status;
+                store.commit('SET_MOVE_ERROR_MESSAGE', res.message);
+                store.commit('SET_MOVE_HANDLING', false);
             }
         };
 
-        const timeEndedHandler = () => {
-            timeEnded.value = true;
-        };
-
         onBeforeMount(async () => {
-            window.echo.join(`game-${gameToken}`)
-                .here(async (data) => {
-                    loading.value = false;
-
-                    const user = data.filter((el) => el.id === store.state.user.id);
-                    color.value = user[0].color;
-
-                    const res = await joinedToGameRequest(gameToken);
-
-                    if (res.status === false) {
-                        return;
-                    }
-
-                    res.moves.forEach((el) => {
-                        moves.push(el);
-                    });
-                    moveNum.value = res.moves.length + 1;
-                    gameStarted = res.gameStarted;
-                })
-                .listen('GameMoveEvent', (move) => {
-                    opponentMove.from = move.from;
-                    opponentMove.to = move.to;
-                    opponentMove.type = move.type;
-                    moveNum.value++;
-                    moving.value = false;
-                    timeEnded.value = false;
-                })
-                .listen('GameNewMessageEvent', (data) => {
-                    messages.push({
-                        message: data.message,
-                        fromOpponent: true,
-                    });
-                })
-                .listen('GameStartEvent', () => {
-                    gameStarted = true;
-                    console.log(gameStarted);
-                })
-                .listen('GameEndEvent', (data) => {
-                    console.log('GameEnd:  ', data);
-                })
-                .error((e) => {
-                    console.log(e);
-                    window.echo.leave(`game-${gameToken}`);
-                    router.replace('/');
-                });
+            window.echo.join(`game-${store.state.game.gameToken}`)
+                .here(gameEvents.here)
+                .listen('GameMoveEvent', gameEvents.newMove)
+                .listen('GameNewMessageEvent', gameEvents.newMessage)
+                .listen('GameStartEvent', gameEvents.gameStarted)
+                .listen('GameEndEvent', gameEvents.gameEnded)
+                .error(gameEvents.echoError);
         });
 
         onBeforeUnmount(() => {
-            window.echo.leave(`game-${gameToken}`);
+            window.echo.leave(`game-${store.state.game.gameToken}`);
+            store.commit('UNSET_GAME');
         });
 
         return {
-            loading,
-            messages,
-            showBoard,
-            color,
-            moves,
-            boardLoading,
-            errorMessage,
-            canMoveByColor,
-            canMove,
             moveHandler,
-            timeEndedHandler,
-            opponentMove,
-            moveNum,
+            store,
         };
     },
 

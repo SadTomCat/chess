@@ -5,19 +5,18 @@
 </template>
 
 <script>
-import { reactive, watch } from 'vue';
+import { useStore } from 'vuex';
+import {
+    computed, reactive, watch,
+} from 'vue';
 import useTimer from '~/helpers/useTimer';
 
 export default {
     name: 'ChessTimer',
 
-    props: {
-        moveNum: {
-            type: Number,
-        },
-    },
-
-    setup(props, { emit }) {
+    setup() {
+        const store = useStore();
+        const currentMoveNum = computed(() => store.state.game.currentMoveNum);
         const { countdown } = useTimer();
 
         const time = reactive({
@@ -25,13 +24,13 @@ export default {
             minutes: 0,
         });
 
-        watch(props, () => {
+        watch(currentMoveNum, () => {
             countdown(120, (timerTime) => {
                 time.minutes = timerTime.minutes;
                 time.seconds = timerTime.seconds;
 
                 if (timerTime.minutes === 0 && timerTime.seconds === 0) {
-                    emit('timeEnded');
+                    store.commit('SET_TIME_ENDED', true);
                 }
             });
         });

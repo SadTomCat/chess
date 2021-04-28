@@ -2,10 +2,10 @@
     <div class="chess-board-top-panel">
         <p>
             <span class="chess-board-top-panel__opponent-name">Moving: </span>
-            {{ canMoveByColor ? 'you' : 'opponent' }}
+            {{ $store.getters.CAN_MOVE_BY_COLOR ? 'you' : 'opponent' }}
         </p>
 
-        <chess-timer :moveNum="moveNum" @timeEnded="$emit('timeEnded')"></chess-timer>
+        <chess-timer></chess-timer>
     </div>
 </template>
 
@@ -14,11 +14,6 @@ import ChessTimer from './ChessTimer.vue';
 
 export default {
     name: 'ChessBoardTopPanel',
-
-    props: {
-        canMoveByColor: Boolean,
-        moveNum: Number,
-    },
 
     components: { ChessTimer },
 };
