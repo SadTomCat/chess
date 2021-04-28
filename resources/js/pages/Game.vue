@@ -24,11 +24,15 @@
             <h1>Connection...</h1>
         </div>
 
+        <teleport to="body">
+            <chess-win-or-lose-pop-up :isWin="isWin" v-if="store.state.game.gameEnded"></chess-win-or-lose-pop-up>
+        </teleport>
     </div>
 </template>
 
 <script>
 import {
+    computed,
     onBeforeMount, onBeforeUnmount,
 } from 'vue';
 import { useRoute } from 'vue-router';
@@ -39,6 +43,7 @@ import ChessBoardTopPanel from '~/components/chess/ChessBoardTopPanel.vue';
 import ChessBoardBottom from '~/components/chess/ChessBoardBottom.vue';
 import gameEventsHelper from '~/helpers/gameEventsHelper';
 import gameMoveRequest from '~/api/gameMoveRequest';
+import ChessWinOrLosePopUp from '~/components/chess/ChessWinOrLosePopUp.vue';
 
 export default {
     name: 'Game',
@@ -50,6 +55,11 @@ export default {
         // Need before component created
         store.commit('UNSET_GAME');
         store.commit('SET_GAME_TOKEN', route.params.token);
+
+        const isWin = computed(() => (
+            (store.state.game.color === 'white' && store.state.game.currentMoveNum % 2 === 0)
+            || (store.state.game.color === 'black' && store.state.game.currentMoveNum % 2 !== 0)
+        ));
 
         const gameEvents = gameEventsHelper();
 
@@ -82,6 +92,7 @@ export default {
         return {
             moveHandler,
             store,
+            isWin,
         };
     },
 
@@ -90,6 +101,7 @@ export default {
         ChessBoardChat,
         ChessBoardTopPanel,
         ChessBoardBottom,
+        ChessWinOrLosePopUp,
     },
 };
 </script>
