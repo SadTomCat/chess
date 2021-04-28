@@ -31,7 +31,8 @@ class GameService
             return;
         }
 
-        broadcast(new GameMoveEvent($token, $move));
+        $endAt = (int)date('U') + 122;
+        broadcast(new GameMoveEvent($token, $move, $endAt));
     }
 
     /**

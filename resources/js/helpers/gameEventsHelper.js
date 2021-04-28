@@ -14,15 +14,21 @@ export default () => {
         const res = await joinedToGameRequest(store.state.game.gameToken);
 
         if (res.status === false) {
+            await router.replace('/');
             return;
+        }
+
+        if (res.gameStarted === true && res.endAt !== undefined && res.endAt !== 0) {
+            store.commit('SET_MOVE_END_AT', res.endAt);
         }
 
         store.commit('SET_MOVES', res.moves);
         store.commit('SET_GAME_STARTED', res.gameStarted);
     };
 
-    const newMove = (move) => {
-        store.commit('PUSH_MOVE', move);
+    const newMove = (data) => {
+        store.commit('SET_MOVE_END_AT', data.endAt);
+        store.commit('PUSH_MOVE', data.move);
         store.commit('SET_MOVE_HANDLING', false);
         store.commit('SET_TIME_ENDED', false);
     };
@@ -34,7 +40,8 @@ export default () => {
         });
     };
 
-    const gameStarted = () => {
+    const gameStarted = (data) => {
+        store.commit('SET_MOVE_END_AT', data.endAt);
         store.commit('SET_GAME_STARTED', true);
     };
 

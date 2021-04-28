@@ -5,6 +5,7 @@ export default {
         gameStarted: false,
         gameEnded: false,
         moves: [],
+        moveEndAt: 0,
         messages: [],
         chatMute: false,
         moveHandling: false,
@@ -12,6 +13,7 @@ export default {
         color: '',
         timeEnded: false,
         moveErrorMessage: '',
+        timerStarted: false,
     }),
 
     getters: {
@@ -20,7 +22,8 @@ export default {
         },
 
         BOARD_LOADER_SHOWN(state) {
-            return state.currentMoveNum === 0 || state.moveHandling === true || state.timeEnded === true;
+            return state.currentMoveNum === 0 || state.moveHandling === true || state.timeEnded === true
+                || state.timerStarted === false;
         },
 
         CAN_MOVE_BY_COLOR(state) {
@@ -71,13 +74,22 @@ export default {
             });
         },
 
+        SET_MOVE_END_AT(state, payload) {
+            state.moveEndAt = payload > 0 ? payload : 0;
+        },
+
         PUSH_MOVE(state, payload) {
             state.currentMoveNum++;
             state.moves.push(payload);
         },
 
         SET_TIME_ENDED(state, payload) {
+            state.timerStarted = false;
             state.timeEnded = payload;
+        },
+
+        SET_TIMER_STARTED(state, payload) {
+            state.timerStarted = payload;
         },
 
         PUSH_MESSAGE(state, payload) {
@@ -108,6 +120,7 @@ export default {
             state.color = '';
             state.timeEnded = false;
             state.moveErrorMessage = '';
+            state.timerStarted = false;
         },
     },
 };

@@ -6,6 +6,8 @@ use App\Http\Controllers\UserJoinedToGame;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
 use App\Websockets\IWebsocketManager;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,6 +30,10 @@ Route::get('/websocket', function (IWebsocketManager $manager) {
 
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
     ->middleware('auth');
+
+Route::post('/get-time', function() {
+    return response()->json(['time' => date('U')]);
+});
 
 Route::middleware(['auth', 'belongs.game', 'game.not.ended'])->group(function () {
     Route::post('/game/{token}/join', UserJoinedToGame::class);

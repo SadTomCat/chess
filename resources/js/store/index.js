@@ -6,6 +6,8 @@ export default createStore({
     state: () => ({
         headerActive: true,
 
+        timeDifference: 0,
+
         user: {
             id: '',
             name: '',

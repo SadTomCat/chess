@@ -13,7 +13,7 @@ class GameMove extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'game_id', 'type', 'from', 'to'];
+    protected $fillable = ['user_id', 'game_id', 'type', 'from', 'to', 'created_at'];
 
     protected $casts = [
         'from' => 'array',

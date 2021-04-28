@@ -18,7 +18,7 @@ class GameStartEvent implements ShouldBroadcastNow
      * @param string $gameToken
      * @param array $moves
      */
-    public function __construct(public string $gameToken)
+    public function __construct(public string $gameToken, public int $endAt)
     {
     }
 
@@ -30,5 +30,10 @@ class GameStartEvent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         return new PresenceChannel('game-' . $this->gameToken);
+    }
+
+    public function broadcastWith()
+    {
+        return ['endAt' => $this->endAt];
     }
 }

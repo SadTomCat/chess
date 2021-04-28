@@ -18,9 +18,8 @@ class GameMoveEvent implements ShouldBroadcastNow
      * @param string $gameToken
      * @param array $move
      */
-    public function __construct(public string $gameToken, public array $move)
+    public function __construct(public string $gameToken, public array $move, public int $endAt)
     {
-        //
     }
 
     /**
@@ -38,6 +37,6 @@ class GameMoveEvent implements ShouldBroadcastNow
      */
     public function broadcastWith(): array
     {
-        return $this->move;
+        return ['move' => $this->move, 'endAt' => $this->endAt];
     }
 }
