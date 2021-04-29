@@ -11,6 +11,10 @@ class MoveValidation
 
     public const IN_CHECK = 'Your king in check';
 
+    public const INCORRECT_RANGE = 'You try to move out of the board range';
+
+    private bool $rangeValidationStatus = true;
+
     private AbstractChessman $fromChessman;
 
     private GameBoard $board;
@@ -25,6 +29,12 @@ class MoveValidation
         private array $from,
         private array $to)
     {
+        $this->validateRanges($this->from, $this->to);
+
+        if ($this->rangeValidationStatus === false) {
+            return;
+        }
+
         $this->board = GameBoard::createByGame($game);
         $this->fromChessman = $this->board->getChessman($from);
 
@@ -44,6 +54,10 @@ class MoveValidation
      */
     public function validate(): MoveInfo
     {
+        if ($this->rangeValidationStatus === false) {
+            return (new MoveInfo(status: false, message: self::INCORRECT_RANGE));
+        }
+
         // checks if it is the player's turn to make a move
         if (($this->countMove % 2 === 0 && $this->color === 'black') || ($this->countMove % 2 !== 0 && $this->color === 'white')
             || $this->color !== $this->fromChessman->getColor()) {
@@ -57,6 +71,18 @@ class MoveValidation
         }
 
         return $this->validAfterMove($moveInfo);
+    }
+
+    /**
+     * @param array $from
+     * @param array $to
+     */
+    private function validateRanges(array $from, array $to): void
+    {
+        if ($from['x'] > 7 || $from['x'] < 0 || $from['y'] > 7 || $from['y'] < 0 || $to['x'] > 7 || $to['x'] < 0
+            || $to['y'] > 7 || $to['y'] < 0) {
+            $this->rangeValidationStatus = false;
+        }
     }
 
     /**
