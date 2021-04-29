@@ -2,18 +2,18 @@
     <auth-card :title="'Login'" :actionBtnName="'login'" @authAction="loginHandler">
 
         <!-- Email input  -->
-        <div class="auth__input-wrapper login__email-block">
+        <auth-input-wrapper class="login__email-block">
             <label for="email">email</label>
             <input id="email" type="email" placeholder="email" v-model="userInput.email">
             <p class="auth__error-message">{{ inputError.email }}</p>
-        </div>
+        </auth-input-wrapper>
 
         <!-- Password input  -->
-        <div class="auth__input-wrapper login__password-block">
+        <auth-input-wrapper class="login__email-block">
             <label for="password">password</label>
             <input id="password" type="password" placeholder="password" v-model="userInput.password">
             <p class="auth__error-message">{{ inputError.password }}</p>
-        </div>
+        </auth-input-wrapper>
 
         <!--  Remember me and forgot password      -->
         <div class="login__remember-and-forgot">
@@ -38,11 +38,10 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import AuthCard from '~/components/AuthCard.vue';
 import loginRequest from '~/api/loginRequest';
+import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {
     name: 'Login',
-
-    components: { AuthCard },
 
     setup() {
         const router = useRouter();
@@ -89,6 +88,8 @@ export default {
             inputError,
         };
     },
+
+    components: { AuthCard, AuthInputWrapper },
 };
 </script>
 

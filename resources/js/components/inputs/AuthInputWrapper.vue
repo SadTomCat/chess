@@ -1,3 +1,16 @@
+<template>
+    <div class="auth__input-wrapper">
+        <slot></slot>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'AuthInputWrapper',
+};
+</script>
+
+<style lang="scss">
 .auth__input-wrapper {
     @apply w-full;
 
@@ -11,3 +24,5 @@
         @apply block font-medium text-sm text-gray-700;
     }
 }
+
+</style>

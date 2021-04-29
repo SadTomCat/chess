@@ -15,12 +15,12 @@
             </p>
 
             <!-- Input -->
-            <div class="relative forgot-password__input-block auth__input-wrapper">
+            <auth-input-wrapper class="forgot-password__input-block">
                 <label for="email">email</label>
                 <input id="email" type="email" placeholder="email" v-model.trim="email" :disabled="disabled">
                 <p class="forgot-password__error">{{ error }}</p>
                 <p class="forgot-password__successful">{{ successful }}</p>
-            </div>
+            </auth-input-wrapper>
 
             <!-- Buttons menu -->
             <div class="forgot-password__button-block">
@@ -39,6 +39,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import forgotPasswordRequest from '~/api/forgotPasswordRequest';
+import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {
     name: 'ForgotPassword',
@@ -83,6 +84,8 @@ export default {
             router,
         };
     },
+
+    components: { AuthInputWrapper },
 };
 </script>
 
@@ -117,7 +120,7 @@ export default {
 }
 
 .forgot-password__input-block {
-    @apply flex flex-col space-y-1 text-sm pb-6;
+    @apply flex flex-col relative space-y-1 text-sm pb-6;
 
     .forgot-password__successful, .forgot-password__error {
         @apply absolute bottom-0;
@@ -136,7 +139,7 @@ export default {
     @apply flex justify-end;
 
     button {
-        @apply uppercase py-2 px-7 text-sm text-white rounded-full bg-gray-700;
+        @apply outline-none uppercase py-2 px-7 text-sm text-white rounded-full bg-gray-700;
     }
 }
 </style>

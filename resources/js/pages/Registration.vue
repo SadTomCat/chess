@@ -2,7 +2,7 @@
     <auth-card :title="'Registration'" :actionBtnName="'register'" @authAction="registerHandler">
 
         <div class="registration__top">
-            <div class="auth__input-wrapper">
+            <auth-input-wrapper>
                 <label for="email">email</label>
                 <input id="email"
                        type="email"
@@ -11,10 +11,10 @@
                        @input="inputError.email = ''"
                 >
 
-                <p class="auth__error-message">{{inputError.email}}</p>
-            </div>
+                <p class="auth__error-message">{{ inputError.email }}</p>
+            </auth-input-wrapper>
 
-            <div class="auth__input-wrapper">
+            <auth-input-wrapper>
                 <label for="name">name</label>
                 <input
                     id="name"
@@ -23,12 +23,12 @@
                     v-model="userInput.name"
                     @input="inputError.name = ''"
                 >
-                <p class="auth__error-message">{{inputError.name}}</p>
-            </div>
+                <p class="auth__error-message">{{ inputError.name }}</p>
+            </auth-input-wrapper>
         </div>
 
         <div class="registration__bottom">
-            <div class="auth__input-wrapper">
+            <auth-input-wrapper>
                 <label for="password">password</label>
                 <input id="password"
                        type="password"
@@ -36,17 +36,17 @@
                        v-model="userInput.password"
                        @input="inputError.password = ''"
                 >
-                <p class="auth__error-message">{{inputError.password}}</p>
-            </div>
+                <p class="auth__error-message">{{ inputError.password }}</p>
+            </auth-input-wrapper>
 
-            <div class="auth__input-wrapper">
+            <auth-input-wrapper>
                 <label for="confirm-password">confirm password</label>
                 <input id="confirm-password"
                        type="password"
                        placeholder="confirm password"
                        v-model="userInput.password_confirmation"
                 >
-            </div>
+            </auth-input-wrapper>
         </div>
 
     </auth-card>
@@ -58,11 +58,10 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import AuthCard from '~/components/AuthCard.vue';
 import registerRequest from '~/api/registerRequest';
+import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {
     name: 'Registration',
-
-    components: { AuthCard },
 
     setup() {
         const router = useRouter();
@@ -109,8 +108,14 @@ export default {
             await router.replace('/');
         };
 
-        return { registerHandler, userInput, inputError };
+        return {
+            registerHandler,
+            userInput,
+            inputError,
+        };
     },
+
+    components: { AuthCard, AuthInputWrapper },
 };
 </script>
 
