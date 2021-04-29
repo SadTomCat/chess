@@ -91,7 +91,7 @@ export default {
 
 <style lang="scss">
 .forgot-password__wrapper {
-    @apply flex justify-center items-center h-screen w-screen bg-gray-100;
+    @apply flex justify-center items-center h-screen w-screen;
 }
 
 .forgot-password__card {

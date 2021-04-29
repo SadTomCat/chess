@@ -4,7 +4,7 @@
 
         </header-block>
 
-        <main class="h-full">
+        <main class="h-full bg-gray-100">
             <router-view></router-view>
         </main>
     </div>

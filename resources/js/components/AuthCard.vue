@@ -13,7 +13,7 @@
 
                 <!-- Button menu -->
                 <div class="auth-card__btn-menu">
-                    <button class="auth-card__back-btn" @click.prevent="$router.back()">back</button>
+                    <button class="auth-card__main-page-btn" @click.prevent="$router.replace('/')">main page</button>
 
                     <button class="auth-card__action-btn" type="submit" @click.prevent="$emit('authAction')">
                         {{ actionBtnName }}
@@ -49,6 +49,7 @@ export default {
 }
 
 .auth-card {
+    @apply bg-white;
     width: 33%;
 
     form {
@@ -72,7 +73,7 @@ export default {
             @apply shadow-md rounded-full focus:outline-none;
         }
 
-        .auth-card__back-btn {
+        .auth-card__main-page-btn {
             @apply mr-4;
             @apply hover:bg-gray-200;
         }
