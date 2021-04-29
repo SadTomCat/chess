@@ -12,7 +12,11 @@
 
                 <p class="settings-card__user-email">Email: {{ editedFields.email }}</p>
 
-                <p class="settings-card__error-message">{{ errors.message }}</p>
+                <div class="settings-card__change-result-message">
+                    <p class="settings-card__error-message">{{ errors.message }}</p>
+                    <p class="settings-card__successful-message" v-if="isChangeSuccessful">Changes have been
+                        successful.</p>
+                </div>
 
                 <form>
 
@@ -86,6 +90,7 @@ export default {
         const store = useStore();
 
         const disabled = ref(true);
+        const isChangeSuccessful = ref(false);
 
         /* Errors */
         const errors = reactive({
@@ -197,13 +202,14 @@ export default {
             clearErrors();
             editing.value = false;
             disabled.value = true;
+            isChangeSuccessful.value = false;
         };
 
         const saveHandler = async () => {
             disabled.value = true;
             clearErrors();
 
-            if (!fieldsValid()) {
+            if (fieldsValid() === false) {
                 disabled.value = false;
                 return;
             }
@@ -212,25 +218,28 @@ export default {
 
             if (Object.keys(fields).length === 1) {
                 disabled.value = false;
+                isChangeSuccessful.value = false;
                 errors.message = 'You have nothing edited';
                 return;
             }
 
             const res = await settingsRequest(fields);
 
-            if (!res.status) {
+            clearPasswordInputs();
+            if (res.status === false) {
                 printErrors(res.errors);
                 disabled.value = false;
                 return;
             }
 
             store.commit('UPDATE_USER', fields);
-
+            isChangeSuccessful.value = true;
             disabled.value = false;
         };
 
         return {
             disabled,
+            isChangeSuccessful,
             errors,
             editing,
             editedFields,
@@ -283,9 +292,16 @@ export default {
             @apply block font-medium text-sm text-gray-700;
         }
     }
+    &__change-result-message {
+        @apply relative h-8;
 
-    &__error-message {
-        @apply text-red-600;
+        .settings-card__error-message {
+            @apply text-red-600 text-xl;
+        }
+
+        .settings-card__successful-message {
+            @apply text-green-600 text-xl;
+        }
     }
 
     &__input-error {
