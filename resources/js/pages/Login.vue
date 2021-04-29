@@ -94,11 +94,11 @@ export default {
 
 <style lang="scss">
 .login__email-block, .login__remember-block {
-    @apply mb-10;
+    @apply mb-12;
 }
 
 .login__password-block {
-    @apply mb-10;
+    @apply mb-12;
 }
 
 .login__remember-and-forgot {

@@ -116,10 +116,10 @@ export default {
 
 <style>
 .registration__top {
-    @apply flex space-x-7 mb-10;
+    @apply flex space-x-7 mb-12;
 }
 
 .registration__bottom {
-    @apply space-y-10 mb-10;
+    @apply space-y-10 mb-12;
 }
 </style>
