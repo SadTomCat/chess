@@ -4,7 +4,7 @@
 
             <!-- Header -->
             <div class="forgot-password__header">
-                <span class="material-icons forgot-password-header__back" @click="router.back()">arrow_back_ios</span>
+                <span class="material-icons forgot-password-header__back" @click="backHandler">arrow_back_ios</span>
                 <h1>Forgot password</h1>
             </div>
 
@@ -53,6 +53,10 @@ export default {
         const error = ref('');
         const successful = ref('');
 
+        const backHandler = () => {
+            router.replace('/login');
+        };
+
         const sendResetLink = async () => {
             error.value = '';
             successful.value = '';
@@ -73,6 +77,7 @@ export default {
             email,
             sendResetLink,
             disabled,
+            backHandler,
             error,
             successful,
             router,
