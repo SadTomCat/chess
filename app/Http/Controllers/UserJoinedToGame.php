@@ -41,6 +41,7 @@ class UserJoinedToGame extends Controller
 
             $gameStartedCheckTime = $game->created_at->timestamp + GameTimings::GAME_STARTED_CHECK;
 
+            // The Game starts if the user connects within 30 seconds after creating the game.
             if (date('U') <= $gameStartedCheckTime - 1) {
                 $endAt = (int)date('U') + GameTimings::MOVE_TIME_WITH_DELAY;
                 $game->update(['start_at' => date('Y-m-d H:i:s')]);

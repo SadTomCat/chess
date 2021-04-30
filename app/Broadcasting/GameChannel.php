@@ -11,7 +11,7 @@ class GameChannel
     /**
      * Authenticate the user's access to the channel.
      *
-     * @param \App\Models\User $user
+     * @param User $user
      * @param string $token
      * @return array|bool
      */
@@ -23,13 +23,9 @@ class GameChannel
             return false;
         }
 
-        $game = Game::where('token', '=', $token)->first();
+        $game = Game::getGameByToken($token);
 
-        if ($game === null) {
-            return false;
-        }
-
-        $exists = $game->users()->get()->find($user->id);
+        $exists = $game->users->find($user->id);
 
         if ($exists === null) {
             return false;

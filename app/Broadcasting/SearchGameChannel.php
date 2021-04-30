@@ -12,9 +12,9 @@ class SearchGameChannel
     /**
      * Authenticate the user's access to the channel.
      *
-     * @param \App\Models\User $user
+     * @param User $user
+     * @param $id
      * @return array|bool
-     * @throws \App\Exceptions\WebsocketControlException
      */
     public function join(User $user, $id)
     {

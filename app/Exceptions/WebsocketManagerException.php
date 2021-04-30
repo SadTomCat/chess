@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class WebsocketControlException extends Exception
+class WebsocketManagerException extends Exception
 {
     //
 }

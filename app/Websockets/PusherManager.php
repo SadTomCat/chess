@@ -3,7 +3,7 @@
 
 namespace App\Websockets;
 
-use App\Exceptions\WebsocketControlException;
+use App\Exceptions\WebsocketManagerException;
 use Pusher\ApiErrorException;
 use Pusher\Pusher;
 use Pusher\PusherException;
@@ -34,7 +34,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param string $prefix
      * @return array
-     * @throws WebsocketControlException
+     * @throws WebsocketManagerException
      */
     public function getAllChannels(string $prefix = ''): array
     {
@@ -47,7 +47,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param string $prefix
      * @return array
-     * @throws WebsocketControlException
+     * @throws WebsocketManagerException
      */
     public function getAllPrivateChannels(string $prefix = ''): array
     {
@@ -60,7 +60,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param string $prefix
      * @return array
-     * @throws WebsocketControlException
+     * @throws WebsocketManagerException
      */
     public function getAllPresenceChannels(string $prefix = ''): array
     {
@@ -73,7 +73,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param array|string $channels
      * @return array
-     * @throws WebsocketControlException
+     * @throws WebsocketManagerException
      */
     public function getChannelsInfo(string|array $channels): array
     {
@@ -96,7 +96,7 @@ class PusherManager implements IWebsocketManager
             }
 
         } catch (PusherException | ApiErrorException $e) {
-            throw new WebsocketControlException('Exception in pusher', 500);
+            throw new WebsocketManagerException('Exception in pusher', 500);
         }
 
         return $channelsInfo;
@@ -105,7 +105,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param array|string $channels
      * @return array
-     * @throws WebsocketControlException
+     * @throws WebsocketManagerException
      */
     public function getUsers(string|array $channels): array
     {
@@ -122,7 +122,7 @@ class PusherManager implements IWebsocketManager
             }
 
         } catch (ApiErrorException | PusherException $e) {
-            throw new WebsocketControlException('Exception in pusher', 500);
+            throw new WebsocketManagerException('Exception in pusher', 500);
         }
 
         return $userInfoByChannel;
@@ -132,7 +132,7 @@ class PusherManager implements IWebsocketManager
      * @param string $type
      * @param string $prefix
      * @return array
-     * @throws WebsocketControlException
+     * @throws WebsocketManagerException
      */
     private function getChannelsByChannelType(string $type = '', string $prefix = ''): array
     {
@@ -143,7 +143,7 @@ class PusherManager implements IWebsocketManager
             $channels = (array)$this->conn->get_channels(['filter_by_prefix' => $fullPrefix]);
 
         } catch (PusherException | ApiErrorException $e) {
-            throw new WebsocketControlException('Exception in pusher', 500);
+            throw new WebsocketManagerException('Exception in pusher', 500);
         }
 
         return $channels;
