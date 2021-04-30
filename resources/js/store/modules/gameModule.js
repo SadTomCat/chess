@@ -38,7 +38,7 @@ export default {
     },
 
     mutations: {
-        SET_PAGE_LOADING(state, payload) {
+        SET_GAME_PAGE_LOADING(state, payload) {
             state.pageLoading = payload;
         },
 

@@ -7,7 +7,7 @@ export default () => {
     const router = useRouter();
 
     const here = async (data) => {
-        store.commit('SET_PAGE_LOADING', false);
+        store.commit('SET_GAME_PAGE_LOADING', false);
 
         const user = data.filter((el) => el.id === store.state.user.id);
         store.commit('SET_COLOR', user[0].color);
