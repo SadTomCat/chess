@@ -53,6 +53,10 @@ export default () => {
         store.commit('SET_GAME_ENDED', true);
     };
 
+    const gameNotStarted = () => {
+        router.replace('/');
+    };
+
     const echoError = (e) => {
         console.log(e);
         window.echo.leave(`game-${store.state.game.gameToken}`);
@@ -65,6 +69,7 @@ export default () => {
         newMessage,
         gameStarted,
         gameEnded,
+        gameNotStarted,
         echoError,
     };
 };

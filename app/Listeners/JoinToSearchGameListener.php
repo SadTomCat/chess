@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\GameFoundEvent;
+use App\Jobs\GameStartedCheckJob;
 use App\Models\Game;
 use App\Models\User;
 use App\Services\GameService;
@@ -49,6 +50,7 @@ class JoinToSearchGameListener
 
         event(new GameFoundEvent($userW, $token));
         event(new GameFoundEvent($userB, $token));
+        dispatch(new GameStartedCheckJob($token));
     }
 
     /**

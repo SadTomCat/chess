@@ -69,7 +69,7 @@ class User extends Authenticatable
      */
     public function getGameByToken($token): Game
     {
-        $game = $this->games->where('token', $token)->first();
+        $game = $this->games()->where('token', $token)->first();
 
         if ($game === null) {
             throw new ModelNotFoundException();

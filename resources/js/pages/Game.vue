@@ -81,6 +81,7 @@ export default {
                 .listen('GameNewMessageEvent', gameEvents.newMessage)
                 .listen('GameStartEvent', gameEvents.gameStarted)
                 .listen('GameEndEvent', gameEvents.gameEnded)
+                .listen('GameNotStartedEvent', gameEvents.gameNotStarted)
                 .error(gameEvents.echoError);
         });
 

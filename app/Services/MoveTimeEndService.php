@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Game\GameTimings;
 use App\Models\GameJob;
 use DB;
 use Exception;
@@ -25,7 +26,7 @@ class MoveTimeEndService
      */
     public static function push(int $gameId, $serializedJob, $data = ''): bool
     {
-        $delay = $serializedJob->delay ?? 0;
+        $delay = $serializedJob->delay ?? GameTimings::JOB_GAME_DELAY;
         $newJobId = Queue::later($delay, $serializedJob, $data);
 
         if ($newJobId === null) {

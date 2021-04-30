@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\GameEndEvent;
 use App\Events\GameMoveEvent;
+use App\Game\GameTimings;
 use App\Game\MoveInfo;
 use App\Models\Game;
 use App\Models\GameMove;
@@ -31,7 +32,7 @@ class GameService
             return;
         }
 
-        $endAt = (int)date('U') + 122;
+        $endAt = (int)date('U') + GameTimings::MOVE_TIME_WITH_DELAY;
         broadcast(new GameMoveEvent($token, $move, $endAt));
     }
 

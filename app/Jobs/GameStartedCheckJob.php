@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Events\GameEndEvent;
+use App\Events\GameNotStartedEvent;
 use App\Game\GameTimings;
 use App\Models\Game;
 use Illuminate\Bus\Queueable;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class MoveTimeEndJob implements ShouldQueue
+class GameStartedCheckJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,9 +20,9 @@ class MoveTimeEndJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public Game $game)
+    public function __construct(public string $gameToken)
     {
-        $this->delay = GameTimings::JOB_GAME_DELAY;
+        $this->delay = GameTimings::GAME_STARTED_CHECK;
     }
 
     /**
@@ -32,10 +32,10 @@ class MoveTimeEndJob implements ShouldQueue
      */
     public function handle()
     {
-        $lastMoveUserId = $this->game->moves()->latest()->first(['user_id'])?->user_id;
+        $game = Game::getGameByToken($this->gameToken);
 
-        $winner = $lastMoveUserId === null ? 'black' : $this->game->getUserColor($lastMoveUserId);
-
-        event(new GameEndEvent($this->game->token, $winner));
+        if ($game->start_at === null) {
+            broadcast(new GameNotStartedEvent($this->gameToken));
+        }
     }
 }
