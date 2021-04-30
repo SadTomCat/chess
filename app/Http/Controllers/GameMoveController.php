@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Game\MoveValidation;
+use App\Http\Requests\GameMoveRequest;
 use App\Models\Game;
 use App\Models\User;
 use App\Services\GameService;
@@ -24,12 +25,12 @@ class GameMoveController extends Controller
     private Game $game;
 
     /**
-     * @param Request $request
+     * @param GameMoveRequest $request
      * @param string $token
      * @return JsonResponse
      * @throws Exception
      */
-    public function __invoke(Request $request, string $token): JsonResponse
+    public function __invoke(GameMoveRequest $request, string $token): JsonResponse
     {
         try {
             $this->initial($request, $token);
