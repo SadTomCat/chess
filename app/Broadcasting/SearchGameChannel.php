@@ -25,7 +25,7 @@ class SearchGameChannel
         $alreadySearch = array_search($id, $val, true);
         $notInGame = GameService::notInGame($user);
 
-        if (!$logged || $alreadySearch !== false || !$notInGame) {
+        if ($logged === false || $alreadySearch !== false || $notInGame === false) {
             return false;
         }
 
