@@ -21,17 +21,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*
- * Route for test, need only while develop
- * */
-Route::get('/websocket', function (IWebsocketManager $manager) {
-    dd($manager->getAllPresenceChannels());
-});
-
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
     ->middleware('auth');
 
-Route::post('/get-time', function() {
+Route::post('/get-time', function () {
     return response()->json(['time' => date('U')]);
 });
 
