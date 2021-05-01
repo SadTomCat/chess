@@ -7,6 +7,11 @@ import Game from '~/pages/Game.vue';
 import SearchGame from '~/pages/SearchGame.vue';
 import ForgotPassword from '~/pages/ForgotPassword.vue';
 import Settings from '~/pages/Settings.vue';
+import Admin from '~/pages/admin/Admin.vue';
+import AdminChessRules from '~/pages/admin/AdminChessRules.vue';
+import AdminChessRulesCategories from '~/pages/admin/AdminChessRulesCategories.vue';
+import AdminUsers from '~/pages/admin/AdminUsers.vue';
+import AdminGames from '~/pages/admin/AdminGames.vue';
 
 const routes = [
     {
@@ -78,6 +83,32 @@ const routes = [
         meta: {
             needHeader: false,
             guest: true,
+        },
+    },
+    {
+        path: '/admin',
+        component: Admin,
+        children: [
+            {
+                path: 'chess-rules',
+                component: AdminChessRules,
+            },
+            {
+                path: 'chess-rules-categories',
+                component: AdminChessRulesCategories,
+            },
+            {
+                path: 'users',
+                component: AdminUsers,
+            },
+            {
+                path: 'games',
+                component: AdminGames,
+            },
+        ],
+        meta: {
+            auth: true,
+            admin: true,
         },
     },
 ];

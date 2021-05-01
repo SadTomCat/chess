@@ -106,7 +106,8 @@ export default {
 
 <style lang="scss">
 .header {
-    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30;
+    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30 sticky w-full;
+    top: 0;
 
     &__logo {
         h1 {
