@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\GameMoveController;
+use App\Http\Controllers\TablePaginationController;
 use App\Http\Controllers\UserJoinedToGame;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
+use App\Models\Game;
+use App\Models\User;
 use App\Websockets\IWebsocketManager;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +24,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::middleware('auth')->prefix('/api/admin')->group(function () {
+    Route::post('/table-pagination', [TablePaginationController::class, 'tablePagination']);
+});
 
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
     ->middleware('auth');
