@@ -1,6 +1,9 @@
 <template>
     <div class="admin-users px-10 py-10 flex justify-center">
-        <api-table :columns="['id', 'name', 'email']" :table="'users'"></api-table>
+        <api-table :columns="['id', 'name', 'email']"
+                   :table="'users'"
+                   :defaultActions="['view']"
+        ></api-table>
     </div>
 </template>
 

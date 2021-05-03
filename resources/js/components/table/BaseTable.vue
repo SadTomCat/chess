@@ -5,9 +5,11 @@
             <thead>
             <tr>
                 <td>№</td>
-                <td :style="maxCellWidth" v-for="column in columns">{{ column }}</td>
+                <td :style="maxCellWidth" v-for="column in columns">
+                    {{  upperFirstLetter(column.replace('/admin/', '').replace(/_/g, ' ')) }}
+                </td>
 
-                <td v-if="actions.length > 0">actions</td>
+                <td v-if="actions.length > 0">Actions</td>
             </tr>
             </thead>
 
@@ -48,9 +50,10 @@
 
 <script>
 import {
-    computed, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref,
+    computed, onBeforeUnmount, onMounted, reactive,
 } from 'vue';
 import BasePagination from '../BasePagination.vue';
+import stringHelper from '~/helpers/stringHelper';
 
 export default {
     name: 'BaseTable',
@@ -87,6 +90,8 @@ export default {
     },
 
     setup(props, { emit }) {
+        const { upperFirstLetter } = stringHelper();
+
         const defaultActions = {
             view: {
                 action: (index) => {
@@ -136,6 +141,7 @@ export default {
         });
 
         return {
+            upperFirstLetter,
             countRow,
             actions,
             newPageAction,
@@ -195,7 +201,7 @@ export default {
     &__actions {
         max-width: 240px;
 
-        @apply flex flex-wrap;
+        @apply flex justify-around flex-wrap;
 
         button {
             @apply flex py-1 px-3 mr-2 my-1 bg-gray-300 rounded-full outline-none;
