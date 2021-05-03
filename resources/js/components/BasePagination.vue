@@ -2,7 +2,7 @@
     <div class="base-pagination">
 
         <div class="inline-block" v-if="pageForDisplay[0] !== 1">
-            <span class="base-pagination__page" @click="$emit('newPageAction', totalPages)">{{ 1 }}</span>
+            <span class="base-pagination__page" @click="$emit('newPageAction', 1)">{{ 1 }}</span>
 
             <span class="base-pagination__ellipsis">...</span>
         </div>
