@@ -41,16 +41,24 @@
 
         </table>
 
-        <base-pagination :current-page="currentPage"
-                         :total-pages="totalPages"
-                         @newPageAction="newPageAction"
-        ></base-pagination>
+        <div class="base-table__bottom">
+            <select @change="selectedPerPage" v-model="currentPerPage" class="base-table__select-page">
+                <option>10</option>
+                <option>15</option>
+                <option>25</option>
+            </select>
+
+            <base-pagination :current-page="currentPage"
+                             :total-pages="totalPages"
+                             @newPageAction="newPageAction"
+            ></base-pagination>
+        </div>
     </div>
 </template>
 
 <script>
 import {
-    computed, onBeforeUnmount, onMounted, reactive,
+    computed, onBeforeUnmount, onMounted, reactive, ref, watchEffect,
 } from 'vue';
 import BasePagination from '../BasePagination.vue';
 import stringHelper from '~/helpers/stringHelper';
@@ -131,6 +139,17 @@ export default {
             emit('newPageAction', newPage);
         };
 
+        const currentPerPage = ref(props.perPage);
+
+        const selectedPerPage = () => {
+            emit('newPerPageAction', currentPerPage.value);
+            currentPerPage.value = props.perPage;
+        };
+
+        watchEffect(() => {
+            currentPerPage.value = props.perPage;
+        });
+
         onMounted(() => {
             setMaxCellWidth();
 
@@ -147,6 +166,8 @@ export default {
             actions,
             newPageAction,
             maxCellWidth,
+            currentPerPage,
+            selectedPerPage,
         };
     },
 
@@ -221,6 +242,13 @@ export default {
         }
     }
 
+    &__bottom {
+        @apply flex justify-between;
+    }
+
+    &__select-page {
+        @apply rounded-full border-none outline-none ring-1 focus:ring-2 ring-yellow-500 focus:ring-yellow-500;
+    }
     //color: #F80F6CFF;
 }
 </style>

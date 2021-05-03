@@ -3,13 +3,14 @@
                 :items="items"
                 :default-actions="defaultActions"
                 :need-add-action="needAddAction"
-                :per-page="perPage"
+                :per-page="currentPerPage"
                 :current-page="currentPage"
                 :total-pages="totalPages"
                 @newPageAction="newPageAction"
                 @viewAction="viewAction"
                 @editAction="editAction"
                 @deleteAction="deleteAction"
+                @newPerPageAction="newPerPageAction"
     ></base-table>
 </template>
 
@@ -48,11 +49,12 @@ export default {
         const currentPage = ref(1);
         const totalPages = ref(1);
         const totalItems = ref(0);
+        const currentPerPage = ref(props.perPage);
 
         const items = reactive([]);
 
         const newPageAction = async (newPage) => {
-            const res = await getFromTableRequest(props.table, props.columns, newPage, props.perPage);
+            const res = await getFromTableRequest(props.table, props.columns, newPage, currentPerPage.value);
 
             if (res.status === false) {
                 console.log(`Cannot get items from ${props.table}`);
@@ -81,6 +83,18 @@ export default {
             console.log(`api delete, index: ${index}`);
         };
 
+        const newPerPageAction = async (newPerPage) => {
+            if (newPerPage === currentPage.value) {
+                return;
+            }
+
+            const itemsPrinted = ((currentPage.value - 1) * currentPerPage.value) + items.length;
+            const newCurrentPage = Math.floor(itemsPrinted / newPerPage);
+            currentPage.value = newCurrentPage > 0 ? newCurrentPage : 1;
+            currentPerPage.value = Number(newPerPage);
+            await newPageAction(currentPage.value);
+        };
+
         onBeforeMount(async () => {
             await newPageAction(1);
         });
@@ -89,10 +103,12 @@ export default {
             currentPage,
             totalPages,
             items,
+            currentPerPage,
             newPageAction,
             viewAction,
             editAction,
             deleteAction,
+            newPerPageAction,
         };
     },
 
