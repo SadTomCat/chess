@@ -21,7 +21,7 @@
 
                 <!-- From column -->
                 <td :style="maxCellWidth" class="base-table__cell" v-for="column in columns">
-                    {{ items[index - 1][column] }}
+                    {{ items[index - 1][column] ?? '—' }}
                 </td>
 
                 <!-- Actions -->
@@ -120,14 +120,15 @@ export default {
             ? props.perPage
             : props.items.length));
 
-        const newPageAction = (newPage) => {
-            emit('newPageAction', newPage);
-        };
         const maxCellWidth = reactive({});
 
         const setMaxCellWidth = () => {
             const widthForCell = document.querySelector('.base-table').clientWidth - 296;
             maxCellWidth.maxWidth = `${widthForCell / (props.columns.length)}px`;
+        };
+
+        const newPageAction = (newPage) => {
+            emit('newPageAction', newPage);
         };
 
         onMounted(() => {

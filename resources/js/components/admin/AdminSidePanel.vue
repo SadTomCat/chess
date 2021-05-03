@@ -33,6 +33,10 @@ export default {
                 icon: 'videogame_asset',
                 link: '/admin/games',
             },
+            Websockets: {
+                icon: 'sync_alt',
+                link: '/admin/websockets',
+            },
         });
 
         return {
