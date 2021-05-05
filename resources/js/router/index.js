@@ -13,6 +13,7 @@ import AdminChessRulesCategories from '~/pages/admin/AdminChessRulesCategories.v
 import AdminUsers from '~/pages/admin/AdminUsers.vue';
 import AdminGames from '~/pages/admin/AdminGames.vue';
 import AdminWebsocket from '~/pages/admin/AdminWebsocket.vue';
+import AdminGamesView from '../pages/admin/view/AdminGamesView';
 
 const routes = [
     {
@@ -109,6 +110,10 @@ const routes = [
             {
                 path: 'websockets',
                 component: AdminWebsocket,
+            },
+            {
+                path: 'view/games/:id',
+                component: AdminGamesView,
             },
         ],
         meta: {

@@ -16,6 +16,7 @@
 
 <script>
 import { onBeforeMount, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import BaseTable from './BaseTable.vue';
 import getFromTableRequest from '../../api/getFromTableRequest';
 
@@ -46,6 +47,8 @@ export default {
     },
 
     setup(props) {
+        const router = useRouter();
+
         const currentPage = ref(1);
         const totalPages = ref(1);
         const totalItems = ref(0);
@@ -72,7 +75,9 @@ export default {
         };
 
         const viewAction = (index) => {
-            console.log(`api view, index: ${index}`);
+            const formattedTableName = props.table.replace(/_/g, '-');
+
+            router.push(`/admin/view/${formattedTableName}/${items[index].id}`);
         };
 
         const editAction = (index) => {

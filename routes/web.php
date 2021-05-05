@@ -1,17 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminGameInfoController;
 use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\GameMoveController;
 use App\Http\Controllers\TablePaginationController;
 use App\Http\Controllers\UserJoinedToGame;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
-use App\Models\Game;
-use App\Models\User;
-use App\Websockets\IWebsocketManager;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('/api/admin')->group(function () {
     Route::post('/table-pagination', [TablePaginationController::class, 'tablePagination']);
+
+    Route::post('/game/{game}', [AdminGameInfoController::class, 'getInfo']);
 });
 
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])

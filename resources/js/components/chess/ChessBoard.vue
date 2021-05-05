@@ -66,6 +66,29 @@ export default {
             ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
         ]);
 
+        const resetBoard = () => {
+            let i = 0;
+            let j = 0;
+
+            [
+                ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+                ['', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', ''],
+                ['', '', '', '', '', '', '', ''],
+                ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+                ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+            ].forEach((raw) => {
+                j = 0;
+                raw.forEach((chessman) => {
+                    board[i][j] = chessman;
+                    j++;
+                });
+                i++;
+            });
+        };
+
         const fromMove = reactive({
             x: -1,
             y: -1,
@@ -162,6 +185,17 @@ export default {
 
             for (printFrom; printFrom < moves.length; printFrom++) {
                 move(moves[printFrom].from, moves[printFrom].to, moves[printFrom].type);
+            }
+
+            // if need back move
+            if (moves.length < printFrom) {
+                resetBoard();
+
+                moves.forEach((el) => {
+                    move(el.from, el.to, el.type);
+                });
+
+                printFrom--;
             }
         });
 

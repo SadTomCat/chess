@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import ApiTable from '~/components/table/ApiTable.vue';
+import ApiTable from '~/components/tables/ApiTable.vue';
 
 export default {
     name: 'AdminGames',
