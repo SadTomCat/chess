@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @mixin IdeHelperUser
@@ -26,6 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'blocked',
+        'blocked_at',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'blocked' => 'boolean',
     ];
 
     /**
@@ -91,13 +93,8 @@ class User extends Authenticatable
      */
     public function countGamesWon(): int
     {
-        $sql = 'SELECT COUNT(*) as count FROM
-                        (SELECT gu.`user_id`, gu.`game_id`, gu.`color`
-                        FROM `game_user` gu
-                        WHERE gu.user_id=:id) AS subq
-                    INNER JOIN `games` g ON g.id=subq.game_id
-                    WHERE g.winner_color=subq.color';
-
-        return DB::select($sql, ['id' => $this->id])[0]->count;
+        return Game::join('game_user', 'games.id', '=', 'game_user.game_id')
+                   ->where('game_user.user_id', '=', $this->id)
+                   ->whereColumn('games.winner_color', '=', 'game_user.color')->count();
     }
 }

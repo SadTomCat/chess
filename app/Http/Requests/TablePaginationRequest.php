@@ -26,14 +26,23 @@ class TablePaginationRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $validationMethod = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1
-                ? 'canPaginateByAdmin'
-                : 'canPaginateByUser';
+            $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
 
-            if (TablePaginationService::$validationMethod($this->table, $this->columns) === false) {
+            $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
+
+            if (TablePaginationService::isCorrectColumns($forAdmin, $this->table, $this->columns) === false) {
                 $response = new JsonResponse([
                     'status' => false,
-                    'message' => 'This table or columns are not accessed'
+                    'message' => 'This table or columns are not accessed',
+                ], 422);
+
+                throw new ValidationException($validator, $response);
+            }
+
+            if (TablePaginationService::isCorrectOrdering($forAdmin, $this->table, $this->ordering) === false) {
+                $response = new JsonResponse([
+                    'status' => false,
+                    'message' => 'Incorrect ordering',
                 ], 422);
 
                 throw new ValidationException($validator, $response);

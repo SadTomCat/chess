@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TablePaginationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use function Symfony\Component\String\s;
 
 class TablePaginationController extends Controller
 {
@@ -16,12 +15,16 @@ class TablePaginationController extends Controller
     public function tablePagination(TablePaginationRequest $request): JsonResponse
     {
         $columns = $request->columns;
+        $orderBy = $request->ordering['by'] ?? 'ASC';
+        $orderingColumn = $request->ordering['column'] ?? 'id';
 
         if (in_array('id', $columns, true) === false) {
             $columns[] = 'id';
         }
 
-        $paginated = Db::table($request->table)->paginate($request->perPage, $columns, page: $request->page);
+        $paginated = Db::table($request->table)
+                       ->orderBy($orderingColumn, $orderBy)
+                       ->paginate($request->perPage, $columns, page: $request->page);
 
         return response()->json([
             'status' => true,

@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Game;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\User;
 
-class AdminGameInfoController extends Controller
+class AdminGameController extends Controller
 {
     public function getInfo(Request $request, Game $game): JsonResponse
     {

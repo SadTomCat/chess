@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminGameInfoController;
+use App\Http\Controllers\Admin\AdminGameController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\GameMoveController;
+use App\Http\Controllers\PaginateUserGamesController;
 use App\Http\Controllers\TablePaginationController;
 use App\Http\Controllers\UserJoinedToGame;
 use App\Http\Controllers\SettingsController;
@@ -20,10 +22,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix('/api')->group(function () {
+    Route::middleware('auth')->post('/paginated-user-games/{user}', PaginateUserGamesController::class);
+});
+
 Route::middleware('auth')->prefix('/api/admin')->group(function () {
     Route::post('/table-pagination', [TablePaginationController::class, 'tablePagination']);
 
-    Route::post('/game/{game}', [AdminGameInfoController::class, 'getInfo']);
+    Route::post('/game/{game}', [AdminGameController::class, 'getInfo']);
+
+    Route::post('/user/{user}', [AdminUserController::class, 'getInfo']);
+
+    Route::post('/block/{user}', [AdminUserController::class, 'block']);
+
+    Route::post('/unblock/{user}', [AdminUserController::class, 'unblock']);
 });
 
 Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])

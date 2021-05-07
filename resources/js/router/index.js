@@ -14,6 +14,7 @@ import AdminUsers from '~/pages/admin/AdminUsers.vue';
 import AdminGames from '~/pages/admin/AdminGames.vue';
 import AdminWebsocket from '~/pages/admin/AdminWebsocket.vue';
 import AdminGamesView from '../pages/admin/view/AdminGamesView';
+import AdminUsersView from '../pages/admin/view/AdminUsersView';
 
 const routes = [
     {
@@ -114,6 +115,10 @@ const routes = [
             {
                 path: 'view/games/:id',
                 component: AdminGamesView,
+            },
+            {
+                path: 'view/users/:id',
+                component: AdminUsersView,
             },
         ],
         meta: {
