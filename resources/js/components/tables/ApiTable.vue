@@ -6,11 +6,12 @@
                 :per-page="currentPerPage"
                 :current-page="currentPage"
                 :total-pages="totalPages"
-                @newPageAction="newPageAction"
+                @newPageAction="loadData"
                 @viewAction="viewAction"
                 @editAction="editAction"
                 @deleteAction="deleteAction"
                 @newPerPageAction="newPerPageAction"
+                @sortByColumnAction="sortByColumnAction"
     ></base-table>
 </template>
 
@@ -53,11 +54,15 @@ export default {
         const totalPages = ref(1);
         const totalItems = ref(0);
         const currentPerPage = ref(props.perPage);
+        const ordering = {
+            column: 'id',
+            by: 'asc',
+        };
 
         const items = reactive([]);
 
-        const newPageAction = async (newPage) => {
-            const res = await getFromTableRequest(props.table, props.columns, newPage, currentPerPage.value);
+        const loadData = async (page) => {
+            const res = await getFromTableRequest(props.table, props.columns, page, currentPerPage.value, ordering);
 
             if (res.status === false) {
                 console.log(`Cannot get items from ${props.table}`);
@@ -68,7 +73,7 @@ export default {
             totalItems.value = res.total_items;
 
             items.length = 0;
-            currentPage.value = newPage;
+            currentPage.value = page;
             res.items.forEach((el) => {
                 items.push(el);
             });
@@ -97,11 +102,18 @@ export default {
             const newCurrentPage = Math.floor(itemsPrinted / newPerPage);
             currentPage.value = newCurrentPage > 0 ? newCurrentPage : 1;
             currentPerPage.value = Number(newPerPage);
-            await newPageAction(currentPage.value);
+            await loadData(currentPage.value);
+        };
+
+        const sortByColumnAction = (column, type) => {
+            ordering.by = type === 'firstMore' ? 'desc' : 'asc';
+            ordering.column = column.toLowerCase().replace(/\s/g, '_');
+
+            loadData(currentPage.value);
         };
 
         onBeforeMount(async () => {
-            await newPageAction(1);
+            await loadData(1);
         });
 
         return {
@@ -109,11 +121,12 @@ export default {
             totalPages,
             items,
             currentPerPage,
-            newPageAction,
+            loadData,
             viewAction,
             editAction,
             deleteAction,
             newPerPageAction,
+            sortByColumnAction,
         };
     },
 

@@ -16,6 +16,10 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+window.isBoolean = (value) => typeof value === 'boolean';
+window.isNumber = (value) => typeof value === 'number';
+window.isString = (value) => typeof value === 'string';
+
 window.Pusher = require('pusher-js');
 
 function echoLoad() {

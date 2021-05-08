@@ -4,9 +4,19 @@
             <!-- Head of table -->
             <thead>
             <tr>
-                <td>№</td>
-                <td :style="maxCellWidth" v-for="column in columns">
-                    {{  upperFirstLetter(column.replace('/admin/', '').replace(/_/g, ' ')) }}
+                <td class="cursor-pointer" @click="defaultSortHandler">№</td>
+
+                <td :style=" maxCellWidth" v-for="column in columns">
+
+                    <div class="flex justify-between cursor-pointer" @click="sortByColumnAction(column)">
+                        {{ upperFirstLetter(column.replace(/_/g, ' ')) }}
+
+                        <div>
+                            <span class="material-icons" v-if="firstMoreColumn === column">expand_less</span>
+                            <span class="material-icons" v-else>expand_more</span>
+                        </div>
+                    </div>
+
                 </td>
 
                 <td v-if="actions.length > 0">Actions</td>
@@ -91,6 +101,13 @@ export default {
             type: Array,
             default: () => ['view', 'edit', 'delete'],
         },
+        defaultSortColumn: {
+            type: Object,
+            default: () => ({
+                column: 'id',
+                firstLess: true,
+            }),
+        },
         needAddAction: {
             type: Boolean,
             default: () => false,
@@ -146,6 +163,40 @@ export default {
             currentPerPage.value = props.perPage;
         };
 
+        const firstMoreColumn = ref('');
+
+        const defaultSortHandler = () => {
+            let needleType;
+            const { firstLess } = props.defaultSortColumn;
+            const column = window.isString(props.defaultSortColumn.column) === true
+                ? props.defaultSortColumn.column
+                : 'id';
+
+            if (window.isBoolean(firstLess) === false || firstLess === true) {
+                needleType = 'firstLess';
+                firstMoreColumn.value = '';
+            } else {
+                needleType = 'firstMore';
+                firstMoreColumn.value = props.defaultSortColumn.column;
+            }
+
+            emit('sortByColumnAction', column, needleType);
+        };
+
+        const sortByColumnAction = (column) => {
+            let needleType = '';
+
+            if (firstMoreColumn.value !== column) {
+                needleType = 'firstMore';
+                firstMoreColumn.value = column;
+            } else {
+                needleType = 'firstLess';
+                firstMoreColumn.value = '';
+            }
+
+            emit('sortByColumnAction', column, needleType);
+        };
+
         watchEffect(() => {
             currentPerPage.value = props.perPage;
         });
@@ -168,6 +219,9 @@ export default {
             maxCellWidth,
             currentPerPage,
             selectedPerPage,
+            firstMoreColumn,
+            sortByColumnAction,
+            defaultSortHandler,
         };
     },
 
@@ -249,6 +303,7 @@ export default {
     &__select-page {
         @apply rounded-full border-none outline-none ring-1 focus:ring-2 ring-yellow-500 focus:ring-yellow-500;
     }
+
     //color: #F80F6CFF;
 }
 </style>
