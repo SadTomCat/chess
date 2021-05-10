@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class TablePaginationRequest extends FormRequest
+class SearchInTableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,6 +34,7 @@ class TablePaginationRequest extends FormRequest
             try {
                 TablePaginationService::isTableAvailable($forAdmin, $this->table);
                 TablePaginationService::areColumnsAvailable($forAdmin, $this->table, $this->columns);
+                TablePaginationService::areColumnsAvailable($forAdmin, $this->table, $this->searchColumns);
                 TablePaginationService::isCorrectOrdering($forAdmin, $this->table, $this->ordering);
 
             } catch (TablePaginationValidationException $e) {
@@ -55,10 +56,11 @@ class TablePaginationRequest extends FormRequest
     public function rules()
     {
         return [
-            'table' => 'required|string',
             'columns' => 'required|array',
+            'searchColumns' => 'required|array',
             'page' => 'required|integer',
             'perPage' => 'required|integer',
+            'needle' => 'required|string|min:3'
         ];
     }
 }

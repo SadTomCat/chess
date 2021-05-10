@@ -122,7 +122,7 @@ export default {
 
 <style lang="scss">
 .user-games-list {
-    @apply bg-white rounded-2xl pt-8 pb-8 px-7 w-full shadow-2xl space-y-10;
+    @apply bg-white rounded-2xl pt-8 pb-8 px-7 w-full shadow space-y-10;
 
     &__top {
         @apply flex justify-between items-center align-middle;

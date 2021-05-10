@@ -51,7 +51,7 @@ export default {
 <style lang="scss">
 .admin__content {
     margin-left: 18rem;
-    background-color: #f2f4fc;
+    background-color: #efefef;
     min-height: 100%;
     height: fit-content;
 }

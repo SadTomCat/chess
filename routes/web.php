@@ -29,6 +29,8 @@ Route::prefix('/api')->group(function () {
 Route::middleware('auth')->prefix('/api/admin')->group(function () {
     Route::post('/table-pagination', [TablePaginationController::class, 'tablePagination']);
 
+    Route::post('/table/{table}/search', [TablePaginationController::class, 'searchInTable']);
+
     Route::post('/game/{game}', [AdminGameController::class, 'getInfo']);
 
     Route::post('/user/{user}', [AdminUserController::class, 'getInfo']);

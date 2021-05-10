@@ -1,12 +1,28 @@
 <template>
     <div class="base-table">
+
+        <!-- Top -->
+        <div class="base-table__top">
+            <search-in-table class="mb-5"
+                             :columns="columns"
+                             @searchAction="searchAction"
+                             v-if="needSearch === true"
+            ></search-in-table>
+
+            <base-table-settings-panel>
+                <table-search-settings-card :columns="columns" v-if="needSearch === true">
+                </table-search-settings-card>
+            </base-table-settings-panel>
+        </div>
+
+        <!-- Table block -->
         <table v-if="maxCellWidth.maxWidth !== undefined">
             <!-- Head of table -->
             <thead>
             <tr>
                 <td class="cursor-pointer" @click="defaultSortHandler">№</td>
 
-                <td :style=" maxCellWidth" v-for="column in columns">
+                <td :style="maxCellWidth" v-for="column in columns">
 
                     <div class="flex justify-between cursor-pointer" @click="sortByColumnAction(column)">
                         {{ upperFirstLetter(column.replace(/_/g, ' ')) }}
@@ -51,6 +67,7 @@
 
         </table>
 
+        <!-- Bottom -->
         <div class="base-table__bottom">
             <select @change="selectedPerPage" v-model="currentPerPage" class="base-table__select-page">
                 <option>10</option>
@@ -72,6 +89,9 @@ import {
 } from 'vue';
 import BasePagination from '../BasePagination.vue';
 import stringHelper from '~/helpers/stringHelper';
+import SearchInTable from './BaseTableSearch.vue';
+import BaseTableSettingsPanel from './BaseTableSettingsPanel.vue';
+import TableSearchSettingsCard from './cards/TableSearchSettingsCard.vue';
 
 export default {
     name: 'BaseTable',
@@ -108,6 +128,10 @@ export default {
                 firstLess: true,
             }),
         },
+        needSearch: {
+            type: Boolean,
+            default: () => false,
+        },
         needAddAction: {
             type: Boolean,
             default: () => false,
@@ -117,6 +141,19 @@ export default {
     setup(props, { emit }) {
         const { upperFirstLetter } = stringHelper();
 
+        /* Setup */
+        const countRow = computed(() => (props.items.length > props.perPage
+            ? props.perPage
+            : props.items.length));
+
+        const maxCellWidth = reactive({});
+
+        const setMaxCellWidth = () => {
+            const widthForCell = document.querySelector('.base-table').clientWidth - 296;
+            maxCellWidth.maxWidth = `${widthForCell / (props.columns.length)}px`;
+        };
+
+        /* Actions */
         const defaultActions = {
             view: {
                 action: (index) => {
@@ -141,26 +178,8 @@ export default {
             styles: defaultActions[el].styles,
         }));
 
-        const countRow = computed(() => (props.items.length > props.perPage
-            ? props.perPage
-            : props.items.length));
-
-        const maxCellWidth = reactive({});
-
-        const setMaxCellWidth = () => {
-            const widthForCell = document.querySelector('.base-table').clientWidth - 296;
-            maxCellWidth.maxWidth = `${widthForCell / (props.columns.length)}px`;
-        };
-
         const newPageAction = (newPage) => {
             emit('newPageAction', newPage);
-        };
-
-        const currentPerPage = ref(props.perPage);
-
-        const selectedPerPage = () => {
-            emit('newPerPageAction', currentPerPage.value);
-            currentPerPage.value = props.perPage;
         };
 
         const firstMoreColumn = ref('');
@@ -197,10 +216,23 @@ export default {
             emit('sortByColumnAction', column, needleType);
         };
 
+        const currentPerPage = ref(props.perPage);
+
+        const selectedPerPage = () => {
+            emit('newPerPageAction', currentPerPage.value);
+            currentPerPage.value = props.perPage;
+        };
+
         watchEffect(() => {
             currentPerPage.value = props.perPage;
         });
 
+        /* Search Component */
+        const searchAction = (needle, columns) => {
+            emit('searchAction', needle, columns);
+        };
+
+        /* Hooks */
         onMounted(() => {
             setMaxCellWidth();
 
@@ -222,10 +254,16 @@ export default {
             firstMoreColumn,
             sortByColumnAction,
             defaultSortHandler,
+            searchAction,
         };
     },
 
-    components: { BasePagination },
+    components: {
+        BasePagination,
+        BaseTableSettingsPanel,
+        SearchInTable,
+        TableSearchSettingsCard,
+    },
 };
 </script>
 
@@ -233,8 +271,12 @@ export default {
 .base-table {
     @apply w-full;
 
+    &__top {
+        @apply mb-7;
+    }
+
     table {
-        @apply w-full rounded-xl bg-white shadow-lg mb-4;
+        @apply w-full rounded-xl bg-white shadow mb-4;
     }
 
     thead {

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\TablePaginationValidationException;
+
 class TablePaginationService
 {
     /**
@@ -9,36 +11,50 @@ class TablePaginationService
      *
      * @var array|\string[][]
      */
-    private static array $tableForAdmin = [
+    private static array $tablesForAdmin = [
         'users' => ['id', 'name', 'email'],
         'games' => ['id', 'token', 'start_at', 'end_at', 'winner_color'],
     ];
 
-    private static array $tableForUser = [];
+    /**
+     * Key - table, value - columns
+     *
+     * @var array|\string[][]
+     */
+    private static array $tablesForUser = [];
 
     /**
-     * Check if someone can get columns from the table and can get data from the table
+     * Check that table available
+     *
+     * @throws TablePaginationValidationException
+     */
+    public static function isTableAvailable(bool $isAdmin, string $table): void
+    {
+        $needleTables = $isAdmin === true ? static::$tablesForAdmin : static::$tablesForUser;
+
+        if (array_key_exists($table, $needleTables) === false) {
+            throw (new TablePaginationValidationException("`$table` table not available"));
+        }
+    }
+
+    /**
+     * Check if someone can get columns from the table
      *
      * @param bool $isAdmin
      * @param string $table
      * @param array $columns
-     * @return bool
+     * @return void
+     * @throws TablePaginationValidationException
      */
-    public static function isCorrectColumns(bool $isAdmin, string $table, array $columns): bool
+    public static function areColumnsAvailable(bool $isAdmin, string $table, array $columns): void
     {
-        if (array_key_exists($table, static::$tableForAdmin) === false) {
-            return false;
-        }
-
-        $tableColumns = $isAdmin === true ? static::$tableForAdmin[$table] : static::$tableForUser[$table];
+        $tableColumns = $isAdmin === true ? static::$tablesForAdmin[$table] : static::$tablesForUser[$table];
 
         foreach ($columns as $column) {
             if (in_array($column, $tableColumns, true) === false) {
-                return false;
+                throw (new TablePaginationValidationException("`$column` column not available"));
             }
         }
-
-        return true;
     }
 
     /**
@@ -47,21 +63,24 @@ class TablePaginationService
      * @param bool $isAdmin
      * @param string $table
      * @param array|bool $ordering
-     * @return bool
+     * @return void
+     * @throws TablePaginationValidationException
      */
-    public static function isCorrectOrdering(bool $isAdmin, string $table, array|bool $ordering): bool
+    public static function isCorrectOrdering(bool $isAdmin, string $table, array|bool $ordering): void
     {
         if ($ordering === false) {
-            return true;
+            return;
         }
 
         if ($ordering['by'] !== null && strtoupper($ordering['by']) !== 'ASC'
             && strtoupper($ordering['by']) !== 'DESC') {
-            return false;
+            throw (new TablePaginationValidationException('Incorrect ordering'));
         }
 
-        $tableColumns = $isAdmin === true ? static::$tableForAdmin[$table] : static::$tableForUser[$table];
+        $tableColumns = $isAdmin === true ? static::$tablesForAdmin[$table] : static::$tablesForUser[$table];
 
-        return in_array($ordering['column'], $tableColumns, true);
+        if (in_array($ordering['column'], $tableColumns, true) === false) {
+            throw (new TablePaginationValidationException('You cannot order by this column'));
+        }
     }
 }

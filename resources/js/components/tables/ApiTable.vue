@@ -6,12 +6,14 @@
                 :per-page="currentPerPage"
                 :current-page="currentPage"
                 :total-pages="totalPages"
-                @newPageAction="loadData"
+                :need-search="true"
+                @newPageAction="newPageAction"
                 @viewAction="viewAction"
                 @editAction="editAction"
                 @deleteAction="deleteAction"
                 @newPerPageAction="newPerPageAction"
                 @sortByColumnAction="sortByColumnAction"
+                @searchAction="searchAction"
     ></base-table>
 </template>
 
@@ -20,6 +22,7 @@ import { onBeforeMount, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import BaseTable from './BaseTable.vue';
 import getFromTableRequest from '~/api/paginatedTableByAdminRequest';
+import searchInTableRequest from '../../api/searchInTableRequest';
 
 export default {
     name: 'ApiTable',
@@ -61,22 +64,73 @@ export default {
 
         const items = reactive([]);
 
-        const loadData = async (page) => {
-            const res = await getFromTableRequest(props.table, props.columns, page, currentPerPage.value, ordering);
+        const updateAfterLoad = (data) => {
+            totalPages.value = data.last_page ?? 1;
+            totalItems.value = data.total_items ?? 1;
 
-            if (res.status === false) {
-                console.log(`Cannot get items from ${props.table}`);
+            items.length = 0;
+            currentPage.value = data.current_page ?? 1;
+            data.items.forEach((el) => {
+                items.push(el);
+            });
+        };
+
+        const loadDataWithoutSearch = async (page) => {
+            const data = await getFromTableRequest(props.table, props.columns, page, currentPerPage.value, ordering);
+
+            if (data.status === false) {
                 return;
             }
 
-            totalPages.value = res.last_page;
-            totalItems.value = res.total_items;
+            updateAfterLoad(data);
+        };
 
-            items.length = 0;
-            currentPage.value = page;
-            res.items.forEach((el) => {
-                items.push(el);
-            });
+        /* Search */
+        let lastNeedle = '';
+        let lastSearchColumns = [];
+        let isSearching = false;
+
+        const searchAction = async (needle = '', searchColumns, page = 1) => {
+            if (isSearching === true && needle === '') {
+                isSearching = false;
+                lastNeedle = '';
+                lastSearchColumns = [];
+                await loadDataWithoutSearch(1);
+                return;
+            }
+
+            if (needle === '') {
+                return;
+            }
+
+            lastNeedle = needle;
+            lastSearchColumns = searchColumns;
+            isSearching = true;
+
+            const data = await searchInTableRequest(
+                props.table,
+                props.columns,
+                page,
+                currentPerPage.value,
+                needle,
+                searchColumns,
+                ordering,
+            );
+
+            if (data.status === false) {
+                return;
+            }
+
+            updateAfterLoad(data);
+        };
+
+        /* Actions */
+        const newPageAction = async (page) => {
+            if (isSearching === true) {
+                await searchAction(lastNeedle, lastSearchColumns, page);
+            } else {
+                await loadDataWithoutSearch(page);
+            }
         };
 
         const viewAction = (index) => {
@@ -102,18 +156,18 @@ export default {
             const newCurrentPage = Math.floor(itemsPrinted / newPerPage);
             currentPage.value = newCurrentPage > 0 ? newCurrentPage : 1;
             currentPerPage.value = Number(newPerPage);
-            await loadData(currentPage.value);
+            await newPageAction(currentPage.value);
         };
 
         const sortByColumnAction = (column, type) => {
             ordering.by = type === 'firstMore' ? 'desc' : 'asc';
             ordering.column = column.toLowerCase().replace(/\s/g, '_');
 
-            loadData(currentPage.value);
+            newPageAction(currentPage.value);
         };
 
         onBeforeMount(async () => {
-            await loadData(1);
+            await loadDataWithoutSearch(1);
         });
 
         return {
@@ -121,7 +175,9 @@ export default {
             totalPages,
             items,
             currentPerPage,
-            loadData,
+            loadDataWithoutSearch,
+            searchAction,
+            newPageAction,
             viewAction,
             editAction,
             deleteAction,

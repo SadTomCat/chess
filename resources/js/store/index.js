@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import userLoggedRequest from '~/api/userLoggedRequest';
 import gameModule from './modules/gameModule';
+import searchInTableModule from './modules/searchInTableModule';
 
 export default createStore({
     state: () => ({
@@ -61,5 +62,6 @@ export default createStore({
 
     modules: {
         game: gameModule,
+        searchInTable: searchInTableModule,
     },
 });
