@@ -12,60 +12,65 @@
             <base-table-settings-panel>
                 <table-search-settings-card :columns="columns" v-if="needSearch === true">
                 </table-search-settings-card>
+
+                <table-settings-card @newSettingsAction="newSettingsAction"></table-settings-card>
             </base-table-settings-panel>
         </div>
 
         <!-- Table block -->
-        <table v-if="maxCellWidth.maxWidth !== undefined">
-            <!-- Head of table -->
-            <thead>
-            <tr>
-                <td class="cursor-pointer" @click="defaultSortHandler">№</td>
+        <div class="base-table__table-block" :class="[needShrinkColumns === false ? 'overflow-x-scroll' : '']">
+            <table>
+                <!-- Head of table -->
+                <thead>
+                <tr>
+                    <td class="cursor-pointer" @click="defaultSortHandler">№</td>
 
-                <td :style="maxCellWidth" v-for="column in columns">
+                    <td :style="columnsStyles" v-for="column in columns">
 
-                    <div class="flex justify-between cursor-pointer" @click="sortByColumnAction(column)">
-                        {{ upperFirstLetter(column.replace(/_/g, ' ')) }}
+                        <div class="flex justify-between cursor-pointer" @click="sortByColumnAction(column)">
+                            {{ upperFirstLetter(column.replace(/_/g, ' ')) }}
 
-                        <div>
-                            <span class="material-icons" v-if="firstMoreColumn === column">expand_less</span>
-                            <span class="material-icons" v-else>expand_more</span>
+                            <div>
+                                <span class="material-icons" v-if="firstMoreColumn === column">expand_less</span>
+                                <span class="material-icons" v-else>expand_more</span>
+                            </div>
                         </div>
-                    </div>
 
-                </td>
+                    </td>
 
-                <td v-if="actions.length > 0">Actions</td>
-            </tr>
-            </thead>
+                    <td v-if="actions.length > 0">Actions</td>
+                </tr>
+                </thead>
 
-            <!-- Main Part-->
-            <tr v-for="index in countRow">
+                <!-- Main Part-->
+                <tr v-for="index in countRow">
 
-                <!-- Index -->
-                <td>{{ index }}</td>
+                    <!-- Index -->
+                    <td>{{ index }}</td>
 
-                <!-- From column -->
-                <td :style="maxCellWidth" class="base-table__cell" v-for="column in columns">
-                    {{ items[index - 1][column] ?? '—' }}
-                </td>
+                    <!-- From column -->
+                    <td class="base-table__cell" :style="columnsStyles" v-for="column in columns">
+                        {{ items[index - 1][column] ?? '—' }}
+                    </td>
 
-                <!-- Actions -->
-                <td class="base-table__actions" v-if="actions.length > 0">
-                    <button v-for="action in actions"
-                            :style="action.styles"
-                            @click="action.action(index - 1)"
-                    >
-                        {{ action.name }}
-                    </button>
-                </td>
-            </tr>
+                    <!-- Actions -->
+                    <td class="base-table__actions" v-if="actions.length > 0">
 
-            <div v-if="items.length === 0" class="base-table__no-items">
-                <h1>No items in this table</h1>
-            </div>
+                        <button v-for="action in actions"
+                                :style="action.styles"
+                                @click="action.action(index - 1)"
+                        >{{ action.name }}
+                        </button>
 
-        </table>
+                    </td>
+                </tr>
+
+                <div v-if="items.length === 0" class="base-table__no-items">
+                    <h1>No items in this table</h1>
+                </div>
+
+            </table>
+        </div>
 
         <!-- Bottom -->
         <div class="base-table__bottom">
@@ -92,6 +97,7 @@ import stringHelper from '~/helpers/stringHelper';
 import SearchInTable from './BaseTableSearch.vue';
 import BaseTableSettingsPanel from './BaseTableSettingsPanel.vue';
 import TableSearchSettingsCard from './cards/TableSearchSettingsCard.vue';
+import TableSettingsCard from './cards/TableSettingsCard.vue';
 
 export default {
     name: 'BaseTable',
@@ -141,12 +147,25 @@ export default {
     setup(props, { emit }) {
         const { upperFirstLetter } = stringHelper();
 
+        /* Settings */
+        const needShrinkColumns = ref(true);
+
+        const newSettingsAction = (newSettings) => {
+            const normalizedSettings = newSettings.map((el) => el.toLowerCase().replace(/\s/g, '_'));
+
+            needShrinkColumns.value = normalizedSettings.includes('shrink_columns');
+        };
+
         /* Setup */
         const countRow = computed(() => (props.items.length > props.perPage
             ? props.perPage
             : props.items.length));
 
         const maxCellWidth = reactive({});
+
+        const columnsStyles = computed(() => ({
+            maxWidth: needShrinkColumns.value === true ? maxCellWidth.maxWidth : '500px',
+        }));
 
         const setMaxCellWidth = () => {
             const widthForCell = document.querySelector('.base-table').clientWidth - 296;
@@ -247,8 +266,10 @@ export default {
             upperFirstLetter,
             countRow,
             actions,
+            needShrinkColumns,
+            newSettingsAction,
             newPageAction,
-            maxCellWidth,
+            columnsStyles,
             currentPerPage,
             selectedPerPage,
             firstMoreColumn,
@@ -263,6 +284,7 @@ export default {
         BaseTableSettingsPanel,
         SearchInTable,
         TableSearchSettingsCard,
+        TableSettingsCard,
     },
 };
 </script>
@@ -275,8 +297,20 @@ export default {
         @apply mb-7;
     }
 
+    &__table-block {
+        @apply mb-5;
+
+        &::-webkit-scrollbar {
+            @apply h-2 ;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            @apply rounded-full bg-gray-400;
+        }
+    }
+
     table {
-        @apply w-full rounded-xl bg-white shadow mb-4;
+        @apply w-full rounded-xl bg-white shadow;
     }
 
     thead {

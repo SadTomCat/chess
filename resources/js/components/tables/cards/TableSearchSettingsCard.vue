@@ -1,11 +1,6 @@
 <template>
-    <base-table-settings-card>
-        <div class="table-search-settings-card__header" @click="showSelectColumns = !showSelectColumns">
-            <h1 class="">Search columns</h1>
-            <span class="material-icons">expand_more</span>
-        </div>
-
-        <ul class="table-search-settings-card__list" v-if="showSelectColumns === true">
+    <base-table-settings-card :title="'Search columns'">
+        <ul class="table-search-settings-card__list">
 
             <li v-for="column in columns" :key="column">
                 <input type="checkbox"
@@ -25,7 +20,6 @@
 
 <script>
 import { useStore } from 'vuex';
-import { ref } from 'vue';
 import BaseTableSettingsCard from './BaseTableSettingsCard.vue';
 
 export default {
@@ -41,11 +35,8 @@ export default {
     setup() {
         const store = useStore();
 
-        const showSelectColumns = ref(false);
-
         return {
             store,
-            showSelectColumns,
         };
     },
 
@@ -55,18 +46,6 @@ export default {
 
 <style lang="scss">
 .table-search-settings-card {
-    &__header {
-        @apply flex justify-between cursor-pointer;
-
-        h1 {
-            @apply text-xl align-middle;
-        }
-
-        span {
-            margin-top: 2px;
-        }
-    }
-
     &__list {
         @apply mt-4 pb-3 text-xl;
 
