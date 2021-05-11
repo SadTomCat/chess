@@ -1,5 +1,5 @@
 <template>
-    <auth-card :title="'Login'" :actionBtnName="'login'" @authAction="loginHandler">
+    <auth-card :title="'Login'" :action-btn-name="'login'" @authAction="loginHandler">
 
         <!-- Email input  -->
         <auth-input-wrapper class="login__email-block">

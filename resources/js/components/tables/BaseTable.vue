@@ -25,7 +25,7 @@
                 <tr>
                     <td class="cursor-pointer" @click="defaultSortHandler">№</td>
 
-                    <td :style="columnsStyles" v-for="column in columns">
+                    <td :style="columnsStyles" v-for="column in columns" :key="column">
 
                         <div class="flex justify-between cursor-pointer" @click="sortByColumnAction(column)">
                             {{ upperFirstLetter(column.replace(/_/g, ' ')) }}
@@ -43,29 +43,29 @@
                 </thead>
 
                 <!-- Main Part-->
-                <tr v-for="index in countRow">
+                <tr v-for="index in countRow" :key="index">
 
                     <!-- Index -->
                     <td>{{ index }}</td>
 
                     <!-- From column -->
-                    <td class="base-table__cell" :style="columnsStyles" v-for="column in columns">
+                    <td class="base-table__cell" :style="columnsStyles" v-for="column in columns" :key="column">
                         {{ items[index - 1][column] ?? '—' }}
                     </td>
 
                     <!-- Actions -->
                     <td class="base-table__actions" v-if="actions.length > 0">
 
-                        <button v-for="action in actions"
-                                :style="action.styles"
+                        <button :style="action.styles"
                                 @click="action.action(index - 1)"
-                        >{{ action.name }}
-                        </button>
+                                v-for="action in actions"
+                                :key="action"
+                        >{{ action.name }}</button>
 
                     </td>
                 </tr>
 
-                <div v-if="items.length === 0" class="base-table__no-items">
+                <div class="base-table__no-items" v-if="items.length === 0">
                     <h1>No items in this table</h1>
                 </div>
 

@@ -10,9 +10,7 @@
                        v-model="settingsSelected"
                 >
 
-                <label :for="`setting-${setting}`">
-                    {{ setting }}
-                </label>
+                <label :for="`setting-${setting}`">{{ setting }}</label>
             </li>
 
         </ul>

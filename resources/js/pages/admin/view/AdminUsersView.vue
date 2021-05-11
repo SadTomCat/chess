@@ -3,7 +3,7 @@
 
         <div class="admin-user-view__top">
             <div class="admin-user-view-top__right">
-                <img src="#" class="admin-user-view__img">
+                <img src="#" class="admin-user-view__img" alt="user image">
 
                 <button class="admin-user-view__block-btn" @click="blockHandler" v-if="info['Blocked'] === false">
                     block
@@ -15,7 +15,7 @@
             </div>
 
             <ul class="space-y-5">
-                <li v-for="(value, key) in info">{{ key }}: {{ value }}</li>
+                <li v-for="(value, key) in info" :key="value">{{ key }}: {{ value }}</li>
             </ul>
         </div>
 

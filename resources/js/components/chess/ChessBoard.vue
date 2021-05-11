@@ -1,19 +1,15 @@
 <template>
-    <div class="chess-board relative">
-        <div class="flex " v-for="i in 8" :key="i">
-            <div class="h-20 w-20"
+    <div class="chess-board">
+        <div class="chess-board__row" v-for="i in 8" :key="i">
+            <div class="chess-board__cell"
                  v-for="j in 8" :key="j"
-                 :class="[
-                     cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700',
-                     store.getters.CAN_MOVE ? 'cursor-pointer' : '',
-                 ]"
+                 :class="cellStyles(j)"
                  @click="moveHandler(i - 1, j - 1)"
             >
                 <p class="chess-board__chessman"
+                   :class="selectedStyle(i, j)"
                    v-html="getChessman(i, j)"
-                   :class="i - 1 === fromMove.x && j - 1 === fromMove.y ? 'chess-board__chessman_selected' : ''"
-                >
-                </p>
+                ></p>
             </div>
         </div>
 
@@ -54,6 +50,11 @@ export default {
             return (index + numRow) % 2 === 0;
         };
 
+        const cellStyles = (j) => ([
+            cellColor(j) ? 'bg-yellow-400' : 'bg-yellow-700',
+            store.getters.CAN_MOVE ? 'cursor-pointer' : '',
+        ]);
+
         /* Chessmen move */
         const board = reactive([
             ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
@@ -93,6 +94,11 @@ export default {
             x: -1,
             y: -1,
         });
+
+        const selectedStyle = (i, j) => (i - 1 === fromMove.x && j - 1 === fromMove.y
+            ? 'chess-board__chessman_selected'
+            : ''
+        );
 
         const getChessman = (i, j) => {
             const chessman = board[i - 1][j - 1];
@@ -221,10 +227,12 @@ export default {
         return {
             store,
             cellColor,
+            cellStyles,
             board,
             fromMove,
             moveHandler,
             getChessman,
+            selectedStyle,
         };
     },
 
@@ -233,11 +241,24 @@ export default {
 </script>
 
 <style lang="scss">
-.chess-board__chessman {
-    @apply block h-full flex justify-center items-center text-6xl select-none;
+.chess-board {
+    @apply relative;
 
-    &_selected {
-        @apply border-4 border-green-400;
+    &__row {
+        @apply flex;
+    }
+
+    &__cell {
+        @apply h-20 w-20;
+    }
+
+    &__chessman {
+        @apply block h-full flex justify-center items-center text-6xl select-none;
+
+        &_selected {
+            @apply border-4 border-green-400;
+        }
     }
 }
+
 </style>

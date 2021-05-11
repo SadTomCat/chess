@@ -11,7 +11,7 @@
 
         <div class="admin-base-info-card__bottom" v-if="showFull">
             <ul>
-                <li v-for="(value, key) in info">
+                <li v-for="(value, key) in info" :key="value">
                     <span>{{ key }}</span>: {{ value }}
                 </li>
             </ul>

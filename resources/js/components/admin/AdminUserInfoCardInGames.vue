@@ -15,7 +15,7 @@ import AdminBaseInfoCard from './AdminBaseInfoCard.vue';
 import stringHelper from '~/helpers/stringHelper';
 
 export default {
-    name: 'AdminUserInfoCard',
+    name: 'AdminUserInfoCardInGames',
 
     props: {
         info: {

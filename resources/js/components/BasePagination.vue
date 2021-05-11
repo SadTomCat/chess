@@ -8,12 +8,11 @@
         </div>
 
         <span class="base-pagination__page"
+              :class="page === currentPage ? 'base-pagination__page_current': ''"
               @click="$emit('newPageAction', page)"
               v-for="page in pageForDisplay"
-              :class="page === currentPage ? 'base-pagination__page_current': ''"
-        >
-            {{ page }}
-        </span>
+              :key="page"
+        >{{ page }}</span>
 
         <div class="inline-block" v-if="pageForDisplay[pageForDisplay.length - 1] !== totalPages">
             <span class="base-pagination__ellipsis">...</span>

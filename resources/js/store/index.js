@@ -42,11 +42,9 @@ export default createStore({
         },
 
         UPDATE_USER: (state, user) => {
-            for (const field in user) {
-                if (state.user.hasOwnProperty(field)) {
-                    state.user[field] = user[field];
-                }
-            }
+            Object.getOwnPropertyNames(user).forEach((field) => {
+                state.user[field] = user[field];
+            });
         },
     },
 
@@ -54,9 +52,11 @@ export default createStore({
         FETCH_USER: async (context) => {
             const user = await userLoggedRequest();
 
-            user === false
-                ? context.commit('UNSET_USER')
-                : context.commit('SET_USER', user);
+            if (user === false) {
+                context.commit('UNSET_USER');
+            } else {
+                context.commit('SET_USER', user);
+            }
         },
     },
 

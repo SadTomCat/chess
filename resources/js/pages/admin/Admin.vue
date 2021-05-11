@@ -7,6 +7,7 @@
                 <span class="material-icons" @click="router.back()">arrow_back_ios</span>
                 <h1>{{ getPageName }}</h1>
             </div>
+
             <router-view></router-view>
         </div>
     </div>

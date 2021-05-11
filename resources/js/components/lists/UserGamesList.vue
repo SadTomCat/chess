@@ -12,19 +12,21 @@
 
         <div class="user-games-list__bottom" v-if="isOpen === true">
             <ul>
-                <li v-for="game in games">
+                <li v-for="game in games" :key="game.token">
 
                     <div class="user-games-list__about-game">
-                    <span class="user-games-list__game-symbol" :class="getGameColor(game)">
-                        {{ getGameSymbol(game) }}
-                    </span>
-                        {{ game.token }}
+
+                        <span class="user-games-list__game-symbol" :class="getGameColor(game)">
+                            {{ getGameSymbol(game) }}
+                        </span>{{ game.token }}
+
                     </div>
 
                     <router-link class="user-games-list__more-info"
                                  :to="`${moreInfoRoute}/${game.id}`"
                                  v-if="moreInfoRoute.length > 0"
                     >more info</router-link>
+
                 </li>
             </ul>
 

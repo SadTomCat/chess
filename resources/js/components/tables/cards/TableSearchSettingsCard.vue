@@ -9,9 +9,7 @@
                        v-model="store.state.searchInTable.selectedSearchColumns"
                 >
 
-                <label :for="`search-${column}`">
-                    {{ column }}
-                </label>
+                <label :for="`search-${column}`">{{ column }}</label>
             </li>
 
         </ul>
