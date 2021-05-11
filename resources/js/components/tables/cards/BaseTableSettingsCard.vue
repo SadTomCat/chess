@@ -1,11 +1,11 @@
 <template>
     <div class="base-table-settings-card" :style="[heightStyles]">
-        <div class="base-table-settings-card__header" @click="showSelectColumns = !showSelectColumns">
+        <div class="base-table-settings-card__header" @click="showFull = !showFull">
             <h1 class="">{{ title }}</h1>
             <span class="material-icons">expand_more</span>
         </div>
 
-        <slot v-if="showSelectColumns === true"></slot>
+        <slot v-if="showFull === true"></slot>
     </div>
 </template>
 
@@ -23,14 +23,14 @@ export default {
     },
 
     setup() {
-        const showSelectColumns = ref(false);
+        const showFull = ref(false);
 
-        const heightStyles = computed(() => (showSelectColumns.value === false
+        const heightStyles = computed(() => (showFull.value === false
             ? { height: '4rem' }
             : { minHeight: '4rem' }));
 
         return {
-            showSelectColumns,
+            showFull,
             heightStyles,
         };
     },

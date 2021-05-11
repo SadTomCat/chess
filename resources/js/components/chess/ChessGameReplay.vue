@@ -73,7 +73,7 @@ export default {
 
 <style lang="scss">
 .chess-game-replay {
-    @apply flex rounded-2xl overflow-hidden shadow-2xl bg-white w-full;
+    @apply flex rounded-2xl overflow-hidden shadow bg-white w-full;
 
     &__right {
         @apply ml-6 w-full;

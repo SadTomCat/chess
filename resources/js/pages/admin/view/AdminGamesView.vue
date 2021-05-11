@@ -3,7 +3,6 @@
         <admin-base-info-card :info="gameInfo"
                               :title="'Game info'"
                               :loading="loading"
-                              :height="'26rem'"
                               :width="'31.5%'"
                               :background-color="'#111'"
                               :color="'#fff'"

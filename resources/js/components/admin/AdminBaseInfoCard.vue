@@ -1,15 +1,15 @@
 <template>
-    <div class="admin-base-info-card inline-block" :class="[getHeight]" :style="{width, height}">
+    <div class="admin-base-info-card" :style="{width, height: getHeight}">
         <div class="admin-base-info-card__top" :style="{backgroundColor, color }">
             <p class="overflow-ellipsis">{{ title === '' ? 'Info' : title }}</p>
 
-            <div class="admin-base-info-card__full-info-button" @click="fullInfo = !fullInfo">
-                <span class="material-icons text-2xl" v-if="fullInfo">remove</span>
+            <div class="admin-base-info-card__full-info-button" @click="showFull = !showFull">
+                <span class="material-icons text-2xl" v-if="showFull">remove</span>
                 <span class="material-icons" v-else>add</span>
             </div>
         </div>
 
-        <div class="admin-base-info-card__bottom" v-if="fullInfo">
+        <div class="admin-base-info-card__bottom" v-if="showFull">
             <ul>
                 <li v-for="(value, key) in info">
                     <span>{{ key }}</span>: {{ value }}
@@ -27,7 +27,7 @@
 import { computed, ref } from 'vue';
 
 export default {
-    name: 'AdminUserInfoCard',
+    name: 'AdminBaseInfoCard',
 
     props: {
         info: Object,
@@ -58,14 +58,20 @@ export default {
     },
 
     setup(props) {
-        const fullInfo = ref(false);
+        const showFull = ref(false);
 
-        const needMoreInfoLink = computed(() => (props.moreInfoLinkObj.off === false && fullInfo.value === true));
+        const needMoreInfoLink = computed(() => (props.moreInfoLinkObj.off === false && showFull.value === true));
 
-        const getHeight = computed(() => (fullInfo.value === true ? 'h-96' : 'max-h-16'));
+        const getHeight = computed(() => {
+            if (showFull.value === false) {
+                return '4rem';
+            }
+
+            return props.height === undefined ? '' : props.height;
+        });
 
         return {
-            fullInfo,
+            showFull,
             needMoreInfoLink,
             getHeight,
         };
@@ -77,10 +83,11 @@ export default {
 .admin-base-info-card {
     overflow: hidden;
 
-    @apply flex flex-col rounded-2xl shadow-2xl relative text-xl;
+    @apply flex flex-col rounded-2xl shadow relative text-xl;
 
     &__top {
-        @apply h-16 flex items-center justify-between;
+        height: 4rem;
+        @apply flex items-center justify-between;
     }
 
     &__top, &__bottom {
