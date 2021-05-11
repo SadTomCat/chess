@@ -55,7 +55,6 @@ class TablePaginationRequest extends FormRequest
     public function rules()
     {
         return [
-            'table' => 'required|string',
             'columns' => 'required|array',
             'page' => 'required|integer',
             'perPage' => 'required|integer',

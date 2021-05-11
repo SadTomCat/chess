@@ -23,11 +23,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('/api')->group(function () {
-    Route::middleware('auth')->post('/paginated-user-games/{user}', PaginateUserGamesController::class);
+    Route::middleware('auth')->post('/paginate-user-games/{user}', PaginateUserGamesController::class);
 });
 
 Route::middleware('auth')->prefix('/api/admin')->group(function () {
-    Route::post('/table-pagination', [TablePaginationController::class, 'tablePagination']);
+    Route::post('/table/{table}/pagination', [TablePaginationController::class, 'tablePagination']);
 
     Route::post('/table/{table}/search', [TablePaginationController::class, 'searchInTable']);
 

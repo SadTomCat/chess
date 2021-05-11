@@ -12,9 +12,10 @@ class TablePaginationController extends Controller
 {
     /**
      * @param TablePaginationRequest $request
+     * @param string $table
      * @return JsonResponse
      */
-    public function tablePagination(TablePaginationRequest $request): JsonResponse
+    public function tablePagination(TablePaginationRequest $request, string $table): JsonResponse
     {
         $columns = $request->columns;
         $orderBy = $request->ordering['by'] ?? 'ASC';
@@ -24,7 +25,7 @@ class TablePaginationController extends Controller
             $columns[] = 'id';
         }
 
-        $paginated = Db::table($request->table)
+        $paginated = Db::table($table)
                        ->orderBy($orderingColumn, $orderBy)
                        ->paginate($request->perPage, $columns, page: $request->page);
 
