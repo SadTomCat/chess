@@ -52,10 +52,10 @@ export default {
 
             sending.value = true;
 
-            const res = await sendGameMessage(gameToken, message.value);
+            const data = await sendGameMessage(gameToken, message.value);
 
-            if (res.status === true) {
-                store.commit('PUSH_MESSAGE', { message: message.value });
+            if (data.status === true) {
+                store.commit('PUSH_MESSAGE', { message: message.value, fromOpponent: false });
                 message.value = '';
             }
 
