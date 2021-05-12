@@ -23,7 +23,7 @@ export default {
             },
             'Chess rules category': {
                 icon: 'list',
-                link: '/admin/chess-rules-categories',
+                link: '/admin/chess-rule-categories',
             },
             Users: {
                 icon: 'group',

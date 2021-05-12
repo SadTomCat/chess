@@ -1,8 +1,8 @@
 export default () => {
-    const validateColumns = (req, needleColumns) => {
+    const validateColumns = (data, needleColumns) => {
         try {
             needleColumns.forEach((needleColumn) => {
-                if (req[needleColumn.name] === undefined) {
+                if (data[needleColumn.name] === undefined) {
                     throw new Error(`${needleColumn.name} not exits`);
                 }
 
@@ -18,8 +18,8 @@ export default () => {
                     throw new Error(`${needleColumn.type} cannot be checked`);
                 }
 
-                if (typesValidators[needleColumn.type](req[needleColumn.name]) === false) {
-                    throw new Error(`${needleColumn.name} column got ${typeof req[needleColumn.name]} `
+                if (typesValidators[needleColumn.type](data[needleColumn.name]) === false) {
+                    throw new Error(`${needleColumn.name} column got ${typeof data[needleColumn.name]} `
                         + `but must be ${needleColumn.type}`);
                 }
             });

@@ -9,12 +9,12 @@ import ForgotPassword from '~/pages/ForgotPassword.vue';
 import Settings from '~/pages/Settings.vue';
 import Admin from '~/pages/admin/Admin.vue';
 import AdminChessRules from '~/pages/admin/AdminChessRules.vue';
-import AdminChessRulesCategories from '~/pages/admin/AdminChessRulesCategories.vue';
+import AdminChessRuleCategories from '~/pages/admin/AdminChessRuleCategories.vue';
 import AdminUsers from '~/pages/admin/AdminUsers.vue';
 import AdminGames from '~/pages/admin/AdminGames.vue';
 import AdminWebsocket from '~/pages/admin/AdminWebsocket.vue';
-import AdminGamesView from '../pages/admin/view/AdminGamesView';
-import AdminUsersView from '../pages/admin/view/AdminUsersView';
+import AdminGamesView from '../pages/admin/view/AdminGamesView.vue';
+import AdminUsersView from '../pages/admin/view/AdminUsersView.vue';
 
 const routes = [
     {
@@ -97,8 +97,8 @@ const routes = [
                 component: AdminChessRules,
             },
             {
-                path: 'chess-rules-categories',
-                component: AdminChessRulesCategories,
+                path: 'chess-rule-categories',
+                component: AdminChessRuleCategories,
             },
             {
                 path: 'users',
