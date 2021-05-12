@@ -2,7 +2,6 @@ import AfterPaginationRequestValidation from '../validators/AfterPaginationReque
 
 export default async (table, columns, page, perPage, needle, searchColumns, ordering = false) => {
     const body = {
-        table,
         columns,
         page,
         perPage,

@@ -27,11 +27,14 @@ class SearchInTableRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
-
-            $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
-
             try {
+                if (empty($validator->failed()) === false) {
+                    throw (new TablePaginationValidationException($validator->errors()->first()));
+                }
+
+                $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
+                $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
+
                 TablePaginationService::isTableAvailable($forAdmin, $this->table);
                 TablePaginationService::areColumnsAvailable($forAdmin, $this->table, $this->columns);
                 TablePaginationService::areColumnsAvailable($forAdmin, $this->table, $this->searchColumns);
