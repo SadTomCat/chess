@@ -14,6 +14,8 @@ import Echo from 'laravel-echo';
 
 window.axios = require('axios');
 
+window.qs = require('qs');
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.isBoolean = (value) => typeof value === 'boolean';

@@ -14,7 +14,7 @@ class AdminUserController extends Controller
      * @param User $user
      * @return JsonResponse
      */
-    public function getInfo(Request $request, User $user): JsonResponse
+    public function show(Request $request, User $user): JsonResponse
     {
         try {
             $aboutUser = $user->only(['id', 'name', 'email', 'blocked', 'created_at', 'updated_at']);

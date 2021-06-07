@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AdminGameController extends Controller
 {
-    public function getInfo(Request $request, Game $game): JsonResponse
+    public function show(Request $request, Game $game): JsonResponse
     {
         try {
             $moves = $game->moves()->get(['from', 'to', 'type'])->toArray();

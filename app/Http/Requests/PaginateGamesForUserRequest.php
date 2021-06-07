@@ -13,6 +13,7 @@ class PaginateGamesForUserRequest extends FormRequest
      */
     public function authorize()
     {
+        // TODO: Add GATE
         return true;
     }
 

@@ -1,16 +1,20 @@
 import AfterPaginationRequestValidation from '../validators/AfterPaginationRequestValidation';
 
 export default async (table, columns, page, perPage, needle, searchColumns, ordering = false) => {
-    const body = {
-        columns,
-        page,
-        perPage,
-        needle,
-        searchColumns,
-        ordering,
-    };
-
-    const res = await window.axios.post(`/api/admin/table/${table}/search`, body).catch((e) => e.response);
+    const res = await window.axios.get(
+        `/api/admin/table/${table}/paginated/search`,
+        {
+            params: {
+                columns,
+                page,
+                perPage,
+                needle,
+                searchColumns,
+                ordering,
+            },
+            paramsSerializer: (params) => window.qs.stringify(params),
+        },
+    ).catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {
         return {

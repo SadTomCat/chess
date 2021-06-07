@@ -65,7 +65,7 @@ export default {
                 .subscribed(async () => {
                     searching.value = true;
                     disableSearchBtn.value = false;
-                    await window.axios.post('/subscribed/search-game');
+                    await window.axios.post('/api/channels/search-game/subscribed');
                 })
                 .listen('GameFoundEvent', (data) => {
                     window.echo.leave(`search-game-${store.state.user.id}`);

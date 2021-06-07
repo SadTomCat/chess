@@ -23,10 +23,9 @@ class UserJoinedToGame extends Controller
             $game = Game::getGameByToken($token);
             $moves = $game->moves()->get(['from', 'to', 'type', 'created_at']);
 
-            $userCount = $manager
-                ->getChannelsInfo('presence-game-' . $token)['presence-game-' . $token]['user_count'];
+            $userCount = $manager->getChannelsInfo('presence-game-' . $token)['presence-game-' . $token]['user_count'];
 
-            if ($userCount !== 2 || $game->start_at !== null) {
+            if ($userCount < 2 || $game->start_at !== null) {
                 $endAt = count($moves) > 0
                     ? (int)$moves->last()->created_at->timestamp + GameTimings::MOVE_TIME_WITH_DELAY
                     : (int)Carbon::createFromDate($game->start_at)->timestamp + (GameTimings::MOVE_TIME_WITH_DELAY ?? 0);

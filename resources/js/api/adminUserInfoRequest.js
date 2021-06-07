@@ -1,5 +1,5 @@
 export default async (id) => {
-    const res = await window.axios.post(`/api/admin/user/${id}`)
+    const res = await window.axios.get(`/api/admin/users/${id}`)
         .catch((e) => e.response);
 
     if (res.data.status === false || res.status !== 200) {
