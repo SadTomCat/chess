@@ -4,14 +4,14 @@ namespace App\Services;
 
 use App\Models\Game;
 
-class PaginateGamesForUserService
+class UserGamesService
 {
     /**
      * @param int $userId
      * @param int $page
      * @return array
      */
-    public static function getPaginated(int $userId, int $page): array
+    public static function paginate(int $userId, int $page): array
     {
         $columns = ['games.id', 'start_at', 'end_at', 'winner_color', 'token', 'color'];
 
