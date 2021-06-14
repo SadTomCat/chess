@@ -4,7 +4,7 @@
         <div class="base-list">
             <h1>{{ title }}</h1>
 
-            <ul class="base-list__list" v-if="items.length > 0">
+            <ul class="base-list__list" v-if="showList">
                 <li class="base-list__item" v-for="(item, index) in items" :key="item">
                     <div class="base-list-item__left">
                         <span class="base-list-item-left__index">{{ index + 1 }}.</span>
@@ -49,7 +49,7 @@
                 ></base-pagination>
             </div>
 
-            <button class="base-list__add-item" @click="showAddItemHandler" v-if="addItemButton">
+            <button class="base-list__add-item" @click="showAddItemHandler" v-if="addItemButton === true">
                 <span class="select-none">+</span>
             </button>
         </div>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import BasePagination from '../BasePagination.vue';
 
 // TODO: finish pagination
@@ -101,6 +101,8 @@ export default {
         const showNewItem = ref(false);
         const newItem = ref('');
 
+        const showList = computed(() => props.items.length > 0 || showNewItem.value === true);
+
         const showAddItemHandler = () => {
             showNewItem.value = true;
         };
@@ -122,6 +124,7 @@ export default {
             showAddItemHandler,
             closeAddItemBlockHandler,
             addNewItemAction,
+            showList,
         };
     },
 

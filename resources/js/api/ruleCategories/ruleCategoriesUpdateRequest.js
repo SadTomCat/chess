@@ -1,5 +1,5 @@
 export default async (id, name) => {
-    const res = await window.axios.patch(`/api/rule-categories/${id}`, { name })
+    const res = await window.axios.patch(`/api/rules/categories/${id}`, { name })
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRuleCategoriesTable extends Migration
+class CreateRulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateRuleCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('rule_categories', function (Blueprint $table) {
+        Schema::create('rules', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->text('content');
+            $table->string('rule_category')->unique();
+            $table->foreign('rule_category')->references('name')->on('rule_categories');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateRuleCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rules_categories');
+        Schema::dropIfExists('rules');
     }
 }

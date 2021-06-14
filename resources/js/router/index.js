@@ -1,20 +1,21 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
-import Home from '~/pages/Home.vue';
-import Login from '~/pages/Login.vue';
-import Registration from '~/pages/Registration.vue';
-import Game from '~/pages/Game.vue';
-import SearchGame from '~/pages/SearchGame.vue';
-import ForgotPassword from '~/pages/ForgotPassword.vue';
-import Settings from '~/pages/Settings.vue';
-import Admin from '~/pages/admin/Admin.vue';
-import AdminChessRules from '~/pages/admin/AdminChessRules.vue';
-import AdminChessRuleCategories from '~/pages/admin/AdminChessRuleCategories.vue';
-import AdminUsers from '~/pages/admin/AdminUsers.vue';
-import AdminGames from '~/pages/admin/AdminGames.vue';
-import AdminWebsocket from '~/pages/admin/AdminWebsocket.vue';
-import AdminGamesView from '../pages/admin/view/AdminGamesView.vue';
-import AdminUsersView from '../pages/admin/view/AdminUsersView.vue';
+
+const Home = () => import('~/pages/Home.vue');
+const Login = () => import('~/pages/Login.vue');
+const Registration = () => import('~/pages/Registration.vue');
+const Game = () => import('~/pages/Game.vue');
+const SearchGame = () => import('~/pages/SearchGame.vue');
+const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
+const Settings = () => import('~/pages/Settings.vue');
+const Admin = () => import('~/pages/admin/Admin.vue');
+const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
+const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
+const AdminUsers = () => import('~/pages/admin/AdminUsers.vue');
+const AdminGames = () => import('~/pages/admin/AdminGames.vue');
+const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
+const AdminGamesView = () => import('../pages/admin/view/AdminGamesView.vue');
+const AdminUsersView = () => import('../pages/admin/view/AdminUsersView.vue');
 
 const routes = [
     {

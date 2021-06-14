@@ -1,5 +1,5 @@
-export default async (id) => {
-    const res = await window.axios.delete(`/api/rules/categories/${id}`)
+export default async () => {
+    const res = await window.axios.get('/api/rules')
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {

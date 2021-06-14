@@ -1,7 +1,7 @@
 import RuleCategoriesAfterRequestValidation from '../../validators/RuleCategoriesAfterRequestValidation';
 
 export default async () => {
-    const res = await window.axios.get('/api/rule-categories')
+    const res = await window.axios.get('/api/rules/categories')
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {

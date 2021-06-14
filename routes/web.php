@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\AdminGameController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\GameMoveController;
+use App\Http\Controllers\ImagesController;
+use App\Http\Controllers\RulesController;
 use App\Http\Controllers\UserGamesController;
 use App\Http\Controllers\RuleCategoriesController;
 use App\Http\Controllers\TablePaginationController;
@@ -28,8 +30,11 @@ Route::prefix('/api')->group(function () {
 
     Route::patch('/settings', [SettingsController::class, 'update'])->middleware('auth');
 
-    Route::resource('/rule-categories', RuleCategoriesController::class)
+    Route::resource('/rules/categories', RuleCategoriesController::class)
          ->only(['index', 'store', 'destroy', 'update']);
+
+    Route::resource('/rules', RulesController::class)
+         ->only(['index', 'show', 'store', 'destroy', 'update']);
 
     Route::middleware('auth')->group(function () {
         Route::get('/users/{user}/games/paginated', [UserGamesController::class, 'paginate']);
@@ -50,6 +55,8 @@ Route::middleware('auth')->prefix('/api/admin')->group(function () {
     Route::post('/block/{user}', [AdminUserController::class, 'block']);
 
     Route::post('/unblock/{user}', [AdminUserController::class, 'unblock']);
+
+    Route::post('/images/ckeditor', [ImagesController::class, 'uploadFromCkeditor']);
 });
 
 // TODO: REST URL

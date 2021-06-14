@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import CKEditor from '@ckeditor/ckeditor5-vue';
 import App from './components/App.vue';
 import router from './router/index';
 import store from './store/index';
@@ -13,7 +14,8 @@ store.dispatch('FETCH_USER')
         store.state.timeDifference = serverTime - Math.floor(Date.now() / 1000);
 
         app.use(store)
-            .use(router);
+            .use(router)
+            .use(CKEditor);
 
         app.mount('#app');
     });
