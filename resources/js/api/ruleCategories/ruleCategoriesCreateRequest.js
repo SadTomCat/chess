@@ -1,5 +1,17 @@
 import validationHelper from '../../helpers/validationHelper';
 
+/**
+ * Data is validated
+ *
+ * Successful {
+ *     id: number
+ * }
+ *
+ * Fail {
+ *     status: false,
+ *     message: backend message | 'Something went wrong'
+ * }
+ * * */
 export default async (name) => {
     const res = await window.axios.post('/api/rules/categories', { name })
         .catch((e) => e.response);

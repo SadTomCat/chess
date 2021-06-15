@@ -1,3 +1,15 @@
+/**
+ * Data is validated
+ *
+ * Successful {
+ *      res.data - may contain unnecessary properties
+ * }
+ *
+ * Fail {
+ *     status: false,
+ *     message: backend message | 'Something went wrong'
+ * }
+ * */
 export default async (id) => {
     const res = await window.axios.delete(`/api/rules/categories/${id}`)
         .catch((e) => e.response);

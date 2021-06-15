@@ -1,3 +1,15 @@
+/**
+ * Data is validated
+ *
+ * Successful {
+ *      res.data - may contain unnecessary properties
+ * }
+ *
+ * Fail {
+ *     status: false,
+ *     message: backend message | 'Something went wrong'
+ * }
+ * */
 export default async (id, name) => {
     const res = await window.axios.patch(`/api/rules/categories/${id}`, { name })
         .catch((e) => e.response);

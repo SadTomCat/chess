@@ -7,7 +7,7 @@
         ></base-informer-block>
 
         <base-list :title="'Rules categories'"
-                   :items="normalizedCategories"
+                   :items="categoryNames"
                    :edit-button="true"
                    :delete-button="true"
                    :add-item-button="true"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { onBeforeMount, reactive } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 import BaseList from '../../components/lists/BaseList.vue';
 import BaseInformerBlock from '../../components/informers/BaseInformerBlock.vue';
 import ruleCategoriesCreateRequest from '../../api/ruleCategories/ruleCategoriesCreateRequest';
@@ -28,13 +28,18 @@ import ruleCategoriesUpdateRequest from '../../api/ruleCategories/ruleCategories
 import ruleCategoriesAllRequest from '../../api/ruleCategories/ruleCategoriesAllRequest';
 import baseInformerHelper from '../../helpers/baseInformerHelper';
 
+/**
+ * All category names are unique.
+ * */
 export default {
     name: 'AdminChessRuleCategories',
 
     setup() {
-        let categories = [];
-        const normalizedCategories = reactive([]);
+        const categories = ref([]);
+        const categoryNames = computed(() => categories.value.map((category) => category.name));
         let isAwaiting = false;
+
+        const findCategoryIndexByName = (name) => categories.value.findIndex((category) => category.name === name);
 
         /* ---------- Informer ---------- */
         const {
@@ -61,27 +66,6 @@ export default {
             isAwaiting = false;
         };
 
-        const deleteCategoryHandler = async (index) => {
-            const handler = async () => {
-                const { id } = categories[index];
-                const res = await ruleCategoriesDeleteRequest(id);
-
-                if (res.status === false) {
-                    setError(res.message);
-                    return;
-                }
-
-                categories = categories.filter((val, ind) => index !== ind);
-                normalizedCategories.length = 0;
-
-                categories.forEach((el) => {
-                    normalizedCategories.push(el.name);
-                });
-            };
-
-            await handlerRunner(handler);
-        };
-
         const storeCategoryHandler = async (newItem) => {
             const handler = async () => {
                 const res = await ruleCategoriesCreateRequest(newItem);
@@ -91,11 +75,10 @@ export default {
                     return;
                 }
 
-                categories.push({
+                categories.value.push({
                     id: res.id,
                     name: newItem,
                 });
-                normalizedCategories.push(newItem);
             };
 
             await handlerRunner(handler);
@@ -103,7 +86,14 @@ export default {
 
         const editCategoryHandler = async (index, newValue) => {
             const handler = async () => {
-                const { id } = categories[index];
+                const categoryIndex = findCategoryIndexByName(categoryNames.value[index]);
+
+                if (categoryIndex === -1) {
+                    setError('Something went wrong');
+                    return;
+                }
+
+                const { id } = categories.value[categoryIndex];
                 const res = await ruleCategoriesUpdateRequest(id, newValue);
 
                 if (res.status === false) {
@@ -111,8 +101,30 @@ export default {
                     return;
                 }
 
-                categories[index].name = newValue;
-                normalizedCategories[index] = newValue;
+                categories.value[categoryIndex].name = newValue;
+            };
+
+            await handlerRunner(handler);
+        };
+
+        const deleteCategoryHandler = async (index) => {
+            const handler = async () => {
+                const categoryIndex = findCategoryIndexByName(categoryNames.value[index]);
+
+                if (categoryIndex === -1) {
+                    setError('Something went wrong');
+                    return;
+                }
+
+                const { id } = categories.value[categoryIndex];
+                const res = await ruleCategoriesDeleteRequest(id);
+
+                if (res.status === false) {
+                    setError(res.message);
+                    return;
+                }
+
+                categories.value.splice(categoryIndex, 1);
             };
 
             await handlerRunner(handler);
@@ -128,15 +140,12 @@ export default {
                 return;
             }
 
-            res.categories.forEach((el) => {
-                categories.push(el);
-                normalizedCategories.push(el.name);
-            });
+            categories.value = res.categories;
         });
 
         return {
             information,
-            normalizedCategories,
+            categoryNames,
             handlerRunner,
             deleteCategoryHandler,
             storeCategoryHandler,

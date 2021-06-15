@@ -1,5 +1,20 @@
 import RuleCategoriesAfterRequestValidation from '../../validators/RuleCategoriesAfterRequestValidation';
 
+/**
+ * Data is validated
+ *
+ * Successful {
+ *     categories [
+ *         id: number
+ *         name: string
+ *     ]
+ * }
+ *
+ * Fail {
+ *     status: false,
+ *     message: backend message | 'Something went wrong'
+ * }
+ * */
 export default async () => {
     const res = await window.axios.get('/api/rules/categories')
         .catch((e) => e.response);
