@@ -17,7 +17,7 @@ class CreateRulesTable extends Migration
             $table->id();
             $table->text('content');
             $table->string('rule_category')->unique();
-            $table->foreign('rule_category')->references('name')->on('rule_categories');
+            $table->foreign('rule_category')->references('name')->on('rule_categories')->onUpdate('cascade');
             $table->timestamps();
         });
     }

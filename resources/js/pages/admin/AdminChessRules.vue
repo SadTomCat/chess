@@ -15,28 +15,28 @@
             </select>
         </div>
 
-        <!-- Notifications  -->
-        <div class="admin-chess-rules__action-notification">
+        <!-- Information  -->
+        <div class="admin-chess-rules__action-information">
 
-            <div class="admin-chess-rules-action-notification__base admin-chess-rules-action-notification__successful"
-                 v-if="notification.successful.length > 0"
+            <div class="admin-chess-rules-action-information__base admin-chess-rules-action-information__successful"
+                 v-if="information.successful.length > 0"
             >
                 <span class="material-icons">done</span>
-                <p>{{ notification.successful }}</p>
+                <p>{{ information.successful }}</p>
             </div>
 
-            <div class="admin-chess-rules-action-notification__base admin-chess-rules-action-notification__notice"
-                 v-if="notification.notice.length > 0"
+            <div class="admin-chess-rules-action-information__base admin-chess-rules-action-information__notice"
+                 v-if="information.notice.length > 0"
             >
                 <span class="material-icons">info</span>
-                <p>{{ notification.notice }}</p>
+                <p>{{ information.notice }}</p>
             </div>
 
-            <div class="admin-chess-rules-action-notification__base admin-chess-rules-action-notification__error"
-                 v-if="notification.error.length > 0"
+            <div class="admin-chess-rules-action-information__base admin-chess-rules-action-information__error"
+                 v-if="information.error.length > 0"
             >
                 <span class="material-icons">cancel</span>
-                <p>{{ notification.error }}</p>
+                <p>{{ information.error }}</p>
             </div>
 
         </div>
@@ -57,57 +57,28 @@
 </template>
 
 <script>
-import { onBeforeMount, reactive, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import CustomCkEditor from '../../components/ckeditor/CustomCkEditor.vue';
 import ruleCategoriesAllRequest from '../../api/ruleCategories/ruleCategoriesAllRequest';
 import getRuleRequest from '../../api/rules/getRuleRequest';
 import updateRuleRequest from '../../api/rules/updateRuleRequest';
 import storeRuleRequest from '../../api/rules/storeRuleRequest';
 import deleteRuleRequest from '../../api/rules/deleteRuleRequest';
+import baseInformerHelper from '../../helpers/baseInformerHelper';
 
 export default {
     name: 'AdminChessRules',
 
     setup() {
-        /* ---------- Notification ---------- */
-        const notification = reactive({
-            error: '',
-            notice: '',
-            successful: '',
-        });
+        /* ---------- Informer ---------- */
 
-        const setDefaultNotification = () => {
-            notification.error = '';
-            notification.notice = '';
-            notification.successful = '';
-        };
-
-        const setSuccessful = (message = '') => {
-            if (window.isString(message) === false) {
-                return;
-            }
-
-            setDefaultNotification();
-            notification.successful = message;
-        };
-
-        const setNotice = (message = '') => {
-            if (window.isString(message) === false) {
-                return;
-            }
-
-            setDefaultNotification();
-            notification.notice = message;
-        };
-
-        const setError = (message = '') => {
-            if (window.isString(message) === false) {
-                return;
-            }
-
-            setDefaultNotification();
-            notification.error = message;
-        };
+        const {
+            information,
+            setDefaultInformation,
+            setSuccessful,
+            setNotice,
+            setError,
+        } = baseInformerHelper();
 
         /* ---------- Editor ---------- */
 
@@ -117,7 +88,7 @@ export default {
         const isUpdate = ref(false);
 
         const categoryIsSelectedHandler = async () => {
-            setDefaultNotification();
+            setDefaultInformation();
 
             const category = ruleCategories.value.find((el) => el.name === selectedCategory.value);
 
@@ -156,8 +127,7 @@ export default {
             const res = await storeRuleRequest(editorData.value, selectedCategory.value);
 
             if (res.status === false) {
-                const error = res.message ?? 'Something went wrong';
-                setError(error);
+                setError(res.message);
                 return;
             }
 
@@ -175,8 +145,7 @@ export default {
             const res = await updateRuleRequest(editorData.value, selectedCategory.value);
 
             if (res.status === false) {
-                const error = res.message ?? 'Something went wrong';
-                setError(error);
+                setError(res.message);
                 return;
             }
 
@@ -196,7 +165,7 @@ export default {
         };
 
         const deleteRule = async () => {
-            setDefaultNotification();
+            setDefaultInformation();
 
             if (selectedCategory.value === '') {
                 setNotice('You selected nothing');
@@ -227,7 +196,7 @@ export default {
             sendArticle,
             categoryIsSelectedHandler,
             deleteRule,
-            notification,
+            information,
         };
     },
 
@@ -262,7 +231,7 @@ export default {
     }
 }
 
-.admin-chess-rules-action-notification {
+.admin-chess-rules-action-information {
     &__base {
         @apply flex justify-between items-center w-full h-14 rounded-xl text-white;
         @apply mb-6 px-5;
@@ -270,7 +239,6 @@ export default {
         p {
             @apply text-2xl w-full ml-4;
         }
-    ;
 
         span {
             @apply text-3xl;

@@ -1,45 +1,32 @@
 <template>
     <div class="admin-chess-rule-categories px-10 py-10">
+
+        <base-informer-block :successful="information.successful"
+                             :notice="information.notice"
+                             :error="information.error"
+        ></base-informer-block>
+
         <base-list :title="'Rules categories'"
                    :items="normalizedCategories"
                    :edit-button="true"
                    :delete-button="true"
                    :add-item-button="true"
-                   @editAction="editAction"
-                   @deleteAction="deleteAction"
-                   @addItemAction="addItemAction"
+                   @editAction="editCategoryHandler"
+                   @deleteAction="deleteCategoryHandler"
+                   @addItemAction="storeCategoryHandler"
         ></base-list>
-
-        <base-pop-up @closeAction="closePopUp" v-if="needPopUp === true" :height="'20rem'">
-
-            <div class="admin-chess-rule-categories-edit">
-                <h1>Editing rule category</h1>
-
-                <base-input-wrapper>
-                    <label for="edit-rule-category">Edit</label>
-                    <input id="edit-rule-category" type="text" v-model="editing">
-                </base-input-wrapper>
-
-                <div class="admin-chess-rule-categories-edit__btn-menu">
-                    <button class="bg-red-500" @click="backEditHandler">cancel</button>
-                    <button class="bg-green-600" @click="editCategoryHandler">edit</button>
-                </div>
-
-            </div>
-
-        </base-pop-up>
     </div>
 </template>
 
 <script>
-import { onBeforeMount, reactive, ref } from 'vue';
+import { onBeforeMount, reactive } from 'vue';
 import BaseList from '../../components/lists/BaseList.vue';
-import BasePopUp from '../../components/popUps/BasePopUp.vue';
-import BaseInputWrapper from '../../components/inputs/BaseInputWrapper.vue';
+import BaseInformerBlock from '../../components/informers/BaseInformerBlock.vue';
 import ruleCategoriesCreateRequest from '../../api/ruleCategories/ruleCategoriesCreateRequest';
 import ruleCategoriesDeleteRequest from '../../api/ruleCategories/ruleCategoriesDeleteRequest';
 import ruleCategoriesUpdateRequest from '../../api/ruleCategories/ruleCategoriesUpdateRequest';
 import ruleCategoriesAllRequest from '../../api/ruleCategories/ruleCategoriesAllRequest';
+import baseInformerHelper from '../../helpers/baseInformerHelper';
 
 export default {
     name: 'AdminChessRuleCategories',
@@ -47,126 +34,119 @@ export default {
     setup() {
         let categories = [];
         const normalizedCategories = reactive([]);
-        const needPopUp = ref(false);
-        let editingIndex = 0;
-        const editing = ref('');
-        let awaiting = false;
+        let isAwaiting = false;
 
-        const editAction = async (index) => {
-            needPopUp.value = true;
-            editingIndex = index;
-            editing.value = categories[index].name;
-        };
+        /* ---------- Informer ---------- */
+        const {
+            information,
+            setDefaultInformation,
+            setError,
+        } = baseInformerHelper();
 
-        const deleteAction = async (index) => {
-            if (awaiting === true) {
+        /* ---------- Handlers ---------- */
+
+        const handlerRunner = async (handler, ...args) => {
+            if (window.isFunction(handler) === false) {
                 return;
             }
 
-            awaiting = true;
-            const { id } = categories[index];
-            const data = await ruleCategoriesDeleteRequest(id);
-
-            if (data.status === false) {
-                console.log(data.message);
-                awaiting = false;
+            if (isAwaiting === true) {
                 return;
             }
 
-            categories = categories.filter((val, ind) => index !== ind);
-            normalizedCategories.length = 0;
+            setDefaultInformation();
 
-            categories.forEach((el) => {
-                normalizedCategories.push(el.name);
-            });
-            awaiting = false;
+            isAwaiting = true;
+            await handler(...args);
+            isAwaiting = false;
         };
 
-        const addItemAction = async (newItem) => {
-            if (awaiting === true) {
-                return;
-            }
+        const deleteCategoryHandler = async (index) => {
+            const handler = async () => {
+                const { id } = categories[index];
+                const res = await ruleCategoriesDeleteRequest(id);
 
-            awaiting = true;
-            const data = await ruleCategoriesCreateRequest(newItem);
+                if (res.status === false) {
+                    setError(res.message);
+                    return;
+                }
 
-            if (data.status === false) {
-                console.log(data.message);
-                awaiting = false;
-                return;
-            }
+                categories = categories.filter((val, ind) => index !== ind);
+                normalizedCategories.length = 0;
 
-            categories.push({
-                id: data.id,
-                name: newItem,
-            });
-            normalizedCategories.push(newItem);
-            awaiting = false;
+                categories.forEach((el) => {
+                    normalizedCategories.push(el.name);
+                });
+            };
+
+            await handlerRunner(handler);
         };
 
-        /* Editing pop up */
-        const closePopUp = () => {
-            editingIndex = 0;
-            editing.value = '';
-            needPopUp.value = false;
+        const storeCategoryHandler = async (newItem) => {
+            const handler = async () => {
+                const res = await ruleCategoriesCreateRequest(newItem);
+
+                if (res.status === false) {
+                    setError(res.message);
+                    return;
+                }
+
+                categories.push({
+                    id: res.id,
+                    name: newItem,
+                });
+                normalizedCategories.push(newItem);
+            };
+
+            await handlerRunner(handler);
         };
 
-        const backEditHandler = () => {
-            editing.value = categories[editingIndex].name;
+        const editCategoryHandler = async (index, newValue) => {
+            const handler = async () => {
+                const { id } = categories[index];
+                const res = await ruleCategoriesUpdateRequest(id, newValue);
+
+                if (res.status === false) {
+                    setError(res.message);
+                    return;
+                }
+
+                categories[index].name = newValue;
+                normalizedCategories[index] = newValue;
+            };
+
+            await handlerRunner(handler);
         };
 
-        const editCategoryHandler = async () => {
-            if (awaiting === true) {
-                return;
-            }
-
-            awaiting = true;
-            const { id } = categories[editingIndex];
-            const data = ruleCategoriesUpdateRequest(id, editing.value);
-
-            if (data.status === false) {
-                console.log(data.message);
-                awaiting = false;
-                return;
-            }
-
-            categories[editingIndex].name = editing.value;
-            normalizedCategories[editingIndex] = editing.value;
-            closePopUp();
-            awaiting = false;
-        };
+        /* ---------- Hooks ---------- */
 
         onBeforeMount(async () => {
-            const data = await ruleCategoriesAllRequest();
+            const res = await ruleCategoriesAllRequest();
 
-            if (data.status === false) {
-                console.log(data.message);
+            if (res.status === false) {
+                setError(res.message);
                 return;
             }
 
-            data.categories.forEach((el) => {
+            res.categories.forEach((el) => {
                 categories.push(el);
                 normalizedCategories.push(el.name);
             });
         });
 
         return {
+            information,
             normalizedCategories,
-            editing,
-            needPopUp,
-            editAction,
-            deleteAction,
-            addItemAction,
-            closePopUp,
-            backEditHandler,
+            handlerRunner,
+            deleteCategoryHandler,
+            storeCategoryHandler,
             editCategoryHandler,
         };
     },
 
     components: {
         BaseList,
-        BasePopUp,
-        BaseInputWrapper,
+        BaseInformerBlock,
     },
 };
 </script>

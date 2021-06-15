@@ -32,6 +32,13 @@ class RuleCategoriesRequest extends FormRequest
         ];
     }
 
+    public function attributes()
+    {
+        return [
+            'name' => 'category name',
+        ];
+    }
+
     /**
      * @param Validator $validator
      *

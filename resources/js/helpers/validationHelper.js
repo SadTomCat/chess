@@ -10,7 +10,7 @@ export default () => {
                     string: window.isString,
                     number: window.isNumber,
                     boolean: window.isBoolean,
-                    object: (val) => typeof val === 'object',
+                    object: window.isObject,
                     array: Array.isArray,
                 };
 

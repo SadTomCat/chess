@@ -8,7 +8,13 @@
                 <li class="base-list__item" v-for="(item, index) in items" :key="item">
                     <div class="base-list-item__left">
                         <span class="base-list-item-left__index">{{ index + 1 }}.</span>
-                        <span>{{ item }}</span>
+
+                        <input type="text"
+                               class="base-list-item-left__input"
+                               :value="item"
+                               @input="newEditingValue = $event.target.value"
+                               :disabled="editingIndex !== index"
+                        >
                     </div>
 
                     <div class="base-list__actions">
@@ -17,9 +23,21 @@
                             <span class="material-icons text-green-600">outbound</span>
                         </button>
 
-                        <button class="base-list__button" @click="$emit('editAction', index)" v-if="editButton">
-                            <span class="material-icons text-yellow-500">edit</span>
-                        </button>
+                        <div v-if="editButton === true">
+                            <div class="flex space-x-4" v-if="editingIndex === index">
+                                <button class="base-list__button" @click="editingAction">
+                                    <span class="material-icons text-green-500">done</span>
+                                </button>
+
+                                <button class="base-list__button" @click="closeEditing(index)">
+                                    <span class="material-icons text-red-500">close</span>
+                                </button>
+                            </div>
+
+                            <button class="base-list__button" @click="startEditing(index)" v-else>
+                                <span class="material-icons text-yellow-500">edit</span>
+                            </button>
+                        </div>
 
                         <button class="base-list__button" @click="$emit('deleteAction', index)" v-if="deleteButton">
                             <span class="material-icons text-red-500">delete</span>
@@ -118,6 +136,33 @@ export default {
             newItem.value = '';
         };
 
+        /* Editing */
+        const editingIndex = ref(-1);
+        const newEditingValue = ref('');
+
+        /**
+         * No need for close current editing because :value in input reference on `props.items`
+         * then after changing editingIndex, the current input returns the old value.
+         * */
+        const startEditing = (index) => {
+            newEditingValue.value = props.items[index];
+            editingIndex.value = index;
+        };
+
+        const closeEditing = (index) => {
+            newEditingValue.value = props.items[index];
+            editingIndex.value = -1;
+        };
+
+        const editingAction = () => {
+            if (newEditingValue.value.length === 0 || newEditingValue.value === props.items[editingIndex.value]) {
+                return;
+            }
+
+            emit('editAction', editingIndex.value, newEditingValue.value);
+            closeEditing();
+        };
+
         return {
             showNewItem,
             newItem,
@@ -125,10 +170,17 @@ export default {
             closeAddItemBlockHandler,
             addNewItemAction,
             showList,
+            editingIndex,
+            startEditing,
+            closeEditing,
+            newEditingValue,
+            editingAction,
         };
     },
 
-    components: { BasePagination },
+    components: {
+        BasePagination,
+    },
 };
 </script>
 
@@ -150,15 +202,23 @@ export default {
     }
 
     .base-list-item__left {
-        @apply flex items-center;
+        @apply flex items-center w-full;
     }
 
     .base-list-item-left__index {
         @apply mr-5 align-middle;
     }
 
+    .base-list-item-left__input {
+        @apply w-full focus:outline-none focus:ring-0 border-0;
+
+        &, &::placeholder {
+            @apply text-2xl text-black;
+        }
+    }
+
     &__actions {
-        @apply space-x-3;
+        @apply flex space-x-3;
 
         button {
             @apply focus:outline-none;

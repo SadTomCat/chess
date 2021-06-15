@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RuleCategoriesRequest;
 use App\Models\RuleCategory;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use function Symfony\Component\Translation\t;
 
 class RuleCategoriesController extends Controller
 {
@@ -56,10 +58,16 @@ class RuleCategoriesController extends Controller
     {
         try {
             $status = RuleCategory::findOrFail($id)->update(['name' => $request->name]);
-        } catch (Exception $e) {
+
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'Category not exist'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong'
             ]);
         }
 
@@ -77,10 +85,27 @@ class RuleCategoriesController extends Controller
     public function destroy($id): JsonResponse
     {
         // TODO: add gate
-        $status = RuleCategory::destroy($id);
+        try {
+            $ruleCategory = RuleCategory::findOrFail($id);
+
+            if ($ruleCategory->rule()->exists() === true) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "For the $ruleCategory->name category exists an article",
+                ]);
+            }
+
+            $ruleCategory->delete();
+
+        } catch (ModelNotFoundException $exception) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Rule category not exists',
+            ]);
+        }
 
         return response()->json([
-            'status' => (bool)$status,
+            'status' => true,
         ]);
     }
 }
