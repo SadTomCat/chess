@@ -44,13 +44,13 @@
         <!-- Editor -->
         <div class="admin-chess-rules__editor">
             <custom-ck-editor v-model="editorData"
-                              @delete="deleteRule"
+                              @delete="deleteRuleHandler"
             ></custom-ck-editor>
         </div>
 
         <!-- Bottom -->
         <div class="admin-chess-rules__bottom">
-            <button class="admin-chess-rules__send-btn" @click="sendArticle">send</button>
+            <button class="admin-chess-rules__send-btn" @click="sendArticleHandler">send</button>
         </div>
 
     </div>
@@ -60,10 +60,10 @@
 import { onBeforeMount, ref } from 'vue';
 import CustomCkEditor from '../../components/ckeditor/CustomCkEditor.vue';
 import ruleCategoriesAllRequest from '../../api/ruleCategories/ruleCategoriesAllRequest';
-import getRuleRequest from '../../api/rules/getRuleRequest';
-import updateRuleRequest from '../../api/rules/updateRuleRequest';
-import storeRuleRequest from '../../api/rules/storeRuleRequest';
-import deleteRuleRequest from '../../api/rules/deleteRuleRequest';
+import ruleGetOneRequest from '../../api/rules/ruleGetOneRequest';
+import ruleUpdateRequest from '../../api/rules/ruleUpdateRequest';
+import ruleCreateRequest from '../../api/rules/ruleCreateRequest';
+import ruleDeleteRequest from '../../api/rules/ruleDeleteRequest';
 import baseInformerHelper from '../../helpers/baseInformerHelper';
 
 export default {
@@ -85,7 +85,7 @@ export default {
         const ruleCategories = ref({});
         const selectedCategory = ref('');
         const editorData = ref('');
-        const isUpdate = ref(false);
+        let isUpdate = false;
 
         const categoryIsSelectedHandler = async () => {
             setDefaultInformation();
@@ -96,15 +96,17 @@ export default {
                 return;
             }
 
-            const res = await getRuleRequest(category.name);
+            const res = await ruleGetOneRequest(category.name);
 
-            if (res.exists === false) {
-                isUpdate.value = false;
+            if (res.exists === false || res.status === false) {
+                const message = res.exists === false ? '' : res.message;
+                isUpdate = false;
                 editorData.value = '';
+                setError(message);
                 return;
             }
 
-            isUpdate.value = true;
+            isUpdate = true;
             editorData.value = res.content;
         };
 
@@ -117,14 +119,8 @@ export default {
             return true;
         };
 
-        const storeArticle = async () => {
-            const isValid = validateContent();
-
-            if (isValid === false) {
-                return;
-            }
-
-            const res = await storeRuleRequest(editorData.value, selectedCategory.value);
+        const storeArticleHandler = async () => {
+            const res = await ruleCreateRequest(editorData.value, selectedCategory.value);
 
             if (res.status === false) {
                 setError(res.message);
@@ -132,17 +128,11 @@ export default {
             }
 
             setSuccessful(`${selectedCategory.value} article was saved`);
-            isUpdate.value = true;
+            isUpdate = true;
         };
 
-        const updateArticle = async () => {
-            const isValid = validateContent();
-
-            if (isValid === false) {
-                return;
-            }
-
-            const res = await updateRuleRequest(editorData.value, selectedCategory.value);
+        const updateArticleHandler = async () => {
+            const res = await ruleUpdateRequest(editorData.value, selectedCategory.value);
 
             if (res.status === false) {
                 setError(res.message);
@@ -152,19 +142,25 @@ export default {
             setSuccessful(`${selectedCategory.value} article was updated`);
         };
 
-        const sendArticle = async () => {
+        const sendArticleHandler = async () => {
             setTimeout(async () => {
                 if (selectedCategory.value === '') {
                     setNotice('You selected nothing');
                     return;
                 }
 
-                const runRequestHandler = isUpdate.value === true ? updateArticle : storeArticle;
+                const isValid = validateContent();
+
+                if (isValid === false) {
+                    return;
+                }
+
+                const runRequestHandler = isUpdate === true ? updateArticleHandler : storeArticleHandler;
                 await runRequestHandler();
             }, 500);
         };
 
-        const deleteRule = async () => {
+        const deleteRuleHandler = async () => {
             setDefaultInformation();
 
             if (selectedCategory.value === '') {
@@ -172,15 +168,16 @@ export default {
                 return;
             }
 
-            const res = await deleteRuleRequest(selectedCategory.value);
+            const res = await ruleDeleteRequest(selectedCategory.value);
 
             if (res.status === false) {
-                setError('Content is not deleted.');
+                const message = res.message ?? 'Content is not deleted.';
+                setError(message);
                 return;
             }
 
             editorData.value = '';
-            selectedCategory.value = '';
+            isUpdate = false;
             setSuccessful('Content is deleted.');
         };
 
@@ -193,9 +190,9 @@ export default {
             ruleCategories,
             selectedCategory,
             editorData,
-            sendArticle,
+            sendArticleHandler,
             categoryIsSelectedHandler,
-            deleteRule,
+            deleteRuleHandler,
             information,
         };
     },

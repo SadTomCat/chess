@@ -146,7 +146,7 @@ class RulesController extends Controller
         } catch (ModelNotFoundException) {
             return response()->json([
                 'status' => false,
-                'message' => 'Rule not exists',
+                'message' => "$category article not exists",
             ]);
         }
 

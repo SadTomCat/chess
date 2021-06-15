@@ -1,7 +1,19 @@
+/**
+ * Data is validated
+ *
+ * Successful {
+ *      res.data - may contain unnecessary properties
+ * }
+ *
+ * Fail {
+ *     status: false,
+ *     message: backend message | 'Something went wrong'
+ * }
+ * */
 export default async (content, category) => {
-    const data = { content };
+    const data = { content, category };
 
-    const res = await window.axios.patch(`/api/rules/${category}`, data)
+    const res = await window.axios.post('/api/rules', data)
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {
