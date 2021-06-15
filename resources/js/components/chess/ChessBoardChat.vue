@@ -7,20 +7,16 @@
             <span class="material-icons chess-chat__icon-btn"
                   :class="{'text-red-600': store.state.game.chatMute}"
                   @click="store.commit('SWITCH_CHAT_MUTE')"
-            >
-                person_off
-            </span>
+            >person_off</span>
         </div>
 
         <!-- Chat content -->
         <div class="chess-chat__messages">
-            <chess-board-chat-message
-                v-for="(message, index) in store.state.game.messages"
-                :message="message.message"
-                :fromOpponent="message.fromOpponent"
-                :key="index"
-            >
-            </chess-board-chat-message>
+            <chess-board-chat-message :message="message.message"
+                                      :from-opponent="message.fromOpponent"
+                                      v-for="(message, index) in store.state.game.messages"
+                                      :key="index"
+            ></chess-board-chat-message>
         </div>
 
         <!-- Bottom -->
@@ -56,10 +52,10 @@ export default {
 
             sending.value = true;
 
-            const res = await sendGameMessage(gameToken, message.value);
+            const data = await sendGameMessage(gameToken, message.value);
 
-            if (res.status === true) {
-                store.commit('PUSH_MESSAGE', { message: message.value });
+            if (data.status === true) {
+                store.commit('PUSH_MESSAGE', { message: message.value, fromOpponent: false });
                 message.value = '';
             }
 

@@ -34,6 +34,10 @@ export default () => {
     };
 
     const newMessage = (data) => {
+        if (data.id === store.state.user.id) {
+            return;
+        }
+
         store.commit('PUSH_MESSAGE', {
             message: data.message,
             fromOpponent: true,

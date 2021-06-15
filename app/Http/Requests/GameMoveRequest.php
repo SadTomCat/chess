@@ -49,6 +49,4 @@ class GameMoveRequest extends FormRequest
             'move' => 'array',
         ];
     }
-
-
 }

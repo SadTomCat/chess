@@ -22,7 +22,7 @@ class GameStartedCheckJob implements ShouldQueue
      */
     public function __construct(public string $gameToken)
     {
-        $this->delay = GameTimings::GAME_STARTED_CHECK;
+        $this->delay = GameTimings::GAME_START_WAITING_TIME;
     }
 
     /**

@@ -1,13 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminGameController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\GameChatController;
 use App\Http\Controllers\GameMoveController;
+use App\Http\Controllers\ImagesController;
+use App\Http\Controllers\RulesController;
+use App\Http\Controllers\UserGamesController;
+use App\Http\Controllers\RuleCategoriesController;
+use App\Http\Controllers\TablePaginationController;
 use App\Http\Controllers\UserJoinedToGame;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
-use App\Websockets\IWebsocketManager;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,13 +25,41 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/subscribed/{channel}', [SubscribedOnChannelController::class, 'subscribed'])
-    ->middleware('auth');
+Route::prefix('/api')->group(function () {
+    Route::get('/time', fn() => response()->json(['time' => date('U')]));
 
-Route::post('/get-time', function () {
-    return response()->json(['time' => date('U')]);
+    Route::patch('/settings', [SettingsController::class, 'update'])->middleware('auth');
+
+    Route::resource('/rules/categories', RuleCategoriesController::class)
+         ->only(['index', 'store', 'destroy', 'update']);
+
+    Route::resource('/rules', RulesController::class)
+         ->only(['index', 'show', 'store', 'destroy', 'update']);
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/users/{user}/games/paginated', [UserGamesController::class, 'paginate']);
+
+        Route::post('/channels/{channel}/subscribed', [SubscribedOnChannelController::class, 'subscribed']);
+    });
 });
 
+Route::middleware('auth')->prefix('/api/admin')->group(function () {
+    Route::get('/table/{table}/paginated', [TablePaginationController::class, 'tablePagination']);
+
+    Route::get('/table/{table}/paginated/search', [TablePaginationController::class, 'searchInTable']);
+
+    Route::get('/games/{game}', [AdminGameController::class, 'show']);
+
+    Route::get('/users/{user}', [AdminUserController::class, 'show']);
+
+    Route::post('/block/{user}', [AdminUserController::class, 'block']);
+
+    Route::post('/unblock/{user}', [AdminUserController::class, 'unblock']);
+
+    Route::post('/images/ckeditor', [ImagesController::class, 'uploadFromCkeditor']);
+});
+
+// TODO: REST URL
 Route::middleware(['auth', 'belongs.game', 'game.not.ended'])->group(function () {
     Route::post('/game/{token}/join', UserJoinedToGame::class);
 
@@ -36,11 +68,9 @@ Route::middleware(['auth', 'belongs.game', 'game.not.ended'])->group(function ()
     Route::post('/game/{token}/message', [GameChatController::class, 'newMessage']);
 });
 
-Route::post('/settings', [SettingsController::class, 'update'])
-    ->middleware('auth');
-
 require __DIR__ . '/auth.php';
 
+// TODO: ADD regular expression
 Route::get('/{path}', function () {
     return view('index');
 })->where('path', '.*');

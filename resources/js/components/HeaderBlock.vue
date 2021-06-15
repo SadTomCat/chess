@@ -32,7 +32,7 @@
         <div class="header__right-block">
 
             <!-- Auth navigation -->
-            <nav v-if="!logged">
+            <nav v-if="logged === false">
                 <ul class="header__horizontal-list">
                     <li>
                         <router-link to="/login">login</router-link>
@@ -44,11 +44,10 @@
             </nav>
 
             <!-- View profile block-->
-            <view-profile v-else
-                          :user="user"
+            <view-profile :user="user"
                           @logout="logout"
-            >
-            </view-profile>
+                          v-else
+            ></view-profile>
         </div>
     </header>
 </template>
@@ -106,7 +105,8 @@ export default {
 
 <style lang="scss">
 .header {
-    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30;
+    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30 sticky w-full;
+    top: 0;
 
     &__logo {
         h1 {

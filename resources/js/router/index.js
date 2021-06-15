@@ -1,12 +1,21 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
-import Home from '~/pages/Home.vue';
-import Login from '~/pages/Login.vue';
-import Registration from '~/pages/Registration.vue';
-import Game from '~/pages/Game.vue';
-import SearchGame from '~/pages/SearchGame.vue';
-import ForgotPassword from '~/pages/ForgotPassword.vue';
-import Settings from '~/pages/Settings.vue';
+
+const Home = () => import('~/pages/Home.vue');
+const Login = () => import('~/pages/Login.vue');
+const Registration = () => import('~/pages/Registration.vue');
+const Game = () => import('~/pages/Game.vue');
+const SearchGame = () => import('~/pages/SearchGame.vue');
+const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
+const Settings = () => import('~/pages/Settings.vue');
+const Admin = () => import('~/pages/admin/Admin.vue');
+const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
+const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
+const AdminUsers = () => import('~/pages/admin/AdminUsers.vue');
+const AdminGames = () => import('~/pages/admin/AdminGames.vue');
+const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
+const AdminGamesView = () => import('../pages/admin/view/AdminGamesView.vue');
+const AdminUsersView = () => import('../pages/admin/view/AdminUsersView.vue');
 
 const routes = [
     {
@@ -78,6 +87,44 @@ const routes = [
         meta: {
             needHeader: false,
             guest: true,
+        },
+    },
+    {
+        path: '/admin',
+        component: Admin,
+        children: [
+            {
+                path: 'chess-rules',
+                component: AdminChessRules,
+            },
+            {
+                path: 'chess-rule-categories',
+                component: AdminChessRuleCategories,
+            },
+            {
+                path: 'users',
+                component: AdminUsers,
+            },
+            {
+                path: 'games',
+                component: AdminGames,
+            },
+            {
+                path: 'websockets',
+                component: AdminWebsocket,
+            },
+            {
+                path: 'view/games/:id',
+                component: AdminGamesView,
+            },
+            {
+                path: 'view/users/:id',
+                component: AdminUsersView,
+            },
+        ],
+        meta: {
+            auth: true,
+            admin: true,
         },
     },
 ];

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -26,6 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'blocked',
+        'blocked_at',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'blocked' => 'boolean',
     ];
 
     /**
@@ -76,5 +78,23 @@ class User extends Authenticatable
         }
 
         return $game;
+    }
+
+    /**
+     * @return int
+     */
+    public function countEndedGames(): int
+    {
+        return $this->games()->where('end_at', '!=', null)->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function countGamesWon(): int
+    {
+        return Game::join('game_user', 'games.id', '=', 'game_user.game_id')
+                   ->where('game_user.user_id', '=', $this->id)
+                   ->whereColumn('games.winner_color', '=', 'game_user.color')->count();
     }
 }

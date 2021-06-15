@@ -83,6 +83,11 @@ export default {
             state.moves.push(payload);
         },
 
+        REMOVE_LAST(state) {
+            state.currentMoveNum--;
+            state.moves.pop();
+        },
+
         SET_TIME_ENDED(state, payload) {
             state.timerStarted = false;
             state.timeEnded = payload;
@@ -106,6 +111,13 @@ export default {
 
         SET_MOVE_ERROR_MESSAGE(state, payload) {
             state.moveErrorMessage = payload;
+        },
+
+        START_REPLAY(state) {
+            state.pageLoading = false;
+            state.gameStarted = true;
+            state.currentMoveNum = 1;
+            state.timerStarted = true;
         },
 
         UNSET_GAME(state) {

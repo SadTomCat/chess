@@ -4,7 +4,7 @@ namespace App\Game;
 
 class GameTimings
 {
-    public const GAME_STARTED_CHECK = 30;
+    public const GAME_START_WAITING_TIME = 30;
 
     public const MOVE_TIME = 120;
 
