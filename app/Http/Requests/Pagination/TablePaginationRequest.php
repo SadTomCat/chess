@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Pagination;
 
 use App\Exceptions\TablePaginationValidationException;
-use App\Validators\Pagination\TablePaginationValidator;
+use App\Validators\Pagination\TablePaginationValidatorBuilder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -32,28 +32,20 @@ class TablePaginationRequest extends FormRequest
                     throw (new TablePaginationValidationException($validator->errors()->first()));
                 }
 
-
                 $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
                 $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
 
-                $paginationValidator = new TablePaginationValidator(
-                    $forAdmin,
-                    $this->table,
-                    $this->columns,
-                    $this->ordering
-                );
-
-                $paginationValidator->validate();
+                TablePaginationValidatorBuilder::create($forAdmin, $this->table, $this->columns, $this->ordering)
+                                               ->getValidator()
+                                               ->validate();
 
             } catch (TablePaginationValidationException $e) {
-                $response = new JsonResponse([
-                    'status' => false,
-                    'message' => $e->getMessage(),
-                ], 422);
+                $response = new JsonResponse(['status' => false, 'message' => $e->getMessage()], 422);
 
                 throw new ValidationException($validator, $response);
             }
-        });
+        }
+        );
     }
 
     /**
@@ -65,7 +57,7 @@ class TablePaginationRequest extends FormRequest
     {
         return [
             'columns' => 'required|array',
-            'page' => 'required|integer',
+            'page'    => 'required|integer',
             'perPage' => 'required|integer',
         ];
     }
