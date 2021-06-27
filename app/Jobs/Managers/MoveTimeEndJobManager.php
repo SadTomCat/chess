@@ -1,30 +1,30 @@
 <?php
 
-namespace App\Services;
+namespace App\Jobs\Managers;
 
+use DB;
 use App\Game\GameTimings;
 use App\Models\GameJob;
-use DB;
-use Exception;
 use Illuminate\Support\Facades\Queue;
+use Exception;
 use Throwable;
 
-/*
- * This class is needed to manage MoveTimeEndJob
- * */
-class MoveTimeEndService
+final class MoveTimeEndJobManager
 {
+    /**
+     * @var array ['queue', 'payload', 'attempts', 'reserved_at', 'available_at', 'created_at']
+     */
     private static array $softDeletedJob = [];
 
     /**
      * @param int $gameId
      * @param $serializedJob
-     * @param string $data
+     * @param mixed $data
      *
      * @return bool
      * @throws Throwable
      */
-    public static function push(int $gameId, $serializedJob, $data = ''): bool
+    public static function push(int $gameId, $serializedJob, mixed $data = ''): bool
     {
         $delay = $serializedJob->delay ?? GameTimings::JOB_GAME_DELAY;
         $newJobId = Queue::later($delay, $serializedJob, $data);
@@ -39,7 +39,7 @@ class MoveTimeEndService
             'job_type' => 'move_time_end',
         ]);
 
-        static::$softDeletedJob = [];
+        self::$softDeletedJob = [];
         return true;
     }
 
@@ -64,14 +64,16 @@ class MoveTimeEndService
     /**
      * @param int $gameId
      * @param $job
+     * @return bool
      * @throws Throwable
      */
-    public static function deleteLastAndAddNew(int $gameId, $job): bool {
+    public static function deleteLastAndAddNew(int $gameId, $job): bool
+    {
         DB::beginTransaction();
 
         try {
-            static::deleteLast($gameId);
-            $pushStatus = static::push($gameId, $job);
+            self::deleteLast($gameId);
+            $pushStatus = self::push($gameId, $job);
 
             if ($pushStatus === false) {
                 throw new Exception();
@@ -95,18 +97,18 @@ class MoveTimeEndService
         $lastGameJob = GameJob::where([
             ['job_type', 'move_time_end'],
             ['game_id', $gameId],
-        ])->latest()?->first(['id', 'job_id']);
+        ])->latest()->first(['id', 'job_id']);
 
         if ($lastGameJob === null) {
             return;
         }
 
         $lastJob = DB::table('jobs')
-            ->where(['id' => $lastGameJob->job_id])
-            ->first(['queue', 'payload', 'attempts', 'reserved_at', 'available_at', 'created_at']);
+                     ->where(['id' => $lastGameJob->job_id])
+                     ->first(['queue', 'payload', 'attempts', 'reserved_at', 'available_at', 'created_at']);
 
-        static::$softDeletedJob = get_object_vars($lastJob);
-        static::deleteLast($gameId);
+        self::$softDeletedJob = get_object_vars($lastJob);
+        self::deleteLast($gameId);
     }
 
     /**
@@ -114,17 +116,18 @@ class MoveTimeEndService
      */
     public static function recoveryLast(int $gameId): void
     {
-        if (empty(static::$softDeletedJob)) {
+        if (empty(self::$softDeletedJob)) {
             return;
         }
 
-        $jobId = DB::table('jobs')->insertGetId(static::$softDeletedJob);
+        $jobId = DB::table('jobs')->insertGetId(self::$softDeletedJob);
+
         GameJob::create([
             'game_id' => $gameId,
             'job_id' => $jobId,
             'job_type' => 'move_time_end',
         ]);
 
-        static::$softDeletedJob = [];
+        self::$softDeletedJob = [];
     }
 }

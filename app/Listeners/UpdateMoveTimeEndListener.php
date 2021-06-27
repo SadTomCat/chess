@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Jobs\Managers\MoveTimeEndJobManager;
 use App\Jobs\MoveTimeEndJob;
 use App\Models\Game;
-use App\Services\MoveTimeEndService;
 
 class UpdateMoveTimeEndListener
 {
@@ -19,6 +19,6 @@ class UpdateMoveTimeEndListener
     {
         $game = Game::getGameByToken($event->gameToken);
         $job = new MoveTimeEndJob($game);
-        MoveTimeEndService::deleteLastAndAddNew($game->id, $job);
+        MoveTimeEndJobManager::deleteLastAndAddNew($game->id, $job);
     }
 }
