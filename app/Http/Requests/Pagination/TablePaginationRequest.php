@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Pagination;
 
 use App\Exceptions\TablePaginationValidationException;
-use App\Services\TablePaginationService;
+use App\Validators\Pagination\TablePaginationValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SearchInTableRequest extends FormRequest
+class TablePaginationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,13 +32,18 @@ class SearchInTableRequest extends FormRequest
                     throw (new TablePaginationValidationException($validator->errors()->first()));
                 }
 
+
                 $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
                 $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
 
-                TablePaginationService::isTableAvailable($forAdmin, $this->table);
-                TablePaginationService::areColumnsAvailable($forAdmin, $this->table, $this->columns);
-                TablePaginationService::areColumnsAvailable($forAdmin, $this->table, $this->searchColumns);
-                TablePaginationService::isCorrectOrdering($forAdmin, $this->table, $this->ordering);
+                $paginationValidator = new TablePaginationValidator(
+                    $forAdmin,
+                    $this->table,
+                    $this->columns,
+                    $this->ordering
+                );
+
+                $paginationValidator->validate();
 
             } catch (TablePaginationValidationException $e) {
                 $response = new JsonResponse([
@@ -60,10 +65,8 @@ class SearchInTableRequest extends FormRequest
     {
         return [
             'columns' => 'required|array',
-            'searchColumns' => 'required|array',
             'page' => 'required|integer',
             'perPage' => 'required|integer',
-            'needle' => 'required|string|min:3'
         ];
     }
 }

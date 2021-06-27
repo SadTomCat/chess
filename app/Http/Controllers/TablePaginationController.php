@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SearchInTableRequest;
-use App\Http\Requests\TablePaginationRequest;
+use App\Http\Requests\Pagination\SearchInTableRequest;
+use App\Http\Requests\Pagination\TablePaginationRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
