@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Pagination;
 
 use App\Exceptions\TablePaginationValidationException;
 use App\Validators\Pagination\TablePaginationValidator;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PaginateGamesForUserRequest;
+use App\Http\Requests\Pagination\PaginateGamesForUserRequest;
 use App\Models\Game;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
