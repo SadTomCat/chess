@@ -4,7 +4,7 @@ namespace App\Validators\Pagination;
 
 use App\Exceptions\TablePaginationValidationException;
 
-class TablePaginationValidator
+class TablePaginationValidationMethods
 {
     /**
      * Key - table, value - columns
@@ -35,18 +35,9 @@ class TablePaginationValidator
     public function __construct(
         protected bool $isAdmin,
         protected string $table,
-        protected array $columns,
         protected array|bool $ordering,
-    ){}
-
-    /**
-     * @throws TablePaginationValidationException
-     */
-    public function validate(): void
+    )
     {
-        $this->isTableAvailable();
-        $this->areColumnsAvailable($this->columns);
-        $this->isCorrectOrdering();
     }
 
     /**
@@ -54,7 +45,7 @@ class TablePaginationValidator
      *
      * @throws TablePaginationValidationException
      */
-    protected function isTableAvailable(): void
+    public function isTableAvailable(): void
     {
         $needleTables = $this->isAdmin === true ? $this->tablesForAdmin : $this->tablesForUser;
 
@@ -70,7 +61,7 @@ class TablePaginationValidator
      * @return void
      * @throws TablePaginationValidationException
      */
-    protected function areColumnsAvailable(array $columns): void
+    public function areColumnsAvailable(array $columns): void
     {
         $tableColumns = $this->isAdmin === true
             ? $this->tablesForAdmin[$this->table]
@@ -89,7 +80,7 @@ class TablePaginationValidator
      * @return void
      * @throws TablePaginationValidationException
      */
-    protected function isCorrectOrdering(): void
+    public function isCorrectOrdering(): void
     {
         if ($this->ordering === false) {
             return;
