@@ -124,7 +124,7 @@ const routes = [
         ],
         meta: {
             auth: true,
-            admin: true,
+            accessRoles: ['admin', 'moderator', 'support', 'redactor'],
         },
     },
 ];
@@ -135,13 +135,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    for (const middleware in middlewares) {
-        if (middlewares.hasOwnProperty(middleware)) {
-            const status = middlewares[middleware](to, from, next);
+    let status = true;
 
-            if (status === false) {
-                return;
-            }
+    const middlewaresNames = Object.getOwnPropertyNames(middlewares);
+
+    for (let i = 0; i < middlewaresNames.length; i++) {
+        const middlewaresName = middlewaresNames[i];
+        status = middlewares[middlewaresName](to, from, next);
+
+        if (status === false) {
+            next('/');
+            return;
         }
     }
 
