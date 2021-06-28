@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Pagination;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PaginateGamesForUserRequest extends FormRequest
@@ -13,8 +14,9 @@ class PaginateGamesForUserRequest extends FormRequest
      */
     public function authorize()
     {
-        // TODO: Add GATE
-        return true;
+        $userFromUrlParameter = $this->user;
+
+        return $this->user()->can('seeGames', [User::class, $userFromUrlParameter]);
     }
 
     /**
