@@ -2,7 +2,7 @@
 
 namespace App\Validators\Pagination;
 
-use App\Exceptions\TablePaginationValidationException;
+use App\Validators\Pagination\Interfaces\ITablePaginationValidationMethods;
 use App\Validators\Pagination\Interfaces\ITablePaginationValidator;
 
 class BaseTablePaginationValidationDecorator implements ITablePaginationValidator
@@ -10,10 +10,10 @@ class BaseTablePaginationValidationDecorator implements ITablePaginationValidato
     /**
      * BaseTablePaginationValidationDecorator constructor.
      *
-     * @param TablePaginationValidationMethods $validationMethods
+     * @param ITablePaginationValidationMethods $validationMethods
      * @param array $columns
      */
-    public function __construct(private TablePaginationValidationMethods $validationMethods,
+    public function __construct(private ITablePaginationValidationMethods $validationMethods,
                                 private array $columns
     )
     {

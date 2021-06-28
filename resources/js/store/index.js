@@ -13,6 +13,8 @@ export default createStore({
             id: '',
             name: '',
             email: '',
+            blocked: '',
+            role: '',
             logged: false,
         },
     }),
@@ -37,6 +39,8 @@ export default createStore({
                 id: '',
                 name: '',
                 email: '',
+                blocked: '',
+                role: '',
                 logged: false,
             };
         },

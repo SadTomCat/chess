@@ -4,7 +4,7 @@ use App\Http\Controllers\RuleCategoriesController;
 use App\Http\Controllers\RulesController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
-use App\Http\Controllers\UserGamesController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,7 +30,9 @@ Route::prefix('/api')->group(function () {
          ->only(['index', 'show', 'store', 'destroy', 'update']);
 
     Route::middleware('auth')->group(function () {
-        Route::get('/users/{user}/games/paginated', [UserGamesController::class, 'paginate']);
+        Route::get('/role', [UserController::class, 'getRole']);
+
+        Route::get('/users/{user}/games/paginated', [UserController::class, 'paginateGames']);
 
         Route::post('/channels/{channel}/subscribed', [SubscribedOnChannelController::class, 'subscribed']);
     });

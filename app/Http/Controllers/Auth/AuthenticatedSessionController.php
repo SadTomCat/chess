@@ -24,7 +24,7 @@ class AuthenticatedSessionController extends Controller
 
         return response()->json([
             'status' => true,
-            'user' => $request->user()->only(['id', 'name', 'email']),
+            'user' => $request->user()->getUserInfo(),
         ]);
     }
 
@@ -55,7 +55,7 @@ class AuthenticatedSessionController extends Controller
     {
         return response()->json([
             'status' => true,
-            'user' => $request->user()->only(['id', 'name', 'email']),
+            'user' => $request->user()->getUserInfo(),
         ]);
     }
 }

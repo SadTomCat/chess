@@ -25,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
         'blocked',
         'blocked_at',
     ];
@@ -96,5 +97,13 @@ class User extends Authenticatable
         return Game::join('game_user', 'games.id', '=', 'game_user.game_id')
                    ->where('game_user.user_id', '=', $this->id)
                    ->whereColumn('games.winner_color', '=', 'game_user.color')->count();
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserInfo(): array
+    {
+        return $this->only(['id', 'name', 'email', 'role', 'blocked']);
     }
 }

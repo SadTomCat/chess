@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class AdminGameController extends Controller
 {
@@ -36,8 +38,9 @@ class AdminGameController extends Controller
     {
         $users = $game->users()->withPivot(['color'])->get();
 
+        /** @var User $user */
         foreach ($users as $user) {
-            $info[$user->pivot->color] = array_merge($user->only(['id', 'name', 'email']),
+            $info[$user->pivot->color] = array_merge($user->getUserInfo(),
                 ['count_games' => $user->countEndedGames(), 'count_won' => $user->countGamesWon()]);
         }
 
