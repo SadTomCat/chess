@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
 
         return response()->json([
             'status' => true,
-            'user' => $user->only(['id', 'name', 'email']),
+            'user' => $user->getUserInfo(),
         ]);
     }
 }

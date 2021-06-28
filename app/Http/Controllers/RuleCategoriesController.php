@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RuleCategoriesRequest;
 use App\Models\RuleCategory;
 use Exception;
+use Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -84,7 +85,8 @@ class RuleCategoriesController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        // TODO: add gate
+        Gate::authorize('anyAction', RuleCategory::class);
+
         try {
             $ruleCategory = RuleCategory::findOrFail($id);
 

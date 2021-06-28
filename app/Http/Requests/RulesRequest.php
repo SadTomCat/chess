@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
@@ -14,10 +15,9 @@ class RulesRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // TODO: add authorize
-        return true;
+        return $this->user()->can('anyAction', Rule::class);
     }
 
     /**
@@ -28,7 +28,7 @@ class RulesRequest extends FormRequest
     public function rules()
     {
         return [
-            'content' => 'required|string|max:65535|min:30',
+            'content'  => 'required|string|max:65535|min:30',
             'category' => 'required|exists:rule_categories,name',
         ];
     }
@@ -49,10 +49,7 @@ class RulesRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator): void
     {
-        $response = new JsonResponse([
-            'status' => false,
-            'message' => $validator->errors()->first(),
-        ], 422);
+        $response = new JsonResponse(['status'  => false, 'message' => $validator->errors()->first()], 422);
 
         throw new ValidationException($validator, $response);
     }

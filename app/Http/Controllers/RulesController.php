@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RulesRequest;
 use App\Models\Rule;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Exception;
+use Illuminate\Support\Facades\Gate;
 
 class RulesController extends Controller
 {
@@ -44,6 +46,7 @@ class RulesController extends Controller
      * }
      *
      * @param RulesRequest $request
+     *
      * @return JsonResponse
      */
     public function store(RulesRequest $request): JsonResponse
@@ -103,7 +106,8 @@ class RulesController extends Controller
      * }
      *
      * @param RulesRequest $request
-     * @param $category
+     * @param string $category
+     *
      * @return JsonResponse
      */
     public function update(RulesRequest $request, string $category): JsonResponse
@@ -136,10 +140,14 @@ class RulesController extends Controller
      * }
      *
      * @param string $category
+     *
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function destroy(string $category): JsonResponse
     {
+        Gate::authorize('anyAction', Rule::class);
+
         try {
             Rule::getByRuleCategory($category)->delete();
 

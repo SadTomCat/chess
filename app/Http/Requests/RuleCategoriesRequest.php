@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\RuleCategory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
@@ -16,8 +17,7 @@ class RuleCategoriesRequest extends FormRequest
      */
     public function authorize()
     {
-        // TODO: add gate
-        return true;
+        return $this->user()->can('anyAction', RuleCategory::class);
     }
 
     /**
