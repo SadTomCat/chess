@@ -21,4 +21,15 @@ class UserPolicy
 
         return $isRoleAuthorized || ($currentUser->id === $gamesOwner->id);
     }
+
+    /**
+     * @param User $currentUser
+     * @param User $needleUser
+     *
+     * @return bool
+     */
+    public function isOwner(User $currentUser, User $needleUser): bool
+    {
+        return $currentUser->id === $needleUser->id;
+    }
 }
