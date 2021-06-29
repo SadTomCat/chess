@@ -101,11 +101,12 @@ class User extends Authenticatable
     }
 
     /**
+     * @param array $only
      * @return array
      */
-    public function getUserInfo(): array
+    public function getUserInfo(array $only = ['id', 'name', 'email', 'role', 'blocked']): array
     {
-        return $this->only(['id', 'name', 'email', 'role', 'blocked']);
+        return $this->only($only);
     }
 
     /**
