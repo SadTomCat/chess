@@ -143,7 +143,7 @@ export default {
     }
 
     ul {
-        @apply space-y-9;
+        @apply text-xl space-y-9;
 
         li {
             @apply flex pb-1 justify-between border-b;

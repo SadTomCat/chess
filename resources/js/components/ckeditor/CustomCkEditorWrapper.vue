@@ -1,5 +1,5 @@
 <template>
-    <div class="ck ck-content custom-ck-editor-wrapper">
+    <div class="ck ck-content custom-ck-editor-wrapper ck-editor">
         <slot></slot>
     </div>
 </template>
@@ -11,6 +11,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "./../../../sass/ckeditor";
+
 .custom-ck-editor-wrapper {
     h2 {
         @apply text-4xl;

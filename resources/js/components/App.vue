@@ -22,5 +22,6 @@ export default {
 main {
     height: 1px;
     max-height: fit-content;
+    background-color: var(--background-color);
 }
 </style>

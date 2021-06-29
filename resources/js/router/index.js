@@ -2,12 +2,15 @@ import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
 
 const Home = () => import('~/pages/Home.vue');
+const Rules = () => import('~/pages/Rules.vue');
 const Login = () => import('~/pages/Login.vue');
 const Registration = () => import('~/pages/Registration.vue');
 const Game = () => import('~/pages/Game.vue');
 const SearchGame = () => import('~/pages/SearchGame.vue');
 const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
 const Settings = () => import('~/pages/Settings.vue');
+const Statistics = () => import('~/pages/Statistics.vue');
+const ViewGame = () => import('../pages/ViewGame');
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
 const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
@@ -37,8 +40,8 @@ const routes = [
         name: 'rating',
     },
     {
-        path: '/rules',
-        component: Home,
+        path: '/rules/:rule?',
+        component: Rules,
         name: 'rules',
     },
     {
@@ -55,9 +58,17 @@ const routes = [
         },
     },
     {
-        path: '/statistic',
-        component: Home,
+        path: '/statistics',
+        component: Statistics,
         name: 'statistic',
+        meta: {
+            auth: true,
+        },
+    },
+    {
+        path: '/view/games/:gameId',
+        component: ViewGame,
+        name: 'gameReplay',
         meta: {
             auth: true,
         },
