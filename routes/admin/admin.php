@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminGameController;
+use App\Http\Controllers\Admin\AdminGamesController;
 use App\Http\Controllers\ImagesController;
 
 Route::middleware('auth')->prefix('/api/admin')->group(function () {
@@ -8,7 +8,7 @@ Route::middleware('auth')->prefix('/api/admin')->group(function () {
 
     require __DIR__ . '/manage_users.php';
 
-    Route::get('/games/{game}', [AdminGameController::class, 'show'])
+    Route::get('/games/{game}', [AdminGamesController::class, 'showGameInfo'])
          ->middleware('roles:admin,moderator,support');
 
     Route::post('/images/ckeditor', [ImagesController::class, 'uploadFromCkeditor'])

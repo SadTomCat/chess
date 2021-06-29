@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminGamesController;
+use App\Http\Controllers\GamesController;
 use App\Http\Controllers\RuleCategoriesController;
 use App\Http\Controllers\RulesController;
 use App\Http\Controllers\SettingsController;
@@ -35,6 +37,8 @@ Route::prefix('/api')->group(function () {
         Route::get('/users/{user}/games/paginated', [UserController::class, 'paginateGames']);
 
         Route::get('/users/{user}/games/statistics', [UserController::class, 'getGamesStatistics']);
+
+        Route::get('/games/{game}', [GamesController::class, 'showGameInfo']);
 
         Route::post('/channels/{channel}/subscribed', [SubscribedOnChannelController::class, 'subscribed']);
     });
