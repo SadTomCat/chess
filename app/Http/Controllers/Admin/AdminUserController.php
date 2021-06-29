@@ -23,11 +23,7 @@ class AdminUserController extends Controller
                 $aboutUser['blocked_at'] = $user->blocked_at;
             }
 
-            $info = array_merge($aboutUser, [
-                'count_games' => $user->games()->count(),
-                'count_won' => $user->countGamesWon(),
-                'not_count_games' => $user->games()->where('end_at', null)->count()
-            ]);
+            $info = array_merge($aboutUser, $user->getGamesStatistics());
 
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => 'Something went wrong']);

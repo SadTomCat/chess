@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @mixin IdeHelperUser
@@ -47,7 +48,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'blocked' => 'boolean',
+        'blocked'           => 'boolean',
     ];
 
     /**
@@ -105,5 +106,17 @@ class User extends Authenticatable
     public function getUserInfo(): array
     {
         return $this->only(['id', 'name', 'email', 'role', 'blocked']);
+    }
+
+    /**
+     * @return array ['count_games' => "int", 'count_won' => "int", 'not_count_games' => "int"]
+     */
+    public function getGamesStatistics(): array
+    {
+        return [
+            'count_games'     => $this->games()->count(),
+            'count_won'       => $this->countGamesWon(),
+            'not_count_games' => $this->games()->where('end_at', null)->count()
+        ];
     }
 }

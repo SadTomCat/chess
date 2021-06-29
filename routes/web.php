@@ -34,6 +34,8 @@ Route::prefix('/api')->group(function () {
 
         Route::get('/users/{user}/games/paginated', [UserController::class, 'paginateGames']);
 
+        Route::get('/users/{user}/games/statistics', [UserController::class, 'getGamesStatistics']);
+
         Route::post('/channels/{channel}/subscribed', [SubscribedOnChannelController::class, 'subscribed']);
     });
 });
