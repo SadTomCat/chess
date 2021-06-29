@@ -9,6 +9,8 @@ const Game = () => import('~/pages/Game.vue');
 const SearchGame = () => import('~/pages/SearchGame.vue');
 const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
 const Settings = () => import('~/pages/Settings.vue');
+const Statistics = () => import('~/pages/Statistics.vue');
+const ViewGame = () => import('../pages/ViewGame');
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
 const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
@@ -56,9 +58,17 @@ const routes = [
         },
     },
     {
-        path: '/statistic',
-        component: Home,
+        path: '/statistics',
+        component: Statistics,
         name: 'statistic',
+        meta: {
+            auth: true,
+        },
+    },
+    {
+        path: '/view/games/:gameId',
+        component: ViewGame,
+        name: 'gameReplay',
         meta: {
             auth: true,
         },

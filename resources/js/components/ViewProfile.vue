@@ -18,7 +18,7 @@
                         <router-link to="/settings">settings</router-link>
                     </li>
                     <li>
-                        <router-link to="/statistic">statistic</router-link>
+                        <router-link to="/statistics">statistics</router-link>
                     </li>
                 </ul>
 
