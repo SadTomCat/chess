@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
 
 const Home = () => import('~/pages/Home.vue');
+const Rules = () => import('~/pages/Rules.vue');
 const Login = () => import('~/pages/Login.vue');
 const Registration = () => import('~/pages/Registration.vue');
 const Game = () => import('~/pages/Game.vue');
@@ -37,8 +38,8 @@ const routes = [
         name: 'rating',
     },
     {
-        path: '/rules',
-        component: Home,
+        path: '/rules/:rule?',
+        component: Rules,
         name: 'rules',
     },
     {
