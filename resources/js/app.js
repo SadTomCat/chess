@@ -8,6 +8,16 @@ require('./bootstrap');
 
 const app = createApp(App);
 
+app.config.errorHandler = (err, vm, info) => {
+    console.error(
+        `Message - ${err.message}
+        \nInfo - ${info}
+        \n\nStack - ${err.stack}`,
+    );
+
+    return true;
+};
+
 store.dispatch('FETCH_USER')
     .finally(async () => {
         const serverTime = await window.axios.get('/api/time').then((res) => res.data.time);

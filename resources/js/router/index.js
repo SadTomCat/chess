@@ -10,15 +10,15 @@ const SearchGame = () => import('~/pages/SearchGame.vue');
 const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
 const Settings = () => import('~/pages/Settings.vue');
 const Statistics = () => import('~/pages/Statistics.vue');
-const ViewGame = () => import('../pages/ViewGame');
+const ViewGame = () => import('~/pages/ViewGame');
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
 const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
 const AdminUsers = () => import('~/pages/admin/AdminUsers.vue');
 const AdminGames = () => import('~/pages/admin/AdminGames.vue');
 const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
-const AdminGamesView = () => import('../pages/admin/view/AdminGamesView.vue');
-const AdminUsersView = () => import('../pages/admin/view/AdminUsersView.vue');
+const AdminViewGame = () => import('~/pages/admin/view/AdminViewGame.vue');
+const AdminUsersView = () => import('~/pages/admin/view/AdminUsersView.vue');
 
 const routes = [
     {
@@ -126,7 +126,7 @@ const routes = [
             },
             {
                 path: 'view/games/:id',
-                component: AdminGamesView,
+                component: AdminViewGame,
             },
             {
                 path: 'view/users/:id',

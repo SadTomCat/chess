@@ -1,23 +1,23 @@
 <template>
-    <div class="admin-base-info-card" :style="{width, height: getHeight}">
-        <div class="admin-base-info-card__top" :style="{backgroundColor, color }">
+    <div class="base-drop-down-info-card" :style="{width, height: getHeight}" ref="test">
+        <div class="base-drop-down-info-card__top" :style="{backgroundColor, color}">
             <p class="overflow-ellipsis">{{ title === '' ? 'Info' : title }}</p>
 
-            <div class="admin-base-info-card__full-info-button" @click="showFull = !showFull">
+            <div class="base-drop-down-info-card__full-info-button" @click="showFull = !showFull">
                 <span class="material-icons text-2xl" v-if="showFull">remove</span>
                 <span class="material-icons" v-else>add</span>
             </div>
         </div>
 
-        <div class="admin-base-info-card__bottom" v-if="showFull">
+        <div class="base-drop-down-info-card__bottom" v-if="showFull">
             <ul>
                 <li v-for="(value, key) in info" :key="value">
                     <span>{{ key }}</span>: {{ value }}
                 </li>
             </ul>
 
-            <router-link class="self-center mt-7" :to="moreInfoLinkObj.link" v-if="needMoreInfoLink">
-                {{ moreInfoLinkObj.title }}
+            <router-link class="self-center mt-7" :to="moreInfoConfig.link" v-if="needMoreInfoLink">
+                {{ moreInfoConfig.title }}
             </router-link>
         </div>
     </div>
@@ -27,26 +27,33 @@
 import { computed, ref } from 'vue';
 
 export default {
-    name: 'AdminBaseInfoCard',
+    name: 'BaseDropDownInfoCard',
 
     props: {
         info: Object,
+
         title: String,
+
         loading: Boolean,
+
         backgroundColor: {
             type: String,
             default: () => ('#fff'),
         },
+
         color: {
             type: String,
             default: () => ('#111'),
         },
+
         width: {
             type: String,
             default: () => ('49%'),
         },
+
         height: String,
-        moreInfoLinkObj: {
+
+        moreInfoConfig: {
             type: Object,
             default: () => ({
                 off: true,
@@ -60,7 +67,8 @@ export default {
     setup(props) {
         const showFull = ref(false);
 
-        const needMoreInfoLink = computed(() => (props.moreInfoLinkObj.off === false && showFull.value === true));
+        const needMoreInfoLink = computed(() => (props.moreInfoConfig.off === false && showFull.value === true));
+        const test = ref(null);
 
         const getHeight = computed(() => {
             if (showFull.value === false) {
@@ -71,6 +79,7 @@ export default {
         });
 
         return {
+            test,
             showFull,
             needMoreInfoLink,
             getHeight,
@@ -80,10 +89,10 @@ export default {
 </script>
 
 <style lang="scss">
-.admin-base-info-card {
+.base-drop-down-info-card {
     overflow: hidden;
 
-    @apply flex flex-col rounded-2xl shadow relative text-xl;
+    @apply flex flex-col rounded-2xl shadow relative text-xl flex-grow-0;
 
     &__top {
         height: 4rem;

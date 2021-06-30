@@ -1,35 +1,29 @@
 <template>
-    <div class="view-game" v-show="loading === false">
-        <div class="view-game__top">
-            <h1 class="view-game__title">Replay</h1>
-
-            <router-link class="view-game__statistics-link" to="/statistics">My statistics</router-link>
-        </div>
-
+    <div class="admin-games-view">
         <chess-base-view-game :game-info="gameInfo"
                               :winner-info="winnerInfo"
                               :loser-info="loserInfo"
                               :moves="moves"
+                              :more-info-about-user-path="'/admin/view/users'"
                               :loading="loading"
         ></chess-base-view-game>
     </div>
 </template>
 
 <script>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { onBeforeMount } from 'vue';
-import ChessBaseViewGame from '../components/chess/ChessBaseViewGame.vue';
-import viewGameHelper from '../helpers/viewGameHelper';
-import ViewGameUserInfo from '../classes/viewGame/ViewGameUserInfo';
-import ViewGameGameInfo from '../classes/viewGame/ViewGameGameInfo';
-import getGameInfoRequest from '../api/game/getGameInfoRequest';
+import ChessBaseViewGame from '../../../components/chess/ChessBaseViewGame.vue';
+import adminGameInfoRequest from '../../../api/adminGameInfoRequest';
+import viewGameHelper from '../../../helpers/viewGameHelper';
+import ViewGameUserInfo from '../../../classes/viewGame/ViewGameUserInfo';
+import ViewGameGameInfo from '../../../classes/viewGame/ViewGameGameInfo';
 
 export default {
-    name: 'ViewGame',
+    name: 'AdminViewGame',
 
     setup() {
         const route = useRoute();
-        const router = useRouter();
 
         const {
             loading,
@@ -41,13 +35,9 @@ export default {
         } = viewGameHelper(ViewGameGameInfo, ViewGameUserInfo);
 
         onBeforeMount(async () => {
-            const data = await getGameInfoRequest(route.params.gameId);
+            const data = await adminGameInfoRequest(route.params.id);
 
             if (data.status === false) {
-                if (data.unauthorized === true) {
-                    await router.replace('/');
-                }
-
                 return;
             }
 
@@ -71,19 +61,13 @@ export default {
 
 <style lang="scss">
 
-.view-game {
-    @apply py-16 px-32;
+.admin-games-view {
+    @apply flex justify-between flex-wrap py-8 px-10 w-full text-xl;
 
-    &__top {
+    &__users-cards {
+        width: 66.6%;
         @apply flex justify-between;
     }
-
-    &__title {
-        @apply text-4xl mb-10;
-    }
-
-    &__statistics-link {
-        @apply text-2xl;
-    }
 }
+
 </style>
