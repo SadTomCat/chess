@@ -21,7 +21,7 @@
 import { onBeforeMount, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import BaseTable from './BaseTable.vue';
-import getFromTableRequest from '~/api/paginatedTableByAdminRequest';
+import getFromTableRequest from '../../api/pagination/paginatedTableByAdminRequest';
 import searchInTableRequest from '../../api/searchInTableRequest';
 
 export default {

@@ -1,5 +1,5 @@
 <template>
-    <div class="view-profile">
+    <div class="view-profile" @click.stop>
         <img src="" class="view-profile__img" @click="switchViewProfileStatus">
 
         <!-- Menu -->
@@ -14,6 +14,9 @@
 
                 <!-- List of links -->
                 <ul>
+                    <li>
+                        <router-link to="/admin" v-if="showAdminPanelLink === true">admin panel</router-link>
+                    </li>
                     <li>
                         <router-link to="/settings">settings</router-link>
                     </li>
@@ -31,7 +34,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import {
+    computed, onBeforeUnmount, onMounted, ref,
+} from 'vue';
+import { useStore } from 'vuex';
 
 export default {
     name: 'ViewProfile',
@@ -43,16 +49,35 @@ export default {
     },
 
     setup() {
-        // View profile user menu
+        const store = useStore();
+
+        const showAdminPanelLink = computed(() => store.state.user.role !== 'user');
+
         const viewProfileStatus = ref(false);
 
         const switchViewProfileStatus = () => {
             viewProfileStatus.value = !viewProfileStatus.value;
         };
 
+        const closeViewProfile = () => {
+            viewProfileStatus.value = false;
+        };
+
+        onMounted(() => {
+            window.addEventListener('click', closeViewProfile);
+            window.addEventListener('keydown', closeViewProfile);
+        });
+
+        onBeforeUnmount(() => {
+            window.removeEventListener('click', closeViewProfile);
+            window.addEventListener('keydown', closeViewProfile);
+        });
+
         return {
+            showAdminPanelLink,
             viewProfileStatus,
             switchViewProfileStatus,
+            closeViewProfile,
         };
     },
 };
@@ -68,12 +93,21 @@ export default {
     }
 
     &__menu {
-        @apply flex flex-col justify-between;
-        @apply absolute right-0 w-64 h-64 px-3 py-4 mt-1 shadow-md;
-        @apply text-lg bg-white shadow-md z-30;
+        height: var(--view-profile-menu-height);
+
+        transform-origin: top center;
+        animation: growDown .1s linear;
+
+        -webkit-box-shadow: 0px 4px 15px -3px rgba(31, 37, 41, 0.32);
+        -moz-box-shadow: 0px 4px 15px -3px rgba(31, 37, 41, 0.32);
+        box-shadow: 0px 4px 15px -3px rgba(31, 37, 41, 0.32);
+
+        @apply flex flex-col justify-between overflow-y-hidden;
+        @apply absolute right-0 w-64 px-3 py-4 mt-1 rounded-lg;
+        @apply text-lg bg-white z-30;
 
         .view-profile-menu__top {
-            @apply space-y-6;
+            @apply space-y-6 mb-5;
         }
 
         .view-profile-menu__welcome {
@@ -83,9 +117,14 @@ export default {
 
     ul {
         @apply space-y-5;
+    }
 
-        li {
-            @apply border-b border-gray-400;
+    @keyframes growDown {
+        0% {
+            height: 0;
+        }
+        100% {
+            height: var(--view-profile-menu-height);
         }
     }
 }

@@ -56,7 +56,7 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import AuthCard from '~/components/AuthCard.vue';
-import registerRequest from '~/api/registerRequest';
+import registerRequest from '../api/auth/registerRequest';
 import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {

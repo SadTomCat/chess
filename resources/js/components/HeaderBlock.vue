@@ -60,7 +60,7 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import logoutRequest from '~/api/logoutRequest';
+import logoutRequest from '../api/auth/logoutRequest';
 import useEchoHelper from '~/helpers/useEchoHelper';
 import ViewProfile from './ViewProfile.vue';
 

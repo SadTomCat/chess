@@ -10,43 +10,127 @@
             <div class="rules-content" v-html="content"></div>
         </custom-ck-editor-wrapper>
     </div>
+
+    <teleport to="body">
+        <warning-pop-up @closeWarningPopUp="closeWarningPopUp" v-if="warningSettings.isShown">
+            <div class="text-2xl">
+                <p>{{ warningSettings.message }}</p>
+            </div>
+        </warning-pop-up>
+    </teleport>
 </template>
 
 <script>
 import {
     onBeforeMount, reactive, ref,
 } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import BaseSidePanel from '../components/sidePanels/BaseSidePanel.vue';
 import ruleCategoriesAllRequest from '../api/ruleCategories/ruleCategoriesAllRequest';
 import ruleGetOneRequest from '../api/rules/ruleGetOneRequest';
 import CustomCkEditorWrapper from '../components/ckeditor/CustomCkEditorWrapper.vue';
+import WarningPopUp from '../components/popUps/WarningPopUp.vue';
 
 export default {
     name: 'Rules',
 
     setup() {
         const route = useRoute();
+        const router = useRouter();
 
+        /* ---------- Warning ----------*/
+        const warningSettings = reactive({
+            isShown: false,
+            message: '',
+        });
+
+        const closeWarningPopUp = () => {
+            warningSettings.message = '';
+            warningSettings.isShown = false;
+        };
+
+        /* ---------- Rule ----------*/
         const title = ref('');
         const content = ref('');
 
+        /** @return {String|Boolean} */
         const fetchRuleContent = async (ruleName) => {
+            closeWarningPopUp();
+
             const data = await ruleGetOneRequest(ruleName);
 
             if (data.exists === false) {
-                console.log('Can not fetch rule');
-                return;
+                warningSettings.isShown = true;
+                warningSettings.message = 'This rule not exists yet';
+                await router.replace('/rules');
+                return false;
+            }
+
+            return data.content;
+        };
+
+        /**
+         * Set from server or sessionStorage and cache them
+         *
+         *  @return {Boolean}
+         *  */
+        const setRuleContent = async (ruleName) => {
+            let ruleContent = JSON.parse(sessionStorage.getItem(`rule-${ruleName}-content`));
+
+            if (ruleContent === null) {
+                ruleContent = await fetchRuleContent(ruleName);
+
+                if (ruleContent === false) {
+                    return false;
+                }
+
+                sessionStorage.setItem(`rule-${ruleName}-content`, JSON.stringify(ruleContent));
             }
 
             title.value = ruleName;
-            content.value = data.content;
+            content.value = ruleContent;
+            return true;
         };
 
+        /* ---------- Rules links ----------*/
         const links = reactive([]);
 
-        const setLinksAfterRequest = (data) => {
-            data.categories.forEach((category) => {
+        /**  @return {Object|Boolean} */
+        const fetchLinks = async () => {
+            const data = await ruleCategoriesAllRequest();
+
+            if (data.status === false) {
+                warningSettings.isShown = true;
+                warningSettings.message = 'Can not fetch rules';
+                return false;
+            }
+
+            return data.categories;
+        };
+
+        /**
+         * Get from server or sessionStorage and cache them
+         *
+         *  @return {Object|Boolean}
+         *  */
+        const getLinks = async () => {
+            let rulesLinks = JSON.parse(sessionStorage.getItem('rules-links'));
+
+            if (rulesLinks === null) {
+                rulesLinks = await fetchLinks();
+
+                if (rulesLinks === false) {
+                    return false;
+                }
+
+                sessionStorage.setItem('rules-links', JSON.stringify(rulesLinks));
+            }
+
+            return rulesLinks;
+        };
+
+        const setLinksAfterRequest = (rulesLinks) => {
+            rulesLinks.forEach((category) => {
                 links.push({
                     name: category.name,
                     link: `/rules/${category.name}`,
@@ -55,25 +139,22 @@ export default {
         };
 
         const locationWasChanged = async (indexInLinks) => {
-            await fetchRuleContent(links[indexInLinks].name);
+            await setRuleContent(links[indexInLinks].name);
         };
 
         onBeforeMount(async () => {
-            const data = await ruleCategoriesAllRequest();
+            const rulesLinks = await getLinks();
 
-            if (data.status === false) {
-                console.log('Can not fetch rule categories');
-                return;
-            }
+            setLinksAfterRequest(rulesLinks);
 
             if (route.params.rule !== '') {
-                await fetchRuleContent(route.params.rule);
+                await setRuleContent(route.params.rule);
             }
-
-            setLinksAfterRequest(data);
         });
 
         return {
+            warningSettings,
+            closeWarningPopUp,
             links,
             content,
             title,
@@ -82,6 +163,7 @@ export default {
     },
 
     components: {
+        WarningPopUp,
         BaseSidePanel,
         CustomCkEditorWrapper,
     },

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import userLoggedRequest from '~/api/userLoggedRequest';
+import userLoggedRequest from '../api/auth/userLoggedRequest';
 import gameModule from './modules/gameModule';
 import searchInTableModule from './modules/searchInTableModule';
 

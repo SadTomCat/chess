@@ -32,10 +32,10 @@
 import { onBeforeMount, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import UserGamesList from '~/components/lists/UserGamesList.vue';
-import adminUserInfoRequest from '~/api/adminUserInfoRequest';
 import stringHelper from '~/helpers/stringHelper';
-import adminUnblockUserRequest from '~/api/adminUnblockUserRequest';
-import adminBlockUserRequest from '~/api/adminBlockUserRequest';
+import adminUserInfoRequest from '../../../api/admin/adminUserInfoRequest';
+import adminUnblockUserRequest from '../../../api/admin/adminUnblockUserRequest';
+import adminBlockUserRequest from '../../../api/admin/adminBlockUserRequest';
 
 export default {
     name: 'AdminUsersView',
