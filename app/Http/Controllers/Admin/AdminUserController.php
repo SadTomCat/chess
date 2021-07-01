@@ -30,22 +30,22 @@ class AdminUserController extends Controller
     public function block(User $user): JsonResponse
     {
         $status = $user->update([
-                                    'blocked'    => true,
-                                    'blocked_at' => date('Y-m-d H:i:s'),
-                                ]);
+            'blocked'    => true,
+            'blocked_at' => date('Y-m-d H:i:s'),
+        ]);
 
         return response()->json([
-                                    'status'     => $status,
-                                    'blocked_at' => $user->blocked_at,
-                                ]);
+            'status'     => $status,
+            'blocked_at' => $user->blocked_at,
+        ]);
     }
 
     public function unblock(User $user): JsonResponse
     {
         $status = $user->update([
-                                    'blocked'    => false,
-                                    'blocked_at' => null,
-                                ]);
+            'blocked'    => false,
+            'blocked_at' => null,
+        ]);
 
         return response()->json(['status' => $status]);
     }

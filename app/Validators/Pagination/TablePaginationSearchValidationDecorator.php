@@ -15,9 +15,10 @@ class TablePaginationSearchValidationDecorator implements ITablePaginationValida
      * @param ITablePaginationValidationMethods $validationMethods
      * @param array $searchColumns
      */
-    public function __construct(private ITablePaginationValidator $validator,
-                                private ITablePaginationValidationMethods $validationMethods,
-                                private array $searchColumns,
+    public function __construct(
+        private ITablePaginationValidator $validator,
+        private ITablePaginationValidationMethods $validationMethods,
+        private array $searchColumns,
     )
     {
     }

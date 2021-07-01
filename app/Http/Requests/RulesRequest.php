@@ -49,7 +49,7 @@ class RulesRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator): void
     {
-        $response = new JsonResponse(['status'  => false, 'message' => $validator->errors()->first()], 422);
+        $response = new JsonResponse(['status' => false, 'message' => $validator->errors()->first()], 422);
 
         throw new ValidationException($validator, $response);
     }

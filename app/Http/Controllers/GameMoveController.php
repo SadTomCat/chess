@@ -32,25 +32,19 @@ class GameMoveController extends Controller
      */
     public function __invoke(GameMoveRequest $request, string $token): JsonResponse
     {
-        try {
-            $this->initial($request, $token);
+        $this->initial($request, $token);
 
-            MoveTimeEndJobManager::softDeleteLast($this->game->id);
+        MoveTimeEndJobManager::softDeleteLast($this->game->id);
 
-            $moveValidator = new MoveValidation($this->user->id, $this->game, ...$request->move);
-            $moveInfo = $moveValidator->validate();
+        $moveValidator = new MoveValidation($this->user->id, $this->game, ...$request->move);
+        $moveInfo = $moveValidator->validate();
 
-            if ($moveInfo->getStatus() === false) {
-                MoveTimeEndJobManager::recoveryLast($this->game->id);
-                return response()->json($moveInfo->getArrayFailed());
-            }
-
-            GameService::successfulMove($this->game, $this->user, $moveInfo);
-
-        } catch (Exception $e) {
+        if ($moveInfo->getStatus() === false) {
             MoveTimeEndJobManager::recoveryLast($this->game->id);
-            return response()->json(['status' => false, 'message' => 'Some thing went wrong']);
+            return response()->json($moveInfo->getArrayFailed());
         }
+
+        GameService::successfulMove($this->game, $this->user, $moveInfo);
 
         return response()->json(['status' => true]);
     }

@@ -20,35 +20,30 @@ class UserJoinedToGame extends Controller
      */
     public function __invoke(string $token, IWebsocketManager $manager): JsonResponse
     {
-        try {
-            $game = Game::getGameByToken($token);
-            $moves = $game->moves()->get(['from', 'to', 'type', 'created_at']);
-            $userCount = $manager->getChannelsInfo('presence-game-' . $token)['presence-game-' . $token]['user_count'];
+        $game = Game::getGameByToken($token);
+        $moves = $game->moves()->get(['from', 'to', 'type', 'created_at']);
+        $userCount = $manager->getChannelsInfo('presence-game-' . $token)['presence-game-' . $token]['user_count'];
 
-            if ($userCount < 2 && $game->start_at === null) {
-                return response()->json([
-                    'status' => true,
-                    'moves' => $moves,
-                    'gameStarted' => false,
-                ]);
-            }
+        if ($userCount < 2 && $game->start_at === null) {
+            return response()->json([
+                'status'      => true,
+                'moves'       => $moves,
+                'gameStarted' => false,
+            ]);
+        }
 
-            if ($game->start_at !== null) {
-                return $this->gameHasStarted($moves, $game);
-            }
+        if ($game->start_at !== null) {
+            return $this->gameHasStarted($moves, $game);
+        }
 
-            $gameStartedCheckTime = $game->created_at->timestamp + GameTimings::GAME_START_WAITING_TIME;
-            if (date('U') <= $gameStartedCheckTime - 1) {
-                $this->startGame($token, $game);
-            }
-
-        } catch (Exception $e) {
-            return response()->json(['status' => false]);
+        $gameStartedCheckTime = $game->created_at->timestamp + GameTimings::GAME_START_WAITING_TIME;
+        if (date('U') <= $gameStartedCheckTime - 1) {
+            $this->startGame($token, $game);
         }
 
         return response()->json([
-            'status' => true,
-            'moves' => $moves,
+            'status'      => true,
+            'moves'       => $moves,
             'gameStarted' => true
         ]);
     }
@@ -76,10 +71,10 @@ class UserJoinedToGame extends Controller
             : (int)Carbon::createFromDate($game->start_at)->timestamp + GameTimings::MOVE_TIME_WITH_DELAY;
 
         return response()->json([
-            'status' => true,
-            'moves' => $moves,
+            'status'      => true,
+            'moves'       => $moves,
             'gameStarted' => true,
-            'endAt' => $gameEndAt
+            'endAt'       => $gameEndAt
         ]);
     }
 }

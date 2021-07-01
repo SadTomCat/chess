@@ -53,7 +53,7 @@ class RulesController extends Controller
     {
         Rule::create([
             'rule_category' => $request->input('category'),
-            'content' => $request->input('content'),
+            'content'       => $request->input('content'),
         ]);
 
         return response()->json([
@@ -88,7 +88,7 @@ class RulesController extends Controller
         }
 
         return response()->json([
-            'exists' => true,
+            'exists'  => true,
             'content' => $rule->content,
         ]);
     }
@@ -117,7 +117,7 @@ class RulesController extends Controller
 
         } catch (ModelNotFoundException $exception) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'Rule not exist'
             ]);
         }
@@ -153,7 +153,7 @@ class RulesController extends Controller
 
         } catch (ModelNotFoundException) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => "$category article not exists",
             ]);
         }

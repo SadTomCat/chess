@@ -34,8 +34,8 @@ final class MoveTimeEndJobManager
         }
 
         GameJob::create([
-            'job_id' => $newJobId,
-            'game_id' => $gameId,
+            'job_id'   => $newJobId,
+            'game_id'  => $gameId,
             'job_type' => 'move_time_end',
         ]);
 
@@ -123,8 +123,8 @@ final class MoveTimeEndJobManager
         $jobId = DB::table('jobs')->insertGetId(self::$softDeletedJob);
 
         GameJob::create([
-            'game_id' => $gameId,
-            'job_id' => $jobId,
+            'game_id'  => $gameId,
+            'job_id'   => $jobId,
             'job_type' => 'move_time_end',
         ]);
 

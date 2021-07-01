@@ -16,7 +16,7 @@ class GameEndListener
     {
         $game = Game::getGameByToken($event->gameToken);
         $game->update([
-            'end_at' => date('Y-m-d H:i:s'),
+            'end_at'       => date('Y-m-d H:i:s'),
             'winner_color' => $event->winnerColor,
         ]);
     }

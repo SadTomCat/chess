@@ -6,6 +6,7 @@ use App\Http\Requests\RuleCategoriesRequest;
 use App\Models\RuleCategory;
 use Exception;
 use Gate;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,18 +34,11 @@ class RuleCategoriesController extends Controller
      */
     public function store(RuleCategoriesRequest $request): JsonResponse
     {
-        try {
-            $id = RuleCategory::create(['name' => $request->name])->id;
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Something went wrong'
-            ]);
-        }
+        $id = RuleCategory::create(['name' => $request->name])->id;
 
         return response()->json([
             'status' => true,
-            'id' => $id,
+            'id'     => $id,
         ]);
     }
 
@@ -62,19 +56,12 @@ class RuleCategoriesController extends Controller
 
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'Category not exist'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Something went wrong'
             ]);
         }
 
-        return response()->json([
-            'status' => $status,
-        ]);
+        return response()->json(['status' => $status]);
     }
 
     /**
@@ -82,6 +69,7 @@ class RuleCategoriesController extends Controller
      *
      * @param int $id
      * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function destroy($id): JsonResponse
     {
@@ -92,7 +80,7 @@ class RuleCategoriesController extends Controller
 
             if ($ruleCategory->rule()->exists() === true) {
                 return response()->json([
-                    'status' => false,
+                    'status'  => false,
                     'message' => "For the $ruleCategory->name category exists an article",
                 ]);
             }
@@ -101,13 +89,11 @@ class RuleCategoriesController extends Controller
 
         } catch (ModelNotFoundException $exception) {
             return response()->json([
-                'status' => false,
+                'status'  => false,
                 'message' => 'Rule category not exists',
             ]);
         }
 
-        return response()->json([
-            'status' => true,
-        ]);
+        return response()->json(['status' => true,]);
     }
 }
