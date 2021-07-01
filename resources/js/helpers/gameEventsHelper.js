@@ -1,6 +1,6 @@
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import joinedToGameRequest from '../api/joinedToGameRequest';
+import joinedToGameRequest from '../api/chess/joinedToGameRequest';
 
 export default () => {
     const store = useStore();

@@ -32,7 +32,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import ChessBoardChatMessage from './ChessBoardChatMessage.vue';
-import sendGameMessage from '~/api/sendGameMessage';
+import sendGameMessage from '../../api/chess/sendGameMessage';
 
 export default {
     name: 'ChessBoardChat',

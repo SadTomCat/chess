@@ -38,7 +38,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import forgotPasswordRequest from '~/api/forgotPasswordRequest';
+import forgotPasswordRequest from '../api/auth/forgotPasswordRequest';
 import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {

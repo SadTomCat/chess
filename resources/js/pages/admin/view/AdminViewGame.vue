@@ -14,8 +14,8 @@
 import { useRoute } from 'vue-router';
 import { onBeforeMount } from 'vue';
 import ChessBaseViewGame from '../../../components/chess/ChessBaseViewGame.vue';
-import adminGameInfoRequest from '../../../api/adminGameInfoRequest';
 import viewGameHelper from '../../../helpers/viewGameHelper';
+import adminGameInfoRequest from '../../../api/admin/adminGameInfoRequest';
 import ViewGameUserInfo from '../../../classes/viewGame/ViewGameUserInfo';
 import ViewGameGameInfo from '../../../classes/viewGame/ViewGameGameInfo';
 
