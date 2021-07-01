@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
+import Error404 from '../pages/errors/Error404';
 
 const Home = () => import('~/pages/Home.vue');
 const Rules = () => import('~/pages/Rules.vue');
@@ -136,6 +137,14 @@ const routes = [
         meta: {
             auth: true,
             accessRoles: ['admin', 'moderator', 'support', 'redactor'],
+        },
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'pageNotFound',
+        component: Error404,
+        meta: {
+            needHeader: false,
         },
     },
 ];
