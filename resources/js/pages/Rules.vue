@@ -10,32 +10,58 @@
             <div class="rules-content" v-html="content"></div>
         </custom-ck-editor-wrapper>
     </div>
+
+    <teleport to="body">
+        <warning-pop-up @closeWarningPopUp="closeWarningPopUp" v-if="warningSettings.isShown">
+            <div class="text-2xl">
+                <p>{{ warningSettings.message }}</p>
+            </div>
+        </warning-pop-up>
+    </teleport>
 </template>
 
 <script>
 import {
     onBeforeMount, reactive, ref,
 } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import BaseSidePanel from '../components/sidePanels/BaseSidePanel.vue';
 import ruleCategoriesAllRequest from '../api/ruleCategories/ruleCategoriesAllRequest';
 import ruleGetOneRequest from '../api/rules/ruleGetOneRequest';
 import CustomCkEditorWrapper from '../components/ckeditor/CustomCkEditorWrapper.vue';
+import WarningPopUp from '../components/popUps/WarningPopUp.vue';
 
 export default {
     name: 'Rules',
 
     setup() {
         const route = useRoute();
+        const router = useRouter();
 
+        /* ---------- Warning ----------*/
+        const warningSettings = reactive({
+            isShown: false,
+            message: '',
+        });
+
+        const closeWarningPopUp = () => {
+            warningSettings.message = '';
+            warningSettings.isShown = false;
+        };
+
+        /* ---------- Rule ----------*/
         const title = ref('');
         const content = ref('');
 
         const fetchRuleContent = async (ruleName) => {
+            closeWarningPopUp();
+
             const data = await ruleGetOneRequest(ruleName);
 
             if (data.exists === false) {
-                console.log('Can not fetch rule');
+                warningSettings.isShown = true;
+                warningSettings.message = 'This rule not exists yet';
+                await router.replace('/rules');
                 return;
             }
 
@@ -43,6 +69,7 @@ export default {
             content.value = data.content;
         };
 
+        /* ---------- Rules links ----------*/
         const links = reactive([]);
 
         const setLinksAfterRequest = (data) => {
@@ -62,7 +89,8 @@ export default {
             const data = await ruleCategoriesAllRequest();
 
             if (data.status === false) {
-                console.log('Can not fetch rule categories');
+                warningSettings.isShown = true;
+                warningSettings.message = 'Can not fetch rules';
                 return;
             }
 
@@ -74,6 +102,8 @@ export default {
         });
 
         return {
+            warningSettings,
+            closeWarningPopUp,
             links,
             content,
             title,
@@ -82,6 +112,7 @@ export default {
     },
 
     components: {
+        WarningPopUp,
         BaseSidePanel,
         CustomCkEditorWrapper,
     },
