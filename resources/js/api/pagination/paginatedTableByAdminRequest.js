@@ -1,4 +1,4 @@
-import AfterPaginationRequestValidation from '../validators/AfterPaginationRequestValidation';
+import AfterPaginationRequestValidation from '../../validators/AfterPaginationRequestValidation';
 
 export default async (table, columns, page, perPage, ordering = false) => {
     const res = await window.axios.get(

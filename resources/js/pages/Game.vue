@@ -42,7 +42,7 @@ import ChessBoardChat from '~/components/chess/ChessBoardChat.vue';
 import ChessBoardTopPanel from '~/components/chess/ChessBoardTopPanel.vue';
 import ChessBoardBottom from '~/components/chess/ChessBoardBottom.vue';
 import gameEventsHelper from '~/helpers/gameEventsHelper';
-import gameMoveRequest from '~/api/gameMoveRequest';
+import gameMoveRequest from '../api/chess/gameMoveRequest';
 import ChessWinOrLosePopUp from '~/components/chess/ChessWinOrLosePopUp.vue';
 
 export default {

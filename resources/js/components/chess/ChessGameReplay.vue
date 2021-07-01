@@ -13,16 +13,17 @@
 
 <script>
 import { useStore } from 'vuex';
-import { onBeforeMount, onBeforeUnmount, watch } from 'vue';
-import ChessBoard from '~/components/chess/ChessBoard.vue';
+import { onBeforeMount, onBeforeUnmount, watchEffect } from 'vue';
+import ChessBoard from './ChessBoard.vue';
 
 export default {
     name: 'ChessGameReplay',
 
     props: {
-        loading: Boolean,
-
-        moves: Array,
+        moves: {
+            type: Array,
+            default: () => [],
+        },
     },
 
     setup(props) {
@@ -47,7 +48,7 @@ export default {
             printed++;
         };
 
-        watch(props.moves, () => {
+        watchEffect(async () => {
             if (props.moves.length > 0) {
                 store.commit('START_REPLAY');
             }
@@ -80,7 +81,7 @@ export default {
     }
 
     &__button-panel {
-       @apply flex h-12 w-full space-x-10;
+        @apply flex h-12 w-full space-x-10;
 
         span {
             @apply text-5xl cursor-pointer;

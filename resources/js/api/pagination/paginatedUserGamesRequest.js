@@ -1,4 +1,4 @@
-import AfterPaginationRequestValidation from '../validators/AfterPaginationRequestValidation';
+import AfterPaginationRequestValidation from '../../validators/AfterPaginationRequestValidation';
 
 export default async (userId, page) => {
     const res = await window.axios.get(`/api/users/${userId}/games/paginated?page=${page}`)

@@ -44,7 +44,7 @@ import {
     computed, onBeforeMount, reactive, ref,
 } from 'vue';
 import BasePagination from '~/components/BasePagination.vue';
-import paginatedUserGamesRequest from '~/api/paginatedUserGamesRequest';
+import paginatedUserGamesRequest from '../../api/pagination/paginatedUserGamesRequest';
 
 export default {
     name: 'UserGamesList',
@@ -143,7 +143,7 @@ export default {
     }
 
     ul {
-        @apply space-y-9;
+        @apply text-xl space-y-9;
 
         li {
             @apply flex pb-1 justify-between border-b;

@@ -1,62 +1,66 @@
 <template>
-    <header class="header" v-if="headerActive">
+    <div class="header-wrapper" v-if="headerActive">
 
-        <!-- Left block -->
-        <div class="header__left-block">
+        <header class="header">
 
-            <!-- Logo -->
-            <div class="header__logo">
-                <h1>Chess</h1>
+            <!-- Left block -->
+            <div class="header__left-block">
+
+                <!-- Logo -->
+                <div class="header__logo">
+                    <h1>Chess</h1>
+                </div>
+
+                <!-- Pages navigation -->
+                <nav>
+                    <ul class="header__horizontal-list">
+                        <li>
+                            <router-link to="/">main</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/rating">rating</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/rules">rules</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/support">support</router-link>
+                        </li>
+                    </ul>
+                </nav>
             </div>
 
-            <!-- Pages navigation -->
-            <nav>
-                <ul class="header__horizontal-list">
-                    <li>
-                        <router-link to="/">main</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/rating">rating</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/rules">rules</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/support">support</router-link>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+            <!-- Right block -->
+            <div class="header__right-block">
 
-        <!-- Right block -->
-        <div class="header__right-block">
+                <!-- Auth navigation -->
+                <nav v-if="logged === false">
+                    <ul class="header__horizontal-list">
+                        <li>
+                            <router-link to="/login">login</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/registration">registration</router-link>
+                        </li>
+                    </ul>
+                </nav>
 
-            <!-- Auth navigation -->
-            <nav v-if="logged === false">
-                <ul class="header__horizontal-list">
-                    <li>
-                        <router-link to="/login">login</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/registration">registration</router-link>
-                    </li>
-                </ul>
-            </nav>
+                <!-- View profile block-->
+                <view-profile :user="user"
+                              @logout="logout"
+                              v-else
+                ></view-profile>
+            </div>
+        </header>
 
-            <!-- View profile block-->
-            <view-profile :user="user"
-                          @logout="logout"
-                          v-else
-            ></view-profile>
-        </div>
-    </header>
+    </div>
 </template>
 
 <script>
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import logoutRequest from '~/api/logoutRequest';
+import logoutRequest from '../api/auth/logoutRequest';
 import useEchoHelper from '~/helpers/useEchoHelper';
 import ViewProfile from './ViewProfile.vue';
 
@@ -104,8 +108,12 @@ export default {
 </script>
 
 <style lang="scss">
+.header-wrapper {
+    height: var(--header-height);
+}
+
 .header {
-    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30 sticky w-full;
+    @apply bg-white flex justify-between shadow-md px-32 py-6 z-30 flex fixed w-full;
     top: 0;
 
     &__logo {

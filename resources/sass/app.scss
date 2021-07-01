@@ -5,3 +5,9 @@
 .material-icons {
     @apply select-none;
 }
+
+:root {
+    --header-height: 88px;
+    --background-color: #f5f5f5;
+    --view-profile-menu-height: 16rem;
+}

@@ -1,21 +1,25 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
+import Error404 from '../pages/errors/Error404';
 
 const Home = () => import('~/pages/Home.vue');
+const Rules = () => import('~/pages/Rules.vue');
 const Login = () => import('~/pages/Login.vue');
 const Registration = () => import('~/pages/Registration.vue');
 const Game = () => import('~/pages/Game.vue');
 const SearchGame = () => import('~/pages/SearchGame.vue');
 const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
 const Settings = () => import('~/pages/Settings.vue');
+const Statistics = () => import('~/pages/Statistics.vue');
+const ViewGame = () => import('~/pages/ViewGame');
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
 const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
 const AdminUsers = () => import('~/pages/admin/AdminUsers.vue');
 const AdminGames = () => import('~/pages/admin/AdminGames.vue');
 const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
-const AdminGamesView = () => import('../pages/admin/view/AdminGamesView.vue');
-const AdminUsersView = () => import('../pages/admin/view/AdminUsersView.vue');
+const AdminViewGame = () => import('~/pages/admin/view/AdminViewGame.vue');
+const AdminUsersView = () => import('~/pages/admin/view/AdminUsersView.vue');
 
 const routes = [
     {
@@ -37,8 +41,8 @@ const routes = [
         name: 'rating',
     },
     {
-        path: '/rules',
-        component: Home,
+        path: '/rules/:rule?',
+        component: Rules,
         name: 'rules',
     },
     {
@@ -55,9 +59,17 @@ const routes = [
         },
     },
     {
-        path: '/statistic',
-        component: Home,
+        path: '/statistics',
+        component: Statistics,
         name: 'statistic',
+        meta: {
+            auth: true,
+        },
+    },
+    {
+        path: '/view/games/:gameId',
+        component: ViewGame,
+        name: 'gameReplay',
         meta: {
             auth: true,
         },
@@ -115,7 +127,7 @@ const routes = [
             },
             {
                 path: 'view/games/:id',
-                component: AdminGamesView,
+                component: AdminViewGame,
             },
             {
                 path: 'view/users/:id',
@@ -125,6 +137,14 @@ const routes = [
         meta: {
             auth: true,
             accessRoles: ['admin', 'moderator', 'support', 'redactor'],
+        },
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'pageNotFound',
+        component: Error404,
+        meta: {
+            needHeader: false,
         },
     },
 ];
