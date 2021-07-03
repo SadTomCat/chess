@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Game;
 
 use App\Game\MoveValidation;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\GameMoveRequest;
 use App\Models\Game;
 use App\Models\User;
