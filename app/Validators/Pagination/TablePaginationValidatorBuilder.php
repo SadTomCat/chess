@@ -54,8 +54,8 @@ final class TablePaginationValidatorBuilder
     public function wrapInSearchValidation($searchColumns): self
     {
         $this->validator = new TablePaginationSearchValidationDecorator($this->validator,
-                                                                        $this->validationMethods,
-                                                                        $searchColumns
+            $this->validationMethods,
+            $searchColumns
         );
 
         return $this;

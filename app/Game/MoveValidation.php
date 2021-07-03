@@ -27,7 +27,8 @@ class MoveValidation
         private int $userId,
         private Game $game,
         private array $from,
-        private array $to)
+        private array $to
+    )
     {
         $this->validateRanges($this->from, $this->to);
 
@@ -39,9 +40,9 @@ class MoveValidation
         $this->fromChessman = $this->board->getChessman($from);
 
         $this->color = $this->game->users()
-            ->where('user_id', $this->userId)
-            ->withPivot('color')
-            ->first()->pivot->color;
+                                  ->where('user_id', $this->userId)
+                                  ->withPivot('color')
+                                  ->first()->pivot->color;
 
         $this->countMove = $this->game->moves()->count();
     }

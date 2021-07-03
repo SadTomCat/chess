@@ -13,7 +13,7 @@ import validationHelper from '../../helpers/validationHelper';
  * }
  * * */
 export default async (name) => {
-    const res = await window.axios.post('/api/rules/categories', { name })
+    const res = await window.axios.post('/api/chess-rules/names', { name })
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {

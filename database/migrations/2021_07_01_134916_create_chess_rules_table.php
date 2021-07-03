@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRulesTable extends Migration
+class CreateChessRulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateRulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('rules', function (Blueprint $table) {
+        Schema::create('chess_rules', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
-            $table->string('rule_category')->unique();
-            $table->foreign('rule_category')->references('name')->on('rule_categories')->onUpdate('cascade');
+            $table->string('name')->unique();
+            $table->text('content')->nullable();
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateRulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rules');
+        Schema::dropIfExists('chess_rules');
     }
 }

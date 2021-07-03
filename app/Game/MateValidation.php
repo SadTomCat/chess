@@ -86,10 +86,10 @@ class MateValidation
 
             // These methods check if at least one chessman can save the king.
             $saveFrom = [
-                    'b' => 'canSaveFromBishop',
-                    'q' => 'canSaveFromQueen',
-                    'r' => 'canSaveFromRook',
-                ][$dangerChessmanSymbol] ?? 'canCaptureDanger';
+                            'b' => 'canSaveFromBishop',
+                            'q' => 'canSaveFromQueen',
+                            'r' => 'canSaveFromRook',
+                        ][$dangerChessmanSymbol] ?? 'canCaptureDanger';
 
             if ($this->$saveFrom($dangerChessmanPos) === false) {
                 return false;

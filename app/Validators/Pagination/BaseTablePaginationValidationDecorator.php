@@ -13,8 +13,9 @@ class BaseTablePaginationValidationDecorator implements ITablePaginationValidato
      * @param ITablePaginationValidationMethods $validationMethods
      * @param array $columns
      */
-    public function __construct(private ITablePaginationValidationMethods $validationMethods,
-                                private array $columns
+    public function __construct(
+        private ITablePaginationValidationMethods $validationMethods,
+        private array $columns
     )
     {
     }

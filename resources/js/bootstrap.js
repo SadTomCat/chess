@@ -12,6 +12,8 @@
 
 import Echo from 'laravel-echo';
 
+require('./typesDefinition');
+
 window.axios = require('axios');
 
 window.qs = require('qs');

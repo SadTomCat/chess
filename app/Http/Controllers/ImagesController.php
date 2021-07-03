@@ -23,7 +23,7 @@ class ImagesController extends Controller
 
         } catch (Exception $e) {
             return response()->json([
-                "error" =>  [
+                "error" => [
                     'message' => 'Something went wrong',
                 ],
             ], 422);

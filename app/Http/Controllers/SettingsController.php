@@ -7,7 +7,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-
+/**
+ * TODO: refactor update method
+ * */
 class SettingsController extends Controller
 {
     /**

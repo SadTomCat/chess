@@ -10,8 +10,8 @@
  *     message: backend message | 'Something went wrong'
  * }
  * */
-export default async (categoryName) => {
-    const res = await window.axios.delete(`/api/rules/${categoryName}`)
+export default async (id, name) => {
+    const res = await window.axios.patch(`/api/chess-rules/names/${id}`, { name })
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {

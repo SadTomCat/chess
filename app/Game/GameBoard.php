@@ -15,14 +15,14 @@ use Exception;
 
 class GameBoard
 {
-    private const CASTLING_AVAILABLE_DEFAULT =[
+    private const CASTLING_AVAILABLE_DEFAULT = [
         'white' => [
-            'k' => true,
+            'k'  => true,
             'lr' => true,
             'rr' => true,
         ],
         'black' => [
-            'k' => true,
+            'k'  => true,
             'lr' => true,
             'rr' => true,
         ],
@@ -46,7 +46,7 @@ class GameBoard
         'r' => Rook::class,
         'b' => Bishop::class,
         'n' => Knight::class,
-        '' => NullChessman::class
+        ''  => NullChessman::class
     ];
 
     private array $lastMove = [];

@@ -22,19 +22,19 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
+        Registered::class            => [
             SendEmailVerificationNotification::class,
         ],
         JoinToSearchGameEvent::class => [
             JoinToSearchGameListener::class,
         ],
-        GameStartEvent::class => [
+        GameStartEvent::class        => [
             UpdateMoveTimeEndListener::class,
         ],
-        GameMoveEvent::class => [
+        GameMoveEvent::class         => [
             UpdateMoveTimeEndListener::class,
         ],
-        GameEndEvent::class => [
+        GameEndEvent::class          => [
             GameEndListener::class,
         ],
     ];

@@ -1,9 +1,9 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
-import Error404 from '../pages/errors/Error404';
+import Error404 from '../pages/errors/Error404.vue';
 
 const Home = () => import('~/pages/Home.vue');
-const Rules = () => import('~/pages/Rules.vue');
+const ChessRules = () => import('~/pages/ChessRules.vue');
 const Login = () => import('~/pages/Login.vue');
 const Registration = () => import('~/pages/Registration.vue');
 const Game = () => import('~/pages/Game.vue');
@@ -14,7 +14,7 @@ const Statistics = () => import('~/pages/Statistics.vue');
 const ViewGame = () => import('~/pages/ViewGame');
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
-const AdminChessRuleCategories = () => import('~/pages/admin/AdminChessRuleCategories.vue');
+const AdminChessRuleNames = () => import('~/pages/admin/AdminChessRuleNames.vue');
 const AdminUsers = () => import('~/pages/admin/AdminUsers.vue');
 const AdminGames = () => import('~/pages/admin/AdminGames.vue');
 const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
@@ -41,8 +41,8 @@ const routes = [
         name: 'rating',
     },
     {
-        path: '/rules/:rule?',
-        component: Rules,
+        path: '/chess-rules/:rule?',
+        component: ChessRules,
         name: 'rules',
     },
     {
@@ -110,8 +110,8 @@ const routes = [
                 component: AdminChessRules,
             },
             {
-                path: 'chess-rule-categories',
-                component: AdminChessRuleCategories,
+                path: 'chess-rules/names',
+                component: AdminChessRuleNames,
             },
             {
                 path: 'users',

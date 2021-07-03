@@ -48,8 +48,8 @@ class SettingsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|max:255',
-            'password' => 'required|password:web',
+            'name'        => 'string|max:255',
+            'password'    => 'required|password:web',
             'newPassword' => 'string|min:8|same:newPasswordConfirmation',
         ];
     }

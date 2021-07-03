@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminGamesController;
 use App\Http\Controllers\GamesController;
-use App\Http\Controllers\RuleCategoriesController;
-use App\Http\Controllers\RulesController;
+use App\Http\Controllers\ChessRuleNamesController;
+use App\Http\Controllers\ChessRulesController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscribedOnChannelController;
 use App\Http\Controllers\UserController;
@@ -25,11 +24,12 @@ Route::prefix('/api')->group(function () {
 
     Route::patch('/settings', [SettingsController::class, 'update'])->middleware('auth');
 
-    Route::resource('/rules/categories', RuleCategoriesController::class)
+    Route::resource('/chess-rules/names', ChessRuleNamesController::class)
+         ->parameters(['names' => 'chess_rule'])
          ->only(['index', 'store', 'destroy', 'update']);
 
-    Route::resource('/rules', RulesController::class)
-         ->only(['index', 'show', 'store', 'destroy', 'update']);
+    Route::resource('/chess-rules', ChessRulesController::class)
+         ->only(['index', 'show', 'destroy', 'update']);
 
     Route::middleware('auth')->group(function () {
         Route::get('/role', [UserController::class, 'getRole']);
