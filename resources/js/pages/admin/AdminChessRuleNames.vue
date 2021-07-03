@@ -1,19 +1,19 @@
 <template>
-    <div class="admin-chess-rule-categories px-10 py-10">
+    <div class="admin-chess-rule-names">
 
         <base-informer-block :successful="information.successful"
                              :notice="information.notice"
                              :error="information.error"
         ></base-informer-block>
 
-        <base-list :title="'Rules categories'"
-                   :items="categoryNames"
+        <base-list :title="'Rule names'"
+                   :items="ruleNames"
                    :edit-button="true"
                    :delete-button="true"
                    :add-item-button="true"
-                   @editAction="editCategoryHandler"
-                   @deleteAction="deleteCategoryHandler"
-                   @addItemAction="storeCategoryHandler"
+                   @editAction="editRuleNameHandler"
+                   @deleteAction="deleteRuleNameHandler"
+                   @addItemAction="storeRuleNameHandler"
         ></base-list>
     </div>
 </template>
@@ -22,24 +22,21 @@
 import { computed, onBeforeMount, ref } from 'vue';
 import BaseList from '../../components/lists/BaseList.vue';
 import BaseInformerBlock from '../../components/informers/BaseInformerBlock.vue';
-import ruleCategoriesCreateRequest from '../../api/ruleCategories/ruleCategoriesCreateRequest';
-import ruleCategoriesDeleteRequest from '../../api/ruleCategories/ruleCategoriesDeleteRequest';
-import ruleCategoriesUpdateRequest from '../../api/ruleCategories/ruleCategoriesUpdateRequest';
-import ruleCategoriesAllRequest from '../../api/ruleCategories/ruleCategoriesAllRequest';
+import chessRuleNamesCreateRequest from '../../api/chessRuleNames/chessRuleNamesCreateRequest';
+import chessRuleNamesDeleteRequest from '../../api/chessRuleNames/chessRuleNamesDeleteRequest';
+import chessRuleNamesUpdateRequest from '../../api/chessRuleNames/chessRuleNamesUpdateRequest';
+import chessRuleNamesAllRequest from '../../api/chessRuleNames/chessRuleNamesAllRequest';
 import baseInformerHelper from '../../helpers/baseInformerHelper';
 
-/**
- * All category names are unique.
- * */
 export default {
-    name: 'AdminChessRuleCategories',
+    name: 'AdminChessRuleNames',
 
     setup() {
-        const categories = ref([]);
-        const categoryNames = computed(() => categories.value.map((category) => category.name));
+        const ruleNamesInfo = ref([]);
+        const ruleNames = computed(() => ruleNamesInfo.value.map((ruleNameInfo) => ruleNameInfo.name));
         let isAwaiting = false;
 
-        const findCategoryIndexByName = (name) => categories.value.findIndex((category) => category.name === name);
+        const findRuleNameInfoIndex = (name) => ruleNamesInfo.value.findIndex((ruleName) => ruleName.name === name);
 
         /* ---------- Informer ---------- */
         const {
@@ -66,16 +63,16 @@ export default {
             isAwaiting = false;
         };
 
-        const storeCategoryHandler = async (newItem) => {
+        const storeRuleNameHandler = async (newItem) => {
             const handler = async () => {
-                const res = await ruleCategoriesCreateRequest(newItem);
+                const res = await chessRuleNamesCreateRequest(newItem);
 
                 if (res.status === false) {
                     setError(res.message);
                     return;
                 }
 
-                categories.value.push({
+                ruleNamesInfo.value.push({
                     id: res.id,
                     name: newItem,
                 });
@@ -84,47 +81,47 @@ export default {
             await handlerRunner(handler);
         };
 
-        const editCategoryHandler = async (index, newValue) => {
+        const editRuleNameHandler = async (index, newValue) => {
             const handler = async () => {
-                const categoryIndex = findCategoryIndexByName(categoryNames.value[index]);
+                const ruleNameIndex = findRuleNameInfoIndex(ruleNames.value[index]);
 
-                if (categoryIndex === -1) {
+                if (ruleNameIndex === -1) {
                     setError('Something went wrong');
                     return;
                 }
 
-                const { id } = categories.value[categoryIndex];
-                const res = await ruleCategoriesUpdateRequest(id, newValue);
+                const { id } = ruleNamesInfo.value[ruleNameIndex];
+                const res = await chessRuleNamesUpdateRequest(id, newValue);
 
                 if (res.status === false) {
                     setError(res.message);
                     return;
                 }
 
-                categories.value[categoryIndex].name = newValue;
+                ruleNamesInfo.value[ruleNameIndex].name = newValue;
             };
 
             await handlerRunner(handler);
         };
 
-        const deleteCategoryHandler = async (index) => {
+        const deleteRuleNameHandler = async (index) => {
             const handler = async () => {
-                const categoryIndex = findCategoryIndexByName(categoryNames.value[index]);
+                const ruleNameIndex = findRuleNameInfoIndex(ruleNames.value[index]);
 
-                if (categoryIndex === -1) {
+                if (ruleNameIndex === -1) {
                     setError('Something went wrong');
                     return;
                 }
 
-                const { id } = categories.value[categoryIndex];
-                const res = await ruleCategoriesDeleteRequest(id);
+                const { id } = ruleNamesInfo.value[ruleNameIndex];
+                const res = await chessRuleNamesDeleteRequest(id);
 
                 if (res.status === false) {
                     setError(res.message);
                     return;
                 }
 
-                categories.value.splice(categoryIndex, 1);
+                ruleNamesInfo.value.splice(ruleNameIndex, 1);
             };
 
             await handlerRunner(handler);
@@ -133,23 +130,23 @@ export default {
         /* ---------- Hooks ---------- */
 
         onBeforeMount(async () => {
-            const res = await ruleCategoriesAllRequest();
+            const res = await chessRuleNamesAllRequest();
 
             if (res.status === false) {
                 setError(res.message);
                 return;
             }
 
-            categories.value = res.categories;
+            ruleNamesInfo.value = res.names_info;
         });
 
         return {
             information,
-            categoryNames,
+            ruleNames,
             handlerRunner,
-            deleteCategoryHandler,
-            storeCategoryHandler,
-            editCategoryHandler,
+            deleteRuleNameHandler,
+            storeRuleNameHandler,
+            editRuleNameHandler,
         };
     },
 
@@ -161,8 +158,8 @@ export default {
 </script>
 
 <style lang="scss">
-.admin-chess-rule-categories-edit {
-    @apply flex flex-col justify-between h-full px-10 pb-7;
+.admin-chess-rule-names {
+    @apply flex flex-col justify-between h-full px-10 py-10;
 
     h1 {
         @apply pt-10 text-3xl;

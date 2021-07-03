@@ -6,11 +6,15 @@ export default class RuleCategoriesAfterRequestValidation {
 
         this.getAllNeedleColumns = [
             {
-                name: 'category',
+                name: 'name',
                 type: 'string',
             },
             {
                 name: 'content',
+                type: 'string',
+            },
+            {
+                name: 'slug',
                 type: 'string',
             },
         ];

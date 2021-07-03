@@ -1,6 +1,6 @@
 import validationHelper from '../helpers/validationHelper';
 
-export default class RuleCategoriesAfterRequestValidation {
+export default class ChessRuleNamesAfterRequestValidation {
     constructor(data) {
         this.data = data;
 
@@ -13,20 +13,24 @@ export default class RuleCategoriesAfterRequestValidation {
                 name: 'name',
                 type: 'string',
             },
+            {
+                name: 'slug',
+                type: 'string',
+            },
         ];
     }
 
     validateGetAll() {
         const { validateColumns } = validationHelper();
 
-        const { categories } = this.data;
+        const namesInfo = this.data.names_info;
 
         try {
-            if (Array.isArray(categories) === false) {
-                throw new Error('Categories field not required or not array');
+            if (Array.isArray(namesInfo) === false) {
+                throw new Error('Names info field not required or not array');
             }
 
-            categories.forEach((el) => {
+            namesInfo.forEach((el) => {
                 const validated = validateColumns(el, this.getAllNeedleColumns);
 
                 if (validated.status === false) {

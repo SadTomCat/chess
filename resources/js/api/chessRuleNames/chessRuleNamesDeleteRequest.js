@@ -11,7 +11,7 @@
  * }
  * */
 export default async (id) => {
-    const res = await window.axios.delete(`/api/rules/categories/${id}`)
+    const res = await window.axios.delete(`/api/chess-rules/names/${id}`)
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {

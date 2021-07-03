@@ -1,15 +1,16 @@
-import RulesAfterRequestValidation from '../../validators/RulesAfterRequestValidation';
+import ChessRuleNamesAfterRequestValidation from '../../validators/ChessRuleNamesAfterRequestValidation';
 
 /**
+ * chessRuleNamesAllRequest
+ *
  * Data is validated
  *
  * Successful {
- *      rules [
- *          {
- *              category: string,
- *              content: string,
- *          }
- *      ]
+ *     names_info [
+ *         id: number
+ *         name: string
+ *         slug: string
+ *     ]
  * }
  *
  * Fail {
@@ -17,8 +18,8 @@ import RulesAfterRequestValidation from '../../validators/RulesAfterRequestValid
  *     message: backend message | 'Something went wrong'
  * }
  * */
-export default async () => {
-    const res = await window.axios.get('/api/rules')
+export default async (whereContentFilled = false) => {
+    const res = await window.axios.get(`/api/chess-rules/names?where_content_filled=${whereContentFilled}`)
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {
@@ -28,7 +29,7 @@ export default async () => {
         };
     }
 
-    const validator = new RulesAfterRequestValidation(res.data);
+    const validator = new ChessRuleNamesAfterRequestValidation(res.data);
 
     if (validator.validateGetAll() === false) {
         return {
