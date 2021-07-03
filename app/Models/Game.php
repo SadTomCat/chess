@@ -45,7 +45,6 @@ class Game extends Model
     /**
      * @param int $userId
      * @return string
-     * @throws Exception
      */
     public function getUserColor(int $userId): string
     {

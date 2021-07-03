@@ -5,8 +5,6 @@ namespace App\Http\Requests\Pagination;
 use App\Exceptions\TablePaginationValidationException;
 use App\Validators\Pagination\TablePaginationValidatorBuilder;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 class TablePaginationRequest extends FormRequest
 {
@@ -22,30 +20,22 @@ class TablePaginationRequest extends FormRequest
 
     /**
      * @param $validator
-     * @throws ValidationException
+     * @throws TablePaginationValidationException
      */
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            try {
-                if (empty($validator->failed()) === false) {
-                    throw (new TablePaginationValidationException($validator->errors()->first()));
-                }
-
-                $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
-                $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
-
-                TablePaginationValidatorBuilder::create($forAdmin, $this->table, $this->columns, $this->ordering)
-                                               ->getValidator()
-                                               ->validate();
-
-            } catch (TablePaginationValidationException $e) {
-                $response = new JsonResponse(['status' => false, 'message' => $e->getMessage()], 422);
-
-                throw new ValidationException($validator, $response);
+            if (empty($validator->failed()) === false) {
+                throw (new TablePaginationValidationException($validator->errors()->first()));
             }
-        }
-        );
+
+            $forAdmin = preg_match('/\/admin((?![^ ])|\/)/', $this->path()) === 1;
+            $this->ordering = is_array($this->ordering) === true ? $this->ordering : false;
+
+            TablePaginationValidatorBuilder::create($forAdmin, $this->table, $this->columns, $this->ordering)
+                                           ->getValidator()
+                                           ->validate();
+        });
     }
 
     /**

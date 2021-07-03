@@ -4,6 +4,7 @@ namespace App\Game\Chessmen;
 
 use App\Game\GameBoard;
 use App\Game\MoveInfo;
+use Exception;
 
 abstract class AbstractChessman
 {
@@ -38,7 +39,6 @@ abstract class AbstractChessman
      *
      * @param $to
      * @return MoveInfo
-     * @throws \Exception
      */
     public function moveValidation($to): MoveInfo
     {
@@ -153,7 +153,7 @@ abstract class AbstractChessman
     /**
      * @param array $kingPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function safetyMoveOnMainDiagonal(array $kingPos): bool
     {
@@ -223,7 +223,7 @@ abstract class AbstractChessman
     /**
      * @param array $kingPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function safetyMoveOnAntiDiagonal(array $kingPos): bool
     {
@@ -292,21 +292,20 @@ abstract class AbstractChessman
     /**
      * @param array $to
      * @return bool
-     * @throws \Exception
      */
     public function willKingSafeAfterMove(array $to): bool
     {
-        $kingPos = $this->board->getKing($this->color)->getPosition();
-
-        if ($kingPos['x'] === $this->pos['x'] && $this->pos['x'] !== $to['x']) {
-            return $this->safetyMoveOnHorizontal($kingPos);
-        }
-
-        if ($kingPos['y'] === $this->pos['y'] && $this->pos['y'] !== $to['y']) {
-            return $this->safetyMoveOnVertical($kingPos);
-        }
-
         try {
+            $kingPos = $this->board->getKing($this->color)->getPosition();
+
+            if ($kingPos['x'] === $this->pos['x'] && $this->pos['x'] !== $to['x']) {
+                return $this->safetyMoveOnHorizontal($kingPos);
+            }
+
+            if ($kingPos['y'] === $this->pos['y'] && $this->pos['y'] !== $to['y']) {
+                return $this->safetyMoveOnVertical($kingPos);
+            }
+
             $ownDiagonal = $this->board->getMainDiagonal($this->pos);
 
             if ($this->board->getMainDiagonal($kingPos) === $ownDiagonal
@@ -321,7 +320,7 @@ abstract class AbstractChessman
                 return $this->safetyMoveOnAntiDiagonal($kingPos);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
@@ -502,7 +501,7 @@ abstract class AbstractChessman
     /**
      * @param $moves
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function canAnyByMoves($moves): bool
     {
@@ -521,7 +520,7 @@ abstract class AbstractChessman
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function anyOnHorizontal(): bool
     {
@@ -538,7 +537,7 @@ abstract class AbstractChessman
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function anyOnVertical(): bool
     {
@@ -555,7 +554,7 @@ abstract class AbstractChessman
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function anyOnMainDiagonal(): bool
     {
@@ -575,7 +574,7 @@ abstract class AbstractChessman
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function anyOnAntiDiagonal(): bool
     {

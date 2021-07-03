@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Game;
 
 use App\Events\GameStartEvent;
 use App\Game\GameTimings;
+use App\Http\Controllers\Controller;
 use App\Models\Game;
 use App\Websockets\IWebsocketManager;
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Game;
 
 use App\Game\MoveValidation;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\GameMoveRequest;
 use App\Models\Game;
 use App\Models\User;
@@ -28,7 +29,6 @@ class GameMoveController extends Controller
      * @param GameMoveRequest $request
      * @param string $token
      * @return JsonResponse
-     * @throws Exception
      */
     public function __invoke(GameMoveRequest $request, string $token): JsonResponse
     {
@@ -36,12 +36,18 @@ class GameMoveController extends Controller
 
         MoveTimeEndJobManager::softDeleteLast($this->game->id);
 
-        $moveValidator = new MoveValidation($this->user->id, $this->game, ...$request->move);
-        $moveInfo = $moveValidator->validate();
+        try {
+            $moveValidator = new MoveValidation($this->user->id, $this->game, ...$request->move);
+            $moveInfo = $moveValidator->validate();
 
-        if ($moveInfo->getStatus() === false) {
+            if ($moveInfo->getStatus() === false) {
+                MoveTimeEndJobManager::recoveryLast($this->game->id);
+                return response()->json($moveInfo->getArrayFailed());
+            }
+
+        } catch (Exception $e) {
             MoveTimeEndJobManager::recoveryLast($this->game->id);
-            return response()->json($moveInfo->getArrayFailed());
+            return response()->json(['status' => false, 'message' => 'Something went wrong']);
         }
 
         GameService::successfulMove($this->game, $this->user, $moveInfo);
