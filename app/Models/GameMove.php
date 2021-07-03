@@ -17,7 +17,7 @@ class GameMove extends Model
 
     protected $casts = [
         'from' => 'array',
-        'to' => 'array',
+        'to'   => 'array',
     ];
 
     /**

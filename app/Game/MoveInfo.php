@@ -29,9 +29,9 @@ class MoveInfo
     {
         return [
             'status' => true,
-            'type' => $this->type,
-            'from' => $this->from,
-            'to' => $this->to,
+            'type'   => $this->type,
+            'from'   => $this->from,
+            'to'     => $this->to,
         ];
     }
 
@@ -42,7 +42,7 @@ class MoveInfo
     public function getArrayFailed(string $message = ''): array
     {
         return [
-            'status' => false,
+            'status'  => false,
             'message' => $message === '' ? $this->message : $message,
         ];
     }
@@ -57,7 +57,7 @@ class MoveInfo
         return [
             'type' => $this->getType(),
             'from' => $this->getFrom(),
-            'to' => $this->getTo(),
+            'to'   => $this->getTo(),
         ];
     }
 

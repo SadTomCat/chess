@@ -4,12 +4,13 @@ import RulesAfterRequestValidation from '../../validators/RulesAfterRequestValid
  * Data is validated
  *
  * Successful {
- *     exists: true
- *     content: string
- * }
- *
- * Successful {
- *     exists: false
+ *      rules [
+ *          {
+ *              name: string,
+ *              content: string,
+ *              slug: string,
+ *          }
+ *      ]
  * }
  *
  * Fail {
@@ -17,8 +18,8 @@ import RulesAfterRequestValidation from '../../validators/RulesAfterRequestValid
  *     message: backend message | 'Something went wrong'
  * }
  * */
-export default async (categoryName) => {
-    const res = await window.axios.get(`/api/rules/${categoryName}`)
+export default async () => {
+    const res = await window.axios.get('/api/chess-rules')
         .catch((e) => e.response);
 
     if (res.status !== 200 || res.data.status === false) {
@@ -30,7 +31,7 @@ export default async (categoryName) => {
 
     const validator = new RulesAfterRequestValidation(res.data);
 
-    if (validator.validateGetOne() === false) {
+    if (validator.validateGetAll() === false) {
         return {
             status: false,
             message: 'Got invalid data',

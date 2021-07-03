@@ -2,22 +2,22 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Rule;
+use App\Models\ChessRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class RulesRequest extends FormRequest
+class ChessRuleNamesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return $this->user()->can('anyAction', Rule::class);
+        return $this->user()->can('anyAction', ChessRule::class);
     }
 
     /**
@@ -28,16 +28,15 @@ class RulesRequest extends FormRequest
     public function rules()
     {
         return [
-            'content'  => 'required|string|max:65535|min:30',
-            'category' => 'required|exists:rule_categories,name',
+            'name' => 'required|string|min:3|max:32'
         ];
     }
 
-    protected function prepareForValidation()
+    public function attributes()
     {
-        if ($this->category === null && $this->route('rule') !== null) {
-            $this->merge(['category' => $this->route('rule')]);
-        }
+        return [
+            'name' => 'category name',
+        ];
     }
 
     /**
@@ -49,7 +48,10 @@ class RulesRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator): void
     {
-        $response = new JsonResponse(['status'  => false, 'message' => $validator->errors()->first()], 422);
+        $response = new JsonResponse([
+            'status'  => false,
+            'message' => $validator->errors()->first(),
+        ], 422);
 
         throw new ValidationException($validator, $response);
     }

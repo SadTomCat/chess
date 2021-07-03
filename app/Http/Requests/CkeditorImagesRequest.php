@@ -42,7 +42,7 @@ class CkeditorImagesRequest extends FormRequest
     protected function failedValidation(Validator $validator): void
     {
         $response = new JsonResponse([
-            "error" =>  [
+            "error" => [
                 'message' => $validator->errors()->first(),
             ],
         ], 422);

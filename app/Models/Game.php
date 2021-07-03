@@ -50,9 +50,9 @@ class Game extends Model
     public function getUserColor(int $userId): string
     {
         return $this->users()
-                ->where('user_id', $userId)
-                ->withPivot(['color'])
-                ->first()->pivot->color;
+                    ->where('user_id', $userId)
+                    ->withPivot(['color'])
+                    ->first()->pivot->color;
     }
 
     /**
@@ -79,10 +79,10 @@ class Game extends Model
                          ->paginate(10, $columns, page: $page);
 
         return [
-            'items' => $paginated->items(),
-            'total' => $paginated->total(),
-            'last_page' => $paginated->lastPage(),
+            'items'        => $paginated->items(),
+            'total'        => $paginated->total(),
+            'last_page'    => $paginated->lastPage(),
             'current_page' => $paginated->currentPage(),
         ];
     }
- }
+}

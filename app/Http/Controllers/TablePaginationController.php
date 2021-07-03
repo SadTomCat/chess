@@ -57,19 +57,19 @@ class TablePaginationController extends Controller
         if (count($whereConditions) === 0) {
             return response()->json([
                 'status' => true,
-                'items' => [],
+                'items'  => [],
             ]);
         }
 
         $paginated = DB::table($table)
-                 ->select($columns)
-                 ->where(function ($query) use ($whereConditions) {
-                     foreach ($whereConditions as $searchCondition) {
-                         $query->orWhere(...$searchCondition);
-                     }
-                 })
-                 ->orderBy($orderingColumn, $orderBy)
-                 ->paginate($request->perPage, $columns, page: $request->page);
+                       ->select($columns)
+                       ->where(function ($query) use ($whereConditions) {
+                           foreach ($whereConditions as $searchCondition) {
+                               $query->orWhere(...$searchCondition);
+                           }
+                       })
+                       ->orderBy($orderingColumn, $orderBy)
+                       ->paginate($request->perPage, $columns, page: $request->page);
 
         return $this->getSuccessfulResponse($paginated);
     }
@@ -88,11 +88,11 @@ class TablePaginationController extends Controller
      */
     private function getSuccessfulResponse(LengthAwarePaginator $paginated): JsonResponse
     {
-        return  response()->json([
-            'status' => true,
-            'total' => $paginated->total(),
-            'items' => $paginated->items(),
-            'last_page' => $paginated->lastPage(),
+        return response()->json([
+            'status'       => true,
+            'total'        => $paginated->total(),
+            'items'        => $paginated->items(),
+            'last_page'    => $paginated->lastPage(),
             'current_page' => $paginated->currentPage(),
         ]);
     }

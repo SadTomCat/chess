@@ -21,9 +21,9 @@ export default {
                 icon: 'feed',
                 link: '/admin/chess-rules',
             },
-            'Chess rules category': {
+            'Chess rule names': {
                 icon: 'list',
-                link: '/admin/chess-rule-categories',
+                link: '/admin/chess-rules/names',
             },
             Users: {
                 icon: 'group',

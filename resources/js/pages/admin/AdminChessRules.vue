@@ -1,16 +1,16 @@
 <template>
     <div class="admin-chess-rules">
 
-        <!-- Select category  -->
-        <div class="admin-chess-rules__select-category-block">
-            <label for="rule-categories">Rule categories</label>
-            <select class="admin-chess-rules__select-category"
-                    id="rule-categories"
-                    v-model="selectedCategory"
-                    @change="categoryIsSelectedHandler"
+        <!-- Select ruleName  -->
+        <div class="admin-chess-rules__select-rule-name-block">
+            <label for="rule-names">Rule Names</label>
+            <select class="admin-chess-rules__select-rule-name"
+                    id="rule-names"
+                    v-model="selectedRuleName"
+                    @change="ruleNameIsSelectedHandler"
             >
-                <option v-for="category in ruleCategories" :key="category.id + category.name" :value="category.name">
-                    {{ category.name }}
+                <option v-for="ruleNameInfo in ruleNamesInfo" :key="ruleNameInfo.name" :value="ruleNameInfo.name">
+                    {{ ruleNameInfo.name }}
                 </option>
             </select>
         </div>
@@ -44,13 +44,13 @@
         <!-- Editor -->
         <div class="admin-chess-rules__editor">
             <custom-ck-editor v-model="editorData"
-                              @delete="deleteRuleHandler"
+                              @delete="deleteRuleContentHandler"
             ></custom-ck-editor>
         </div>
 
         <!-- Bottom -->
         <div class="admin-chess-rules__bottom">
-            <button class="admin-chess-rules__send-btn" @click="sendArticleHandler">send</button>
+            <button class="admin-chess-rules__send-btn" @click="sendRuleHandler">send</button>
         </div>
 
     </div>
@@ -59,11 +59,10 @@
 <script>
 import { onBeforeMount, ref } from 'vue';
 import CustomCkEditor from '../../components/ckeditor/CustomCkEditor.vue';
-import ruleCategoriesAllRequest from '../../api/ruleCategories/ruleCategoriesAllRequest';
-import ruleGetOneRequest from '../../api/rules/ruleGetOneRequest';
-import ruleUpdateRequest from '../../api/rules/ruleUpdateRequest';
-import ruleCreateRequest from '../../api/rules/ruleCreateRequest';
-import ruleDeleteRequest from '../../api/rules/ruleDeleteRequest';
+import chessRuleNamesAllRequest from '../../api/chessRuleNames/chessRuleNamesAllRequest';
+import chessRulesGetOneRequest from '../../api/chessRules/chessRulesGetOneRequest';
+import chessRulesUpdateRequest from '../../api/chessRules/chessRulesUpdateRequest';
+import chessRulesDeleteRequest from '../../api/chessRules/chessRulesDeleteRequest';
 import baseInformerHelper from '../../helpers/baseInformerHelper';
 
 export default {
@@ -80,35 +79,16 @@ export default {
             setError,
         } = baseInformerHelper();
 
+        /* ---------- Rule names ---------- */
+
+        const ruleNamesInfo = ref([]);
+
+        /** @return  ChessRuleNameInfo|undefined */
+        const findRuleNameInfo = (name) => ruleNamesInfo.value.find((ruleNameInfo) => ruleNameInfo.name === name);
+
         /* ---------- Editor ---------- */
-
-        const ruleCategories = ref({});
-        const selectedCategory = ref('');
+        const selectedRuleName = ref('');
         const editorData = ref('');
-        let isUpdate = false;
-
-        const categoryIsSelectedHandler = async () => {
-            setDefaultInformation();
-
-            const category = ruleCategories.value.find((el) => el.name === selectedCategory.value);
-
-            if (category === undefined) {
-                return;
-            }
-
-            const res = await ruleGetOneRequest(category.name);
-
-            if (res.exists === false || res.status === false) {
-                const message = res.exists === false ? '' : res.message;
-                isUpdate = false;
-                editorData.value = '';
-                setError(message);
-                return;
-            }
-
-            isUpdate = true;
-            editorData.value = res.content;
-        };
 
         const validateContent = () => {
             if (editorData.value.length < 30) {
@@ -119,56 +99,68 @@ export default {
             return true;
         };
 
-        const storeArticleHandler = async () => {
-            const res = await ruleCreateRequest(editorData.value, selectedCategory.value);
+        const ruleNameIsSelectedHandler = async () => {
+            setDefaultInformation();
+
+            const ruleNameInfo = findRuleNameInfo(selectedRuleName.value);
+
+            if (ruleNameInfo === undefined) return;
+
+            const res = await chessRulesGetOneRequest(ruleNameInfo.slug);
+
+            if (res.exists === false || res.status === false) {
+                const message = res.exists === false ? '' : res.message;
+                editorData.value = '';
+                setError(message);
+                return;
+            }
+
+            editorData.value = res.content;
+        };
+
+        const updateRuleRequest = async () => {
+            const ruleNameInfo = findRuleNameInfo(selectedRuleName.value);
+
+            if (ruleNameInfo === undefined) return;
+
+            const res = await chessRulesUpdateRequest(editorData.value, ruleNameInfo.slug);
 
             if (res.status === false) {
                 setError(res.message);
                 return;
             }
 
-            setSuccessful(`${selectedCategory.value} article was saved`);
-            isUpdate = true;
+            setSuccessful(`${selectedRuleName.value} rule was updated`);
         };
 
-        const updateArticleHandler = async () => {
-            const res = await ruleUpdateRequest(editorData.value, selectedCategory.value);
-
-            if (res.status === false) {
-                setError(res.message);
-                return;
-            }
-
-            setSuccessful(`${selectedCategory.value} article was updated`);
-        };
-
-        const sendArticleHandler = async () => {
+        const sendRuleHandler = async () => {
             setTimeout(async () => {
-                if (selectedCategory.value === '') {
+                if (selectedRuleName.value === '') {
                     setNotice('You selected nothing');
                     return;
                 }
 
                 const isValid = validateContent();
 
-                if (isValid === false) {
-                    return;
-                }
+                if (isValid === false) return;
 
-                const runRequestHandler = isUpdate === true ? updateArticleHandler : storeArticleHandler;
-                await runRequestHandler();
+                await updateRuleRequest();
             }, 500);
         };
 
-        const deleteRuleHandler = async () => {
+        const deleteRuleContentHandler = async () => {
             setDefaultInformation();
 
-            if (selectedCategory.value === '') {
+            if (selectedRuleName.value === '') {
                 setNotice('You selected nothing');
                 return;
             }
 
-            const res = await ruleDeleteRequest(selectedCategory.value);
+            const ruleNameInfo = findRuleNameInfo(selectedRuleName.value);
+
+            if (ruleNameInfo === undefined) return;
+
+            const res = await chessRulesDeleteRequest(ruleNameInfo.slug);
 
             if (res.status === false) {
                 const message = res.message ?? 'Content is not deleted.';
@@ -177,22 +169,28 @@ export default {
             }
 
             editorData.value = '';
-            isUpdate = false;
             setSuccessful('Content is deleted.');
         };
 
         onBeforeMount(async () => {
-            const ruleCategoriesReq = await ruleCategoriesAllRequest();
-            ruleCategories.value = ruleCategoriesReq.categories;
+            const data = await chessRuleNamesAllRequest();
+
+            if (data.status === false || data.names_info.length === 0) {
+                const message = data.names_info.length === 0 ? 'Rule names haven\'t been received' : data.message;
+                setError(message);
+                return;
+            }
+
+            ruleNamesInfo.value = data.names_info;
         });
 
         return {
-            ruleCategories,
-            selectedCategory,
+            ruleNamesInfo,
+            selectedRuleName,
             editorData,
-            sendArticleHandler,
-            categoryIsSelectedHandler,
-            deleteRuleHandler,
+            sendRuleHandler,
+            ruleNameIsSelectedHandler,
+            deleteRuleContentHandler,
             information,
         };
     },
@@ -207,7 +205,7 @@ export default {
 .admin-chess-rules {
     @apply px-10 py-10;
 
-    &__select-category-block {
+    &__select-rule-name-block {
         @apply mb-10;
 
         label {
@@ -215,7 +213,7 @@ export default {
         }
     }
 
-    &__select-category {
+    &__select-rule-name {
         @apply w-2/3 rounded-full border-none outline-none ring-1 ring-gray-500 focus:ring-2 focus:ring-pink-500;
     }
 
