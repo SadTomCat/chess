@@ -4,6 +4,7 @@ namespace App\Game;
 
 use App\Game\Chessmen\AbstractChessman;
 use App\Game\Chessmen\King;
+use Exception;
 
 class MateValidation
 {
@@ -19,7 +20,7 @@ class MateValidation
      *
      * @param GameBoard $gameBoard
      * @param string $color
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(private GameBoard $gameBoard, private string $color)
     {
@@ -38,7 +39,7 @@ class MateValidation
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function validate(): bool
     {
@@ -102,7 +103,7 @@ class MateValidation
     /**
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveFromQueen(array $dangerChessmanPos): bool
     {
@@ -130,7 +131,7 @@ class MateValidation
     /**
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveFromRook(array $dangerChessmanPos): bool
     {
@@ -150,7 +151,7 @@ class MateValidation
     /**
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveFromBishop(array $dangerChessmanPos): bool
     {
@@ -170,7 +171,7 @@ class MateValidation
     /**
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canCaptureDanger(array $dangerChessmanPos): bool
     {
@@ -190,7 +191,7 @@ class MateValidation
      *
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveKingHorizontal(array $dangerChessmanPos): bool
     {
@@ -217,7 +218,7 @@ class MateValidation
      *
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveKingVertical(array $dangerChessmanPos): bool
     {
@@ -244,7 +245,7 @@ class MateValidation
      *
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveKingOnMainDiagonal(array $dangerChessmanPos): bool
     {
@@ -272,7 +273,7 @@ class MateValidation
      *
      * @param array $dangerChessmanPos
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function canSaveKingOnAntiDiagonal(array $dangerChessmanPos): bool
     {
@@ -299,7 +300,7 @@ class MateValidation
     /**
      * @param MoveInfo $moveInfo
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     private function safetyAfterMove(MoveInfo $moveInfo): bool
     {

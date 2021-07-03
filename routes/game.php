@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\GameChatController;
-use App\Http\Controllers\GameMoveController;
-use App\Http\Controllers\UserJoinedToGame;
+use App\Http\Controllers\Game\GameChatController;
+use App\Http\Controllers\Game\GameMoveController;
+use App\Http\Controllers\Game\UserJoinedToGame;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'belongs.game', 'game.not.ended'])->group(function () {

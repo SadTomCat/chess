@@ -33,8 +33,6 @@ class GameService
      * @param Game $game
      * @param User $user
      * @param MoveInfo $moveInfo
-     *
-     * @throws \Exception
      */
     public static function successfulMove(Game $game, User $user, MoveInfo $moveInfo): void
     {

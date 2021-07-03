@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Game;
 
 use App\Events\GameNewMessageEvent;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\GameChatRequest;
 use App\Models\Game;
 use App\Models\GameMessage;
