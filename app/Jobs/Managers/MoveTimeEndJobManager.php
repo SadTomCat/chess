@@ -45,7 +45,6 @@ final class MoveTimeEndJobManager
 
     /**
      * @param int $gameId
-     * @throws Exception
      */
     public static function deleteLast(int $gameId): void
     {
@@ -90,7 +89,6 @@ final class MoveTimeEndJobManager
 
     /**
      * @param int $gameId
-     * @throws Exception
      */
     public static function softDeleteLast(int $gameId): void
     {
