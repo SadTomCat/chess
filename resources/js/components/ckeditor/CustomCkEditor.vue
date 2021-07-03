@@ -36,6 +36,7 @@ import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolo
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
@@ -107,6 +108,7 @@ const editorConfig = {
         SimpleUploadAdapter,
         Link,
         List,
+        TodoList,
         Paragraph,
         Alignment,
         HorizontalLine,
@@ -138,6 +140,7 @@ const editorConfig = {
             '|',
             'bulletedList',
             'numberedList',
+            'todoList',
             '|',
             'imageInsert',
             '|',
