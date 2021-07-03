@@ -28,6 +28,7 @@
             </div>
 
             <!-- Logout -->
+            <a href="#" class="mb-4" @click.prevent.stop="clearCache">clear cache</a>
             <a href="/logout" @click.prevent="$emit('logout')">logout</a>
         </div>
     </div>
@@ -38,6 +39,7 @@ import {
     computed, onBeforeUnmount, onMounted, ref,
 } from 'vue';
 import { useStore } from 'vuex';
+import router from '../router';
 
 export default {
     name: 'ViewProfile',
@@ -63,6 +65,11 @@ export default {
             viewProfileStatus.value = false;
         };
 
+        const clearCache = () => {
+            sessionStorage.clear();
+            window.location.reload();
+        };
+
         onMounted(() => {
             window.addEventListener('click', closeViewProfile);
             window.addEventListener('keydown', closeViewProfile);
@@ -78,6 +85,7 @@ export default {
             viewProfileStatus,
             switchViewProfileStatus,
             closeViewProfile,
+            clearCache,
         };
     },
 };
@@ -93,8 +101,7 @@ export default {
     }
 
     &__menu {
-        height: var(--view-profile-menu-height);
-
+        max-height: var(--view-profile-menu-max-height);
         transform-origin: top center;
         animation: growDown .1s linear;
 
@@ -107,7 +114,7 @@ export default {
         @apply text-lg bg-white z-30;
 
         .view-profile-menu__top {
-            @apply space-y-6 mb-5;
+            @apply space-y-6 mb-2 pb-2 border-b border-gray-300;
         }
 
         .view-profile-menu__welcome {
