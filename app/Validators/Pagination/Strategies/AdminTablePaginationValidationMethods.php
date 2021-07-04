@@ -13,9 +13,9 @@ class AdminTablePaginationValidationMethods extends AbstractTablePaginationValid
      * @var array|\string[][][]
      */
     protected array $accessForRoles = [
-        'users' => ['admin'     => ['id', 'name', 'email'],
-                    'support'   => ['id', 'name', 'email'],
-                    'moderator' => ['id', 'name', 'email'],
+        'users' => ['admin'     => ['id', 'name', 'email', 'blocked', 'blocked_at', 'role'],
+                    'support'   => ['id', 'name', 'email', 'blocked', 'blocked_at', 'role'],
+                    'moderator' => ['id', 'name', 'email', 'blocked', 'blocked_at', 'role'],
         ],
         'games' => ['admin'     => ['id', 'token', 'start_at', 'end_at', 'winner_color'],
                     'support'   => ['id', 'token', 'start_at', 'end_at', 'winner_color'],
@@ -28,9 +28,10 @@ class AdminTablePaginationValidationMethods extends AbstractTablePaginationValid
      */
     private bool $wasTableValidation = false;
 
-    public function __construct(protected User $user,
-                                protected string $table,
-                                protected array|bool $ordering,
+    public function __construct(
+        protected User $user,
+        protected string $table,
+        protected array|bool $ordering,
     )
     {
     }
@@ -49,7 +50,8 @@ class AdminTablePaginationValidationMethods extends AbstractTablePaginationValid
         $isAvailableForRole = $needleTable[$this->user->role] ?? null;
 
         if ($isAvailableForRole === null) {
-            throw (new TablePaginationValidationException("`$this->table` table not available for {$this->user->role}"));
+            $message = "`$this->table` table not available for {$this->user->role}";
+            throw (new TablePaginationValidationException($message, 403));
         }
 
         $this->wasTableValidation = true;
