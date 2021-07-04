@@ -36,6 +36,7 @@ export default {
     setup() {
         const route = useRoute();
         const router = useRouter();
+        const baseChessRulePath = '/chess-rules';
 
         /* ---------- Cache ---------- */
 
@@ -149,6 +150,12 @@ export default {
             content.value = '';
         };
 
+        const pageNotExist = async () => {
+            await router.replace(baseChessRulePath);
+            clearRulePage();
+            setWarningSettings('Page not exists');
+        };
+
         /** @return {string|boolean} */
         const fetchRuleContent = async (slug) => {
             closeWarningPopUp();
@@ -167,7 +174,7 @@ export default {
             setWarningSettings(message);
             await invalidateLinks();
 
-            await router.replace('/chess-rules');
+            await router.replace(baseChessRulePath);
 
             return false;
         };
@@ -175,12 +182,14 @@ export default {
         /**
          * Set from server or sessionStorage and cache them
          *
-         *  @param {ChessRuleNameInfo} ruleNameInfo
-         *  @return {Boolean}
+         * @param {number|undefined} indexInLinks
+         * @return {Boolean}
          *  */
-        const setRuleContent = async (ruleNameInfo) => {
-            if (window.isChessRuleNameInfo(ruleNameInfo) === false) {
-                setWarningSettings('Something went wrong');
+        const setRuleContent = async (indexInLinks) => {
+            const ruleNameInfo = links[indexInLinks];
+
+            if (ruleNameInfo === undefined) {
+                await pageNotExist();
                 return false;
             }
 
@@ -204,7 +213,7 @@ export default {
         /* ---------- Other ---------- */
 
         const locationWasChanged = async (indexInLinks) => {
-            await setRuleContent(links[indexInLinks]);
+            await setRuleContent(indexInLinks);
         };
 
         onBeforeMount(async () => {
@@ -214,10 +223,11 @@ export default {
 
             setLinks(ruleNamesInfo);
 
-            if (route.params.rule !== '') {
-                const ruleNameInfo = ruleNamesInfo.find((el) => el.slug === route.params.rule);
-                await setRuleContent(ruleNameInfo);
-            }
+            if (route.params.rule === '') return;
+
+            const indexInLinks = ruleNamesInfo.findIndex((el) => el.slug === route.params.rule);
+
+            await setRuleContent(indexInLinks);
         });
 
         return {
