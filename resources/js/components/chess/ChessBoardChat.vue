@@ -21,8 +21,14 @@
 
         <!-- Bottom -->
         <div class="chess-chat__input-block">
-            <textarea rows="2" maxlength="255" v-model="message" :disabled="sending"></textarea>
-            <span class="chess-chat__icon-btn material-icons" @click="sendMessage">send</span>
+            <textarea rows="2" maxlength="255"
+                      v-model="message"
+                      @keypress.enter.ctrl.exact="sendMessage"
+                      :disabled="sending"
+            ></textarea>
+            <span class="chess-chat__icon-btn material-icons" @click="sendMessage">
+                send
+            </span>
         </div>
     </div>
 </template>
@@ -55,14 +61,15 @@ export default {
             const data = await sendGameMessage(gameToken, message.value);
 
             if (data.status === true) {
-                store.commit('PUSH_MESSAGE', { message: message.value, fromOpponent: false });
+                store.commit('PUSH_MESSAGE', {
+                    message: message.value,
+                    fromOpponent: false,
+                });
                 message.value = '';
             }
 
             sending.value = false;
         };
-
-        /* TODO: add mute */
 
         return {
             store,
@@ -81,7 +88,7 @@ export default {
     height: 40rem;
     width: 20rem;
     @apply flex flex-col;
-    @apply border-b border-t border-r border-gray-300;
+    @apply bg-white border-b border-t border-r border-gray-300;
 
     &__icon-btn {
         @apply cursor-pointer;
