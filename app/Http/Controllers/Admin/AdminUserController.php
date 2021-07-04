@@ -16,7 +16,7 @@ class AdminUserController extends Controller
      */
     public function show(User $user): JsonResponse
     {
-        $aboutUser = $user->only(['id', 'name', 'email', 'blocked', 'created_at', 'updated_at']);
+        $aboutUser = $user->only(['id', 'name', 'email', 'blocked', 'role', 'created_at', 'updated_at']);
 
         if ($aboutUser['blocked'] === true) {
             $aboutUser['blocked_at'] = $user->blocked_at;
