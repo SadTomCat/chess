@@ -12,9 +12,11 @@ class TablePaginationValidationException extends Exception
      */
     public function render(): JsonResponse
     {
+        $status = $this->code >= 400 && $this->code <= 500 ? $this->code : 422;
+
         return response()->json([
             'status' => false,
             'message' => $this->message,
-        ], 422);
+        ], $status);
     }
 }
