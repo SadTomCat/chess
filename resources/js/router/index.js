@@ -2,16 +2,28 @@ import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
 import Error404 from '../pages/errors/Error404.vue';
 
-const Home = () => import('~/pages/Home.vue');
-const ChessRules = () => import('~/pages/ChessRules.vue');
+import Home from '~/pages/Home.vue';
+import SearchGame from '~/pages/SearchGame.vue';
+
+/* ------------------- Auth ------------------- */
 const Login = () => import('~/pages/Login.vue');
 const Registration = () => import('~/pages/Registration.vue');
-const Game = () => import('~/pages/Game.vue');
-const SearchGame = () => import('~/pages/SearchGame.vue');
 const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
+
+/* ------------------- Pages in header ------------------- */
+const ChessRules = () => import('~/pages/ChessRules.vue');
+
+/* ------------------- Pages in view profile -------------------*/
 const Settings = () => import('~/pages/Settings.vue');
 const Statistics = () => import('~/pages/Statistics.vue');
+
+/* ------------------- Game pages -------------------*/
+const Game = () => import('~/pages/Game.vue');
+
+/* ------------------- Other pages ------------------- */
 const ViewGame = () => import('~/pages/ViewGame');
+
+/* ------------------- Admin ------------------- */
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
 const AdminChessRuleNames = () => import('~/pages/admin/AdminChessRuleNames.vue');
