@@ -69,6 +69,12 @@
         ],
         "unit": [
             "php artisan test --testsuite=Unit"
+        ],
+        "feature": [
+            "php artisan test --testsuite=Feature"
+        ],
+        "feature-on-first": [
+            "php artisan test --testsuite=Feature --stop-on-failure"
         ]
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Traits\DefaultFailedValidation;
-use App\Models\ChessRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ChessRuleNamesRequest extends FormRequest
+class AdminUpdateRoleRequest extends FormRequest
 {
     use DefaultFailedValidation;
 
@@ -17,7 +17,7 @@ class ChessRuleNamesRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('anyAction', ChessRule::class);
+        return true;
     }
 
     /**
@@ -27,15 +27,15 @@ class ChessRuleNamesRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|string|min:3|max:32'
-        ];
-    }
+        $roles = config('enums.user_roles');
 
-    public function attributes()
-    {
         return [
-            'name' => 'category name',
+            'adminPassword' => 'password:web',
+            'role' => [
+                'required',
+                'string',
+                Rule::in($roles),
+            ]
         ];
     }
 }
