@@ -30,7 +30,7 @@ class ChessRuleNamesController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $namesInfo = $request->input('where_content_filled', false) === 'true'
+        $namesInfo = $request->boolean('where_content_filled', false) === true
             ? ChessRule::getFilled(['id', 'name', 'slug'])
             : ChessRule::all(['id', 'name', 'slug']);
 
