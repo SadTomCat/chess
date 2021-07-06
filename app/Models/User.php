@@ -29,6 +29,7 @@ class User extends Authenticatable
         'role',
         'blocked',
         'blocked_at',
+        'email_verified_at',
     ];
 
     /**
@@ -49,6 +50,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'blocked'           => 'boolean',
+    ];
+
+    protected $attributes = [
+        'blocked' => false,
+        'role'    => 'user',
     ];
 
     /**

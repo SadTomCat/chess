@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\DefaultFailedValidation;
 use App\Models\ChessRule;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 class ChessRulesRequest extends FormRequest
 {
+    use DefaultFailedValidation;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -28,8 +28,8 @@ class ChessRulesRequest extends FormRequest
     public function rules()
     {
         return [
-            'content'  => 'required|string|max:65535|min:30',
-            'slug' => 'required|exists:chess_rules,slug',
+            'content' => 'required|string|max:65535|min:30',
+            'slug'    => 'required|exists:chess_rules,slug',
         ];
     }
 
@@ -38,19 +38,5 @@ class ChessRulesRequest extends FormRequest
         if ($this->slug === null && $this->route('chess_rule') !== null) {
             $this->merge(['slug' => $this->route('chess_rule')]);
         }
-    }
-
-    /**
-     * @param Validator $validator
-     *
-     * @return void
-     *
-     * @throws ValidationException
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = new JsonResponse(['status' => false, 'message' => $validator->errors()->first()], 422);
-
-        throw new ValidationException($validator, $response);
     }
 }
