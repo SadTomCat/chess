@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\DefaultFailedValidation;
 use App\Models\ChessRule;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 class ChessRuleNamesRequest extends FormRequest
 {
+    use DefaultFailedValidation;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -37,22 +37,5 @@ class ChessRuleNamesRequest extends FormRequest
         return [
             'name' => 'category name',
         ];
-    }
-
-    /**
-     * @param Validator $validator
-     *
-     * @return void
-     *
-     * @throws ValidationException
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = new JsonResponse([
-            'status'  => false,
-            'message' => $validator->errors()->first(),
-        ], 422);
-
-        throw new ValidationException($validator, $response);
     }
 }

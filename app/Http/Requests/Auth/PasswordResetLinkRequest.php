@@ -2,13 +2,28 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Contracts\Validation\Validator;
+use App\Http\Requests\Traits\DefaultFailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 class PasswordResetLinkRequest extends FormRequest
 {
+    use DefaultFailedValidation;
+
+    public function __construct(
+        array $query = [],
+        array $request = [],
+        array $attributes = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        $content = null
+    )
+    {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+
+        $this->defaultErrorFieldInResponse = 'errors';
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,22 +44,5 @@ class PasswordResetLinkRequest extends FormRequest
         return [
             'email' => 'required|email|exists:users',
         ];
-    }
-
-    /**
-     * @param Validator $validator
-     *
-     * @return void
-     *
-     * @throws ValidationException
-     */
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = new JsonResponse([
-            'status' => false,
-            'errors' => $validator->errors()->first()
-        ], 422);
-
-        throw new ValidationException($validator, $response);
     }
 }

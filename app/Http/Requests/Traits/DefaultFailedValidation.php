@@ -8,6 +8,8 @@ use Illuminate\Validation\ValidationException;
 
 trait DefaultFailedValidation
 {
+    protected string $defaultErrorFieldInResponse = 'message';
+
     /**
      * @param Validator $validator
      *
@@ -19,7 +21,7 @@ trait DefaultFailedValidation
     {
         $response = new JsonResponse([
             'status'  => false,
-            'message' => $validator->errors()->first(),
+            $this->defaultErrorFieldInResponse => $validator->errors()->first(),
         ], 422);
 
         throw new ValidationException($validator, $response);
