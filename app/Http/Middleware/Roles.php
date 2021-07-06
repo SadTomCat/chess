@@ -21,7 +21,7 @@ class Roles
         $userRole = $request->user()->role;
 
         if (in_array($userRole, $roles, true) === false) {
-            abort(401, 'Unauthorized action');
+            abort(403, 'Unauthorized action');
         }
 
         return $next($request);

@@ -3,11 +3,12 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Policies\Traits\AdminUserAuthorization;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminUserAuthorization;
 
     /**
      * @param User $currentUser
