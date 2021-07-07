@@ -1,6 +1,6 @@
 <template>
     <div class="admin h-full">
-        <admin-side-panel></admin-side-panel>
+        <colored-side-panel :links="links"></colored-side-panel>
 
         <div class="admin__content">
             <div class="admin__header-block">
@@ -16,13 +16,11 @@
 <script>
 import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
-import AdminSidePanel from '~/components/admin/AdminSidePanel.vue';
+import ColoredSidePanel from '../../components/sidePanels/ColoredSidePanel.vue';
 import stringHelper from '~/helpers/stringHelper';
 
 export default {
     name: 'Admin',
-
-    components: { AdminSidePanel },
 
     setup() {
         const route = useRoute();
@@ -30,22 +28,58 @@ export default {
 
         const { upperFirstLetter } = stringHelper();
 
-        const clearPath = (str) => str
-            .replace('/admin/', '')
-            .replace(/-/g, ' ')
-            .replace(/\//g, ' ')
-            .replace(/[0-9]/g, '');
+        /** @member {UrlLink[]} links */
+        const links = [
+            {
+                name: 'Chess rules',
+                icon: 'feed',
+                path: { name: 'adminChessRules' },
+            },
+            {
+                name: 'Chess rule names',
+                icon: 'list',
+                path: { name: 'adminChessRuleNames' },
+            },
+            {
+                name: 'Users',
+                icon: 'group',
+                path: { name: 'adminUsers' },
+            },
+            {
+                name: 'Games',
+                icon: 'videogame_asset',
+                path: { name: 'adminGames' },
+            },
+            {
+                name: 'Websockets',
+                icon: 'sync_alt',
+                path: { name: 'adminWebsockets' },
+            },
+        ];
 
-        const getPageName = computed(() => (route.path.match(/\/admin\/?$/)
-            ? 'Admin panel'
-            : upperFirstLetter(clearPath(route.path))));
+        /** @property {UrlLink|undefined} currentLink.value */
+        const currentLink = computed(() => {
+            try {
+                return links.find((link) => route.path === router.resolve(link.path).path);
+            } catch (e) {
+                return undefined;
+            }
+        });
+
+        const getPageName = computed(() => (currentLink.value !== undefined
+            ? currentLink.value.name
+            : route.meta.name ?? 'Admin panel'
+        ));
 
         return {
+            links,
             router,
             upperFirstLetter,
             getPageName,
         };
     },
+
+    components: { ColoredSidePanel },
 };
 </script>
 

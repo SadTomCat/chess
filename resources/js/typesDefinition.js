@@ -90,3 +90,37 @@ window.isChessRuleLink = (value) => {
 
     return isValid;
 };
+
+/**
+ * @typedef UrlLink
+ * @type Object
+ * @property {String|Object} path
+ * @property {String} name
+ * @property {?String} icon
+ * */
+window.isUrlLink = (value) => {
+    const isPathObject = (path) => window.isObject(path) === true && window.isString(path.name);
+
+    try {
+        if (window.isObject(value) === false) {
+            throw Error('Is not object');
+        }
+
+        if (window.isString(value.path) === false && isPathObject(value.path) === false) {
+            throw Error('Invalid path');
+        }
+
+        if (window.isString(value.name) === false) {
+            throw Error('Invalid name');
+        }
+
+        if (value.icon !== undefined && window.isString(value.icon) === false) {
+            throw Error('Invalid icon');
+        }
+    } catch (e) {
+        informAboutWrongType(false, 'isLink', value, e.message);
+        return false;
+    }
+
+    return true;
+};

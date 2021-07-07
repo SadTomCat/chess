@@ -119,31 +119,44 @@ const routes = [
         children: [
             {
                 path: 'chess-rules',
+                name: 'adminChessRules',
                 component: AdminChessRules,
             },
             {
                 path: 'chess-rules/names',
+                name: 'adminChessRuleNames',
                 component: AdminChessRuleNames,
             },
             {
                 path: 'users',
+                name: 'adminUsers',
                 component: AdminUsers,
             },
             {
                 path: 'games',
+                name: 'adminGames',
                 component: AdminGames,
             },
             {
                 path: 'websockets',
+                name: 'adminWebsockets',
                 component: AdminWebsocket,
             },
             {
                 path: 'view/games/:id',
                 component: AdminViewGame,
+                name: 'adminViewGames',
+                meta: {
+                    name: 'View games',
+                },
             },
             {
                 path: 'view/users/:id',
                 component: AdminUsersView,
+                name: 'adminViewUsers',
+                meta: {
+                    name: 'View users',
+                },
             },
         ],
         meta: {
