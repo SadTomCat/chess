@@ -1,5 +1,5 @@
 <template>
-    <div class="base-list-wrapper">
+    <div class="base-list-wrapper" @keypress.enter="enterClicked">
 
         <div class="base-list">
             <h1>{{ title }}</h1>
@@ -29,7 +29,7 @@
                                     <span class="material-icons text-green-500">done</span>
                                 </button>
 
-                                <button class="base-list__button" @click="closeEditing(index)">
+                                <button class="base-list__button" @click="closeEditing">
                                     <span class="material-icons text-red-500">close</span>
                                 </button>
                             </div>
@@ -122,6 +122,7 @@ export default {
         const showList = computed(() => props.items.length > 0 || showNewItem.value === true);
 
         const showAddItemHandler = () => {
+            closeEditing();
             showNewItem.value = true;
         };
 
@@ -131,6 +132,8 @@ export default {
         };
 
         const addNewItemAction = () => {
+            if (showNewItem.value === false) return;
+
             emit('addItemAction', newItem.value);
             showNewItem.value = false;
             newItem.value = '';
@@ -145,22 +148,30 @@ export default {
          * then after changing editingIndex, the current input returns the old value.
          * */
         const startEditing = (index) => {
+            closeAddItemBlockHandler();
             newEditingValue.value = props.items[index];
             editingIndex.value = index;
         };
 
-        const closeEditing = (index) => {
-            newEditingValue.value = props.items[index];
+        const closeEditing = () => {
+            newEditingValue.value = '';
             editingIndex.value = -1;
         };
 
         const editingAction = () => {
-            if (newEditingValue.value.length === 0 || newEditingValue.value === props.items[editingIndex.value]) {
+            if (editingIndex.value === -1 || newEditingValue.value.length === 0
+                || newEditingValue.value === props.items[editingIndex.value]) {
                 return;
             }
 
             emit('editAction', editingIndex.value, newEditingValue.value);
             closeEditing();
+        };
+
+        /* Handlers */
+        const enterClicked = () => {
+            addNewItemAction();
+            editingAction();
         };
 
         return {
@@ -175,6 +186,7 @@ export default {
             closeEditing,
             newEditingValue,
             editingAction,
+            enterClicked,
         };
     },
 
