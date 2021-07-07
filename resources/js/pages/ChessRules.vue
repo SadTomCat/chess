@@ -223,7 +223,7 @@ export default {
 
             setLinks(ruleNamesInfo);
 
-            if (route.params.rule === '') return;
+            if (route.params.rule === '' || window.isString(route.params.rule) === false) return;
 
             const indexInLinks = ruleNamesInfo.findIndex((el) => el.slug === route.params.rule);
 
