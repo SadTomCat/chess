@@ -42,6 +42,9 @@ export default {
     min-width: 18rem;
     max-width: 24rem;
 
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+
     @apply px-5 py-5 bg-white shadow rounded-2xl;
 
     &__header {

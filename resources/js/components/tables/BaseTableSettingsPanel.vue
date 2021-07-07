@@ -12,6 +12,6 @@ export default {
 
 <style lang="scss">
 .base-table-settings-panel {
-    @apply flex flex-wrap space-x-4;
+    @apply flex flex-wrap;
 }
 </style>
