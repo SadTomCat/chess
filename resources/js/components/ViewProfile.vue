@@ -17,11 +17,8 @@
                     <li>
                         <router-link to="/admin" v-if="showAdminPanelLink === true">admin panel</router-link>
                     </li>
-                    <li>
-                        <router-link to="/settings">settings</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/statistics">statistics</router-link>
+                    <li v-for="link in links" :key="link.name">
+                        <router-link :to="link.path">{{ link.name }}</router-link>
                     </li>
                 </ul>
 
@@ -39,6 +36,7 @@ import {
     computed, onBeforeUnmount, onMounted, ref,
 } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import router from '../router';
 
 export default {
@@ -52,6 +50,17 @@ export default {
 
     setup() {
         const store = useStore();
+
+        const links = [
+            {
+                name: 'settings',
+                path: { name: 'settings' },
+            },
+            {
+                name: 'statistics',
+                path: { name: 'statistics' },
+            },
+        ];
 
         const showAdminPanelLink = computed(() => store.state.user.role !== 'user');
 
@@ -81,6 +90,7 @@ export default {
         });
 
         return {
+            links,
             showAdminPanelLink,
             viewProfileStatus,
             switchViewProfileStatus,

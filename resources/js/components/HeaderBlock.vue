@@ -14,17 +14,8 @@
                 <!-- Pages navigation -->
                 <nav>
                     <ul class="header__horizontal-list">
-                        <li>
-                            <router-link to="/">main</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/rating">rating</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/chess-rules">rules</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/support">support</router-link>
+                        <li v-for="link in links" :key="link.name">
+                            <router-link :to="link.path">{{ link.name }}</router-link>
                         </li>
                     </ul>
                 </nav>
@@ -71,6 +62,25 @@ export default {
         const router = useRouter();
         const route = useRoute();
 
+        const links = [
+            {
+                name: 'main',
+                path: { name: 'home' },
+            },
+            {
+                name: 'rating',
+                path: { name: 'rating' },
+            },
+            {
+                name: 'rules',
+                path: { name: 'chessRules' },
+            },
+            {
+                name: 'support',
+                path: { name: 'support' },
+            },
+        ];
+
         // Store
         const store = useStore();
         const user = computed(() => store.state.user);
@@ -96,6 +106,7 @@ export default {
         };
 
         return {
+            links,
             headerActive,
             user,
             logged,

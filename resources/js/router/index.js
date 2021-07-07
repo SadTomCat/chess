@@ -37,7 +37,7 @@ const routes = [
     {
         path: '/',
         component: SearchGame,
-        name: 'searchGame',
+        name: 'home',
     },
     {
         path: '/game/:token',
@@ -55,7 +55,7 @@ const routes = [
     {
         path: '/chess-rules/:rule?',
         component: ChessRules,
-        name: 'rules',
+        name: 'chessRules',
     },
     {
         path: '/support',
@@ -73,7 +73,7 @@ const routes = [
     {
         path: '/statistics',
         component: Statistics,
-        name: 'statistic',
+        name: 'statistics',
         meta: {
             auth: true,
         },
@@ -98,7 +98,7 @@ const routes = [
     {
         path: '/registration',
         component: Registration,
-        name: 'register',
+        name: 'registration',
         meta: {
             needHeader: false,
             guest: true,
