@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\RolesHelper;
 use App\Http\Controllers\Admin\AdminUserController;
 
 Route::get('/users/{user}', [AdminUserController::class, 'show'])
@@ -12,7 +13,7 @@ Route::post('/unblock/{user}', [AdminUserController::class, 'unblock'])
      ->middleware('roles:admin,moderator');
 
 Route::patch('/users/{user}/roles', [AdminUserController::class, 'updateRole'])
-     ->middleware('roles:admin,moderator')
+     ->middleware('roles:' . app(RolesHelper::class)->getImplodedAuthorizedEditors(','))
      ->name('admin.update.user.role');
 
 Route::post('/users/create', [AdminUserController::class, 'createUser'])
