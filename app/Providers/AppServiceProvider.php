@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\RolesHelper;
 use App\Websockets\IWebsocketManager;
 use App\Websockets\PusherManager;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->singleton(RolesHelper::class);
     }
 }
