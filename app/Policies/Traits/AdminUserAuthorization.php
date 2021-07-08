@@ -2,6 +2,7 @@
 
 namespace App\Policies\Traits;
 
+use App\Helpers\RolesHelper;
 use App\Models\User;
 
 trait AdminUserAuthorization
@@ -23,7 +24,7 @@ trait AdminUserAuthorization
             return true;
         }
 
-        $mappedAvailableRolesForUpdate = config('admin.mapped_available_roles_for_update')[$currentUser->role] ?? [];
+        $mappedAvailableRolesForUpdate = app(RolesHelper::class)->getAvailableRolesByRole($currentUser->role);
 
         return in_array($userForUpdate->role, $mappedAvailableRolesForUpdate, true)
             && in_array($role, $mappedAvailableRolesForUpdate, true);

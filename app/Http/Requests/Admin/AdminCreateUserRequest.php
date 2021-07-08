@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Helpers\RolesHelper;
 use App\Http\Requests\Traits\DefaultFailedValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -27,7 +28,7 @@ class AdminCreateUserRequest extends FormRequest
      */
     public function rules()
     {
-        $roles = array_filter(config('enums.user_roles'), fn($value) => $value !== 'admin');
+        $roles = app(RolesHelper::class)->getAvailableRolesByRole('admin');
 
         return [
             'adminPassword' => 'required|password:web',
