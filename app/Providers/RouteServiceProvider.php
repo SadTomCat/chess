@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -46,6 +47,12 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                  ->namespace($this->namespace)
                  ->group(base_path('routes/web.php'));
+        });
+
+        Route::bind('user', function ($value) {
+            return is_numeric($value) === true
+                ? User::findOrFail($value)
+                : User::where('email', $value)->firstOrFail();
         });
     }
 

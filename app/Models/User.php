@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use JetBrains\PhpStorm\ArrayShape;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * @mixin IdeHelperUser
@@ -30,6 +31,18 @@ class User extends Authenticatable
         'blocked',
         'blocked_at',
         'email_verified_at',
+    ];
+
+    protected $visible = [
+        'id',
+        'name',
+        'email',
+        'role',
+        'blocked',
+        'blocked_at',
+        'email_verified_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -107,12 +120,28 @@ class User extends Authenticatable
     }
 
     /**
-     * @param array $only
+     * @param array $only - games statistics columns will be set when you set $needGamesStatistics
+     * @param bool $needGamesStatistics
      * @return array
      */
-    public function getUserInfo(array $only = ['id', 'name', 'email', 'role', 'blocked']): array
+    public function getUserInfo(
+        array $only = ['id', 'name', 'email', 'role', 'blocked'],
+        bool $needGamesStatistics = false
+    ): array
     {
-        return $this->only($only);
+        $info = $this->only($this->getVisible());
+
+        if ($needGamesStatistics === true) {
+            $gamesStatistics = $this->getGamesStatistics();
+            $info = array_merge($info, $gamesStatistics);
+            $only = [...$only, ...array_keys($gamesStatistics)];
+        }
+
+        return array_filter(
+            $info,
+            fn($v, $k) => in_array($k, $only, true) && $v !== null,
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
     /**

@@ -20,17 +20,17 @@ class AdminUserController extends Controller
      * @param User $user
      * @return JsonResponse
      */
-    public function show(User $user): JsonResponse
+    public function show(Request $request, User $user): JsonResponse
     {
-        $aboutUser = $user->only(['id', 'name', 'email', 'blocked', 'role', 'created_at', 'updated_at']);
+        $requestColumns = $request->query('columns', []);
 
-        if ($aboutUser['blocked'] === true) {
-            $aboutUser['blocked_at'] = $user->blocked_at;
-        }
+        $columns = is_array($requestColumns) === true && empty($requestColumns) === false
+            ? $requestColumns
+            : $user->getVisible();
 
-        $info = array_merge($aboutUser, $user->getGamesStatistics());
+        $userInfo = $user->getUserInfo($columns, $request->boolean('need_statistics', false));
 
-        return response()->json($info);
+        return response()->json($userInfo);
     }
 
     /**
@@ -90,10 +90,10 @@ class AdminUserController extends Controller
     public function createUser(AdminCreateUserRequest $request): JsonResponse
     {
         User::create([
-            'name' => $request->name ?? Factory::create()->firstName(),
-            'email' => $request->email,
-            'role' => $request->role,
-            'password' => Hash::make($request->password),
+            'name'              => $request->name ?? Factory::create()->firstName(),
+            'email'             => $request->email,
+            'role'              => $request->role,
+            'password'          => Hash::make($request->password),
             'email_verified_at' => Date::now(),
         ]);
 
