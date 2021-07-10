@@ -6,7 +6,7 @@ This is web chess. Project was created for learn how to use websocket, vue 3, la
 
 ## Installation
 
-First you need to set up the env file. Register an account in pusher https://pusher.com, before setting.
+First you need to set up the env file. Register an account in pusher https://pusher.com, before setting. An administrator user is created in the seeder, you can set his parameters in the env file.
 
 Next enter the following commands.
 
