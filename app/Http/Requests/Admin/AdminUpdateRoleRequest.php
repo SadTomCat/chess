@@ -31,7 +31,7 @@ class AdminUpdateRoleRequest extends FormRequest
 
         return [
             'admin_password' => 'required|password:web',
-            'role' => [
+            'role'           => [
                 'required',
                 'string',
                 Rule::in($roles),

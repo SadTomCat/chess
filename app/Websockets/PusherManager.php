@@ -3,7 +3,6 @@
 
 namespace App\Websockets;
 
-use Pusher\ApiErrorException;
 use Pusher\Pusher;
 use Pusher\PusherException;
 

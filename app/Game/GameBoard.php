@@ -364,7 +364,12 @@ class GameBoard
      * @return array
      * @throws Exception
      */
-    public function getAllOnAntiDiagonal(int $d = 0, array $startPos = [], array $endPos = [], string $color = ''): array
+    public function getAllOnAntiDiagonal(
+        int $d = 0,
+        array $startPos = [],
+        array $endPos = [],
+        string $color = ''
+    ): array
     {
         if ($d === 0) {
             $d = empty($endPos) && empty($startPos) === false ? $this->getAntiDiagonal($startPos) : $d;
@@ -520,7 +525,12 @@ class GameBoard
      * @return array
      * @throws Exception
      */
-    public function getFirstOnAntiDiagonal(int $d = 0, array $startPos = [], array $endPos = [], string $color = ''): array
+    public function getFirstOnAntiDiagonal(
+        int $d = 0,
+        array $startPos = [],
+        array $endPos = [],
+        string $color = ''
+    ): array
     {
         if ($d === 0) {
             $d = empty($endPos) && empty($startPos) === false ? $this->getAntiDiagonal($startPos) : $d;

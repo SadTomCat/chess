@@ -32,10 +32,10 @@ class AdminCreateUserRequest extends FormRequest
 
         return [
             'admin_password' => 'required|password:web',
-            'name' => 'string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|max:32',
-            'role' => [
+            'name'           => 'string|max:255',
+            'email'          => 'required|email|unique:users',
+            'password'       => 'required|string|min:8|max:32',
+            'role'           => [
                 'required',
                 Rule::in($roles)
             ],

@@ -77,7 +77,9 @@ final class TablePaginationValidatorBuilder
      * @return AbstractTablePaginationValidationMethods
      * @throws TablePaginationValidationException
      */
-    private function buildValidationMethods(bool $forAdmin, string $table, array|bool $ordering): ITablePaginationValidationMethods
+    private function buildValidationMethods(bool $forAdmin,
+        string $table,
+        array|bool $ordering): ITablePaginationValidationMethods
     {
         $user = Auth::user();
 

@@ -20,7 +20,7 @@ trait DefaultFailedValidation
     protected function failedValidation(Validator $validator): void
     {
         $response = new JsonResponse([
-            'status'  => false,
+            'status'                           => false,
             $this->defaultErrorFieldInResponse => $validator->errors()->first(),
         ], 422);
 

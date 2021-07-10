@@ -37,10 +37,10 @@ abstract class AbstractChessman
     /**
      * checks if the move conforms to the rules and will be safe for the king.
      *
-     * @param $to
+     * @param array $to
      * @return MoveInfo
      */
-    public function moveValidation($to): MoveInfo
+    public function moveValidation(array $to): MoveInfo
     {
         $canMoveInfo = $this->validMoveByRule($to);
 
@@ -52,7 +52,7 @@ abstract class AbstractChessman
             return (new MoveInfo(status: false, message: self::DANGEROUS_FOR_KING));
         }
 
-        return $this->createMoveInfo($to, true);
+        return $this->createMoveInfo($to);
     }
 
     /**
@@ -486,7 +486,7 @@ abstract class AbstractChessman
      * @param string $message
      * @return MoveInfo
      */
-    protected function createMoveInfo(array $to, $status = true, string $message = ''): MoveInfo
+    protected function createMoveInfo(array $to, bool $status = true, string $message = ''): MoveInfo
     {
         if ($status === true) {
             return (new MoveInfo($this->defineType($to), $this->pos, $to));
@@ -499,11 +499,10 @@ abstract class AbstractChessman
     }
 
     /**
-     * @param $moves
+     * @param array $moves
      * @return bool
-     * @throws Exception
      */
-    protected function canAnyByMoves($moves): bool
+    protected function canAnyByMoves(array $moves): bool
     {
         foreach ($moves as $move) {
             if ($move['x'] === 8 || $move['y'] === 8 || $move['x'] === -1 || $move['y'] === -1) {
