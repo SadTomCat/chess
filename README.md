@@ -20,6 +20,8 @@ Next enter the following commands.
 
 `php artisan db:seed`
 
+`php artisan key:generate`
+
 `php artisan serve`
 
 `php artisan queue:listen`
