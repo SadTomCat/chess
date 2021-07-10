@@ -32,6 +32,7 @@ const AdminGames = () => import('~/pages/admin/AdminGames.vue');
 const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
 const AdminViewGame = () => import('~/pages/admin/view/AdminViewGame.vue');
 const AdminUsersView = () => import('~/pages/admin/view/AdminUsersView.vue');
+const AdminAccountsManagement = () => import('../pages/admin/accountsManagement/AdminAccountsManagement.vue');
 
 const routes = [
     {
@@ -141,6 +142,11 @@ const routes = [
                 path: 'websockets',
                 name: 'adminWebsockets',
                 component: AdminWebsocket,
+            },
+            {
+                path: 'admin/accounts/management',
+                name: 'adminAccountsManagement',
+                component: AdminAccountsManagement,
             },
             {
                 path: 'view/games/:id',

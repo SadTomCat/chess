@@ -157,7 +157,7 @@ class AdminUpdateUserRoleTest extends ApiTestCase
     {
         return [
             'role'          => $role,
-            'adminPassword' => $adminPassword,
+            'admin_password' => $adminPassword,
         ];
     }
 

@@ -51,6 +51,11 @@ export default {
                 path: { name: 'adminGames' },
             },
             {
+                name: 'Accounts management',
+                icon: 'manage_accounts',
+                path: { name: 'adminAccountsManagement' },
+            },
+            {
                 name: 'Websockets',
                 icon: 'sync_alt',
                 path: { name: 'adminWebsockets' },

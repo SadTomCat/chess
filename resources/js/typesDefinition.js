@@ -124,3 +124,18 @@ window.isUrlLink = (value) => {
 
     return true;
 };
+
+/**
+ * @typedef FailResponse
+ * @type Object
+ * @property {String} message
+ * @property {boolean} status - false
+ *
+ * */
+
+/**
+ * @typedef SuccessfulResponse
+ * @type Object
+ * @property {boolean} status - true
+ *
+ * */

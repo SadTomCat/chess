@@ -31,10 +31,10 @@ class AdminCreateUserRequest extends FormRequest
         $roles = app(RolesHelper::class)->getAvailableRolesByRole('admin');
 
         return [
-            'adminPassword' => 'required|password:web',
+            'admin_password' => 'required|password:web',
             'name' => 'string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|max:32',
             'role' => [
                 'required',
                 Rule::in($roles)
