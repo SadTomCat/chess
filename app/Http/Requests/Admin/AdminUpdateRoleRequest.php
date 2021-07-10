@@ -30,7 +30,7 @@ class AdminUpdateRoleRequest extends FormRequest
         $roles = config('enums.user_roles');
 
         return [
-            'adminPassword' => 'password:web',
+            'admin_password' => 'required|password:web',
             'role' => [
                 'required',
                 'string',

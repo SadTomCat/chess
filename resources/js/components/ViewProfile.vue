@@ -17,17 +17,15 @@
                     <li>
                         <router-link to="/admin" v-if="showAdminPanelLink === true">admin panel</router-link>
                     </li>
-                    <li>
-                        <router-link to="/settings">settings</router-link>
-                    </li>
-                    <li>
-                        <router-link to="/statistics">statistics</router-link>
+                    <li v-for="link in links" :key="link.name">
+                        <router-link :to="link.path">{{ link.name }}</router-link>
                     </li>
                 </ul>
 
             </div>
 
             <!-- Logout -->
+            <a href="#" class="mb-4" @click.prevent.stop="clearCache">clear cache</a>
             <a href="/logout" @click.prevent="$emit('logout')">logout</a>
         </div>
     </div>
@@ -38,6 +36,8 @@ import {
     computed, onBeforeUnmount, onMounted, ref,
 } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import router from '../router';
 
 export default {
     name: 'ViewProfile',
@@ -51,6 +51,17 @@ export default {
     setup() {
         const store = useStore();
 
+        const links = [
+            {
+                name: 'settings',
+                path: { name: 'settings' },
+            },
+            {
+                name: 'statistics',
+                path: { name: 'statistics' },
+            },
+        ];
+
         const showAdminPanelLink = computed(() => store.state.user.role !== 'user');
 
         const viewProfileStatus = ref(false);
@@ -61,6 +72,11 @@ export default {
 
         const closeViewProfile = () => {
             viewProfileStatus.value = false;
+        };
+
+        const clearCache = () => {
+            sessionStorage.clear();
+            window.location.reload();
         };
 
         onMounted(() => {
@@ -74,10 +90,12 @@ export default {
         });
 
         return {
+            links,
             showAdminPanelLink,
             viewProfileStatus,
             switchViewProfileStatus,
             closeViewProfile,
+            clearCache,
         };
     },
 };
@@ -93,8 +111,7 @@ export default {
     }
 
     &__menu {
-        height: var(--view-profile-menu-height);
-
+        max-height: var(--view-profile-menu-max-height);
         transform-origin: top center;
         animation: growDown .1s linear;
 
@@ -107,7 +124,7 @@ export default {
         @apply text-lg bg-white z-30;
 
         .view-profile-menu__top {
-            @apply space-y-6 mb-5;
+            @apply space-y-6 mb-2 pb-2 border-b border-gray-300;
         }
 
         .view-profile-menu__welcome {

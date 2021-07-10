@@ -112,7 +112,7 @@ class AdminCreateUserTest extends ApiTestCase
 
         // Without admin password
         $payload = $this->getRequestPayload('password', 'user');
-        $payload = array_diff_key($payload, ['adminPassword' => 1]);
+        $payload = array_diff_key($payload, ['admin_password' => 1]);
         $response = $this->actingAs($admin)->post($this->endpoint, $payload);
         $response->assertStatus(422);
 
@@ -135,7 +135,7 @@ class AdminCreateUserTest extends ApiTestCase
             'email'         => Factory::create()->unique()->email,
             'password'      => 'password',
             'role'          => $role,
-            'adminPassword' => $adminPassword,
+            'admin_password' => $adminPassword,
         ];
 
         return $needName ? array_merge($base, ['name' => 'Test user']) : $base;

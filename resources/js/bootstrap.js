@@ -26,6 +26,12 @@ window.isString = (value) => typeof value === 'string';
 window.isObject = (value) => typeof value === 'object';
 window.isFunction = (value) => typeof value === 'function';
 
+/** @return FailResponse */
+window.getFailResponse = (message) => ({
+    status: false,
+    message: message ?? 'Something went wrong',
+});
+
 window.Pusher = require('pusher-js');
 
 function echoLoad() {

@@ -2,16 +2,28 @@ import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
 import Error404 from '../pages/errors/Error404.vue';
 
-const Home = () => import('~/pages/Home.vue');
-const ChessRules = () => import('~/pages/ChessRules.vue');
+import Home from '~/pages/Home.vue';
+import SearchGame from '~/pages/SearchGame.vue';
+
+/* ------------------- Auth ------------------- */
 const Login = () => import('~/pages/Login.vue');
 const Registration = () => import('~/pages/Registration.vue');
-const Game = () => import('~/pages/Game.vue');
-const SearchGame = () => import('~/pages/SearchGame.vue');
 const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
+
+/* ------------------- Pages in header ------------------- */
+const ChessRules = () => import('~/pages/ChessRules.vue');
+
+/* ------------------- Pages in view profile -------------------*/
 const Settings = () => import('~/pages/Settings.vue');
 const Statistics = () => import('~/pages/Statistics.vue');
+
+/* ------------------- Game pages -------------------*/
+const Game = () => import('~/pages/Game.vue');
+
+/* ------------------- Other pages ------------------- */
 const ViewGame = () => import('~/pages/ViewGame');
+
+/* ------------------- Admin ------------------- */
 const Admin = () => import('~/pages/admin/Admin.vue');
 const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
 const AdminChessRuleNames = () => import('~/pages/admin/AdminChessRuleNames.vue');
@@ -20,12 +32,13 @@ const AdminGames = () => import('~/pages/admin/AdminGames.vue');
 const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
 const AdminViewGame = () => import('~/pages/admin/view/AdminViewGame.vue');
 const AdminUsersView = () => import('~/pages/admin/view/AdminUsersView.vue');
+const AdminAccountsManagement = () => import('../pages/admin/accountsManagement/AdminAccountsManagement.vue');
 
 const routes = [
     {
         path: '/',
         component: SearchGame,
-        name: 'searchGame',
+        name: 'home',
     },
     {
         path: '/game/:token',
@@ -43,7 +56,7 @@ const routes = [
     {
         path: '/chess-rules/:rule?',
         component: ChessRules,
-        name: 'rules',
+        name: 'chessRules',
     },
     {
         path: '/support',
@@ -61,7 +74,7 @@ const routes = [
     {
         path: '/statistics',
         component: Statistics,
-        name: 'statistic',
+        name: 'statistics',
         meta: {
             auth: true,
         },
@@ -86,7 +99,7 @@ const routes = [
     {
         path: '/registration',
         component: Registration,
-        name: 'register',
+        name: 'registration',
         meta: {
             needHeader: false,
             guest: true,
@@ -107,31 +120,49 @@ const routes = [
         children: [
             {
                 path: 'chess-rules',
+                name: 'adminChessRules',
                 component: AdminChessRules,
             },
             {
                 path: 'chess-rules/names',
+                name: 'adminChessRuleNames',
                 component: AdminChessRuleNames,
             },
             {
                 path: 'users',
+                name: 'adminUsers',
                 component: AdminUsers,
             },
             {
                 path: 'games',
+                name: 'adminGames',
                 component: AdminGames,
             },
             {
                 path: 'websockets',
+                name: 'adminWebsockets',
                 component: AdminWebsocket,
+            },
+            {
+                path: 'admin/accounts/management',
+                name: 'adminAccountsManagement',
+                component: AdminAccountsManagement,
             },
             {
                 path: 'view/games/:id',
                 component: AdminViewGame,
+                name: 'adminViewGames',
+                meta: {
+                    name: 'View games',
+                },
             },
             {
                 path: 'view/users/:id',
                 component: AdminUsersView,
+                name: 'adminViewUsers',
+                meta: {
+                    name: 'View users',
+                },
             },
         ],
         meta: {
