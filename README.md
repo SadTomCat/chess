@@ -16,6 +16,8 @@ Next enter the following commands.
 
 `composer install`
 
+`php artisan migrate`
+
 `php artisan serve`
 
 `php artisan queue:listen`
