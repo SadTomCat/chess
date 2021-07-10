@@ -18,6 +18,8 @@ Next enter the following commands.
 
 `php artisan migrate`
 
+`php artisan db:seed`
+
 `php artisan serve`
 
 `php artisan queue:listen`
