@@ -15,7 +15,7 @@ class TablePaginationValidationException extends Exception
         $status = $this->code >= 400 && $this->code <= 500 ? $this->code : 422;
 
         return response()->json([
-            'status' => false,
+            'status'  => false,
             'message' => $this->message,
         ], $status);
     }

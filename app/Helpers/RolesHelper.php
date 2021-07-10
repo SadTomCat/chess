@@ -32,7 +32,7 @@ class RolesHelper
      */
     public function getAvailableRolesByRole(string $role): array
     {
-        return [...$this->mappedAvailableRolesForUpdate[$role]] ?? [];
+        return $this->mappedAvailableRolesForUpdate[$role] ?? [];
     }
 
     /**

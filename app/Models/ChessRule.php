@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
 
 /**
  * @mixin IdeHelperRule
@@ -30,8 +30,8 @@ class ChessRule extends Model
 
     /**
      * @param string $slug
-     * @throws ModelNotFoundException
      * @return ChessRule|Model|Builder
+     * @throws ModelNotFoundException
      */
     public static function getBySlug(string $slug): ChessRule|Model|Builder
     {

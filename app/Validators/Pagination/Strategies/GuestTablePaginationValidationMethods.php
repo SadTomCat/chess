@@ -7,9 +7,10 @@ use App\Models\User;
 
 class GuestTablePaginationValidationMethods extends AbstractTablePaginationValidationMethods
 {
-    public function __construct(protected User $user,
-                                protected string $table,
-                                protected array|bool $ordering,
+    public function __construct(
+        protected User $user,
+        protected string $table,
+        protected array|bool $ordering,
     )
     {
     }

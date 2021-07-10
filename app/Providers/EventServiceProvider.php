@@ -7,12 +7,11 @@ use App\Events\GameMoveEvent;
 use App\Events\GameStartEvent;
 use App\Events\JoinToSearchGameEvent;
 use App\Listeners\GameEndListener;
-use App\Listeners\UpdateMoveTimeEndListener;
 use App\Listeners\JoinToSearchGameListener;
+use App\Listeners\UpdateMoveTimeEndListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {

@@ -77,6 +77,7 @@ class MateValidation
      *
      * @param array $dangerFromChessmen
      * @return bool
+     * @throws Exception
      */
     private function canSaveKingValidation(array $dangerFromChessmen): bool
     {
@@ -86,13 +87,14 @@ class MateValidation
             $dangerChessmanSymbol = lcfirst($board[$dangerChessmanPos['x']][$dangerChessmanPos['y']]);
 
             // These methods check if at least one chessman can save the king.
-            $saveFrom = [
-                            'b' => 'canSaveFromBishop',
-                            'q' => 'canSaveFromQueen',
-                            'r' => 'canSaveFromRook',
-                        ][$dangerChessmanSymbol] ?? 'canCaptureDanger';
+            $saveStatus = match ($dangerChessmanSymbol) {
+                'b' => $this->canSaveFromBishop($dangerChessmanPos),
+                'q' => $this->canSaveFromQueen($dangerChessmanPos),
+                'r' => $this->canSaveFromRook($dangerChessmanPos),
+                default => $this->canCaptureDanger($dangerChessmanPos),
+            };
 
-            if ($this->$saveFrom($dangerChessmanPos) === false) {
+            if ($saveStatus === false) {
                 return false;
             }
         }

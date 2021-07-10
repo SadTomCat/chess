@@ -4,7 +4,6 @@ namespace App\Game\Chessmen;
 
 use App\Game\GameBoard;
 use App\Game\MoveInfo;
-use JetBrains\PhpStorm\Pure;
 
 class NullChessman extends AbstractChessman
 {
