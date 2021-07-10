@@ -1,4 +1,5 @@
 # About project
+[![Build Status](https://www.travis-ci.com/SadTomCat/chess.svg?branch=master)](https://www.travis-ci.com/SadTomCat/chess)
 
 This is web chess. Project was created for learn how to use websocket, vue 3, laravel, and up my programming skills.
 
