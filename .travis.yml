@@ -13,5 +13,6 @@ before_script:
   - travis_retry composer install --no-interaction
 
 script:
+  - cp .env.example .env
   - php artisan key:generate
   - php artisan test
