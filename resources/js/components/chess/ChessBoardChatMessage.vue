@@ -1,5 +1,5 @@
 <template>
-    <div class="chess-chat__message" :class="{'chess-chat__opponent-message': !fromOpponent}">
+    <div class="chess-chat__message" :class="{'chess-chat__opponent-message': fromOpponent === false}">
         <p>{{ message }}</p>
     </div>
 </template>

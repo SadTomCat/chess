@@ -18,12 +18,7 @@ class GameNotEnded
     public function handle(Request $request, Closure $next)
     {
         $token = $request->token;
-
         $game = Game::getGameByToken($token);
-
-        if ($game === null) {
-            abort(400, 'Incorrect request');
-        }
 
         if ($game->end_at !== null) {
             abort(403, 'Game has ended');

@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Pusher\PusherException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,6 +37,13 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (PusherException $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Something went wrong',
+            ], 500);
         });
     }
 }

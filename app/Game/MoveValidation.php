@@ -4,6 +4,7 @@ namespace App\Game;
 
 use App\Game\Chessmen\AbstractChessman;
 use App\Models\Game;
+use Exception;
 
 class MoveValidation
 {
@@ -27,7 +28,8 @@ class MoveValidation
         private int $userId,
         private Game $game,
         private array $from,
-        private array $to)
+        private array $to
+    )
     {
         $this->validateRanges($this->from, $this->to);
 
@@ -39,9 +41,9 @@ class MoveValidation
         $this->fromChessman = $this->board->getChessman($from);
 
         $this->color = $this->game->users()
-            ->where('user_id', $this->userId)
-            ->withPivot('color')
-            ->first()->pivot->color;
+                                  ->where('user_id', $this->userId)
+                                  ->withPivot('color')
+                                  ->first()->pivot->color;
 
         $this->countMove = $this->game->moves()->count();
     }
@@ -50,7 +52,7 @@ class MoveValidation
      * It checks move on rules, safe for king, checkmate for players.
      *
      * @return MoveInfo
-     * @throws \Exception
+     * @throws Exception
      */
     public function validate(): MoveInfo
     {
@@ -91,7 +93,7 @@ class MoveValidation
      *
      * @param MoveInfo $moveInfo
      * @return MoveInfo
-     * @throws \Exception
+     * @throws Exception
      */
     private function validAfterMove(MoveInfo $moveInfo): MoveInfo
     {

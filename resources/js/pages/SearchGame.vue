@@ -1,9 +1,10 @@
 <template>
     <div class="search-game-wrapper">
+
         <!-- Authorized user -->
         <div class="search-game__authorized" v-if="canSearch">
             <h1 class="search-game__title">Do You wanna play?</h1>
-            <button @click="searchGameHandle" v-if="!searching" :disabled="disableSearchBtn">Search game</button>
+            <button :disabled="disableSearchBtn" @click="searchGameHandle" v-if="!searching">Search game</button>
             <button @click="cancelHandle" v-else>cancel</button>
         </div>
 
@@ -14,7 +15,7 @@
 
         <!--  Error  -->
         <teleport to="body">
-            <error-pop-up v-if="errorPopUpOpen" @closeErrorPopUp="closeErrorPopUp">
+            <error-pop-up @closeErrorPopUp="closeErrorPopUp" v-if="errorPopUpOpen">
                 <search-game-error :reasons="errorReasons" :solutions="errorSolutions"></search-game-error>
             </error-pop-up>
         </teleport>
@@ -64,7 +65,7 @@ export default {
                 .subscribed(async () => {
                     searching.value = true;
                     disableSearchBtn.value = false;
-                    await window.axios.post('/subscribed/search-game');
+                    await window.axios.post('/api/channels/search-game/subscribed');
                 })
                 .listen('GameFoundEvent', (data) => {
                     window.echo.leave(`search-game-${store.state.user.id}`);

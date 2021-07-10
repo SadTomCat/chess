@@ -10,15 +10,29 @@ use App\Models\Game;
 use App\Models\GameMove;
 use App\Models\User;
 use App\Websockets\IWebsocketManager;
+use JetBrains\PhpStorm\ArrayShape;
 
 class GameService
 {
+    public function __construct(protected Game $game)
+    {
+    }
+
+    /**
+     * @return array ['moves' => "array", 'game' => "array"]
+     */
+    public function getGameInfo(): array
+    {
+        return [
+            'moves' => $this->game->moves()->get(['from', 'to', 'type'])->toArray(),
+            'game'  => $this->game->only(['id', 'token', 'start_at', 'end_at', 'winner_color']),
+        ];
+    }
+
     /**
      * @param Game $game
      * @param User $user
      * @param MoveInfo $moveInfo
-     *
-     * @throws \Exception
      */
     public static function successfulMove(Game $game, User $user, MoveInfo $moveInfo): void
     {

@@ -1,18 +1,44 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import middlewares from './middleware';
+import Error404 from '../pages/errors/Error404.vue';
+
 import Home from '~/pages/Home.vue';
-import Login from '~/pages/Login.vue';
-import Registration from '~/pages/Registration.vue';
-import Game from '~/pages/Game.vue';
 import SearchGame from '~/pages/SearchGame.vue';
-import ForgotPassword from '~/pages/ForgotPassword.vue';
-import Settings from '~/pages/Settings.vue';
+
+/* ------------------- Auth ------------------- */
+const Login = () => import('~/pages/Login.vue');
+const Registration = () => import('~/pages/Registration.vue');
+const ForgotPassword = () => import('~/pages/ForgotPassword.vue');
+
+/* ------------------- Pages in header ------------------- */
+const ChessRules = () => import('~/pages/ChessRules.vue');
+
+/* ------------------- Pages in view profile -------------------*/
+const Settings = () => import('~/pages/Settings.vue');
+const Statistics = () => import('~/pages/Statistics.vue');
+
+/* ------------------- Game pages -------------------*/
+const Game = () => import('~/pages/Game.vue');
+
+/* ------------------- Other pages ------------------- */
+const ViewGame = () => import('~/pages/ViewGame');
+
+/* ------------------- Admin ------------------- */
+const Admin = () => import('~/pages/admin/Admin.vue');
+const AdminChessRules = () => import('~/pages/admin/AdminChessRules.vue');
+const AdminChessRuleNames = () => import('~/pages/admin/AdminChessRuleNames.vue');
+const AdminUsers = () => import('~/pages/admin/AdminUsers.vue');
+const AdminGames = () => import('~/pages/admin/AdminGames.vue');
+const AdminWebsocket = () => import('~/pages/admin/AdminWebsocket.vue');
+const AdminViewGame = () => import('~/pages/admin/view/AdminViewGame.vue');
+const AdminUsersView = () => import('~/pages/admin/view/AdminUsersView.vue');
+const AdminAccountsManagement = () => import('../pages/admin/accountsManagement/AdminAccountsManagement.vue');
 
 const routes = [
     {
         path: '/',
         component: SearchGame,
-        name: 'searchGame',
+        name: 'home',
     },
     {
         path: '/game/:token',
@@ -28,9 +54,9 @@ const routes = [
         name: 'rating',
     },
     {
-        path: '/rules',
-        component: Home,
-        name: 'rules',
+        path: '/chess-rules/:rule?',
+        component: ChessRules,
+        name: 'chessRules',
     },
     {
         path: '/support',
@@ -46,9 +72,17 @@ const routes = [
         },
     },
     {
-        path: '/statistic',
-        component: Home,
-        name: 'statistic',
+        path: '/statistics',
+        component: Statistics,
+        name: 'statistics',
+        meta: {
+            auth: true,
+        },
+    },
+    {
+        path: '/view/games/:gameId',
+        component: ViewGame,
+        name: 'gameReplay',
         meta: {
             auth: true,
         },
@@ -65,7 +99,7 @@ const routes = [
     {
         path: '/registration',
         component: Registration,
-        name: 'register',
+        name: 'registration',
         meta: {
             needHeader: false,
             guest: true,
@@ -80,6 +114,70 @@ const routes = [
             guest: true,
         },
     },
+    {
+        path: '/admin',
+        component: Admin,
+        children: [
+            {
+                path: 'chess-rules',
+                name: 'adminChessRules',
+                component: AdminChessRules,
+            },
+            {
+                path: 'chess-rules/names',
+                name: 'adminChessRuleNames',
+                component: AdminChessRuleNames,
+            },
+            {
+                path: 'users',
+                name: 'adminUsers',
+                component: AdminUsers,
+            },
+            {
+                path: 'games',
+                name: 'adminGames',
+                component: AdminGames,
+            },
+            {
+                path: 'websockets',
+                name: 'adminWebsockets',
+                component: AdminWebsocket,
+            },
+            {
+                path: 'admin/accounts/management',
+                name: 'adminAccountsManagement',
+                component: AdminAccountsManagement,
+            },
+            {
+                path: 'view/games/:id',
+                component: AdminViewGame,
+                name: 'adminViewGames',
+                meta: {
+                    name: 'View games',
+                },
+            },
+            {
+                path: 'view/users/:id',
+                component: AdminUsersView,
+                name: 'adminViewUsers',
+                meta: {
+                    name: 'View users',
+                },
+            },
+        ],
+        meta: {
+            auth: true,
+            accessRoles: ['admin', 'moderator', 'support', 'redactor'],
+        },
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'pageNotFound',
+        component: Error404,
+        meta: {
+            needHeader: false,
+        },
+    },
 ];
 
 const router = createRouter({
@@ -88,13 +186,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    for (const middleware in middlewares) {
-        if (middlewares.hasOwnProperty(middleware)) {
-            const status = middlewares[middleware](to, from, next);
+    let status = true;
 
-            if (status === false) {
-                return;
-            }
+    const middlewaresNames = Object.getOwnPropertyNames(middlewares);
+
+    for (let i = 0; i < middlewaresNames.length; i++) {
+        const middlewaresName = middlewaresNames[i];
+        status = middlewares[middlewaresName](to, from, next);
+
+        if (status === false) {
+            next('/');
+            return;
         }
     }
 

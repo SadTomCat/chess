@@ -9,8 +9,8 @@
             </div>
 
             <!-- Message about page -->
-            <p class="forgot-password__text">Forgot your password? No problem. Just let us know your email address and
-                we will email you a password
+            <p class="forgot-password__text">
+                Forgot your password? No problem. Just let us know your email address and we will email you a password
                 reset link that will allow you to choose a new one.
             </p>
 
@@ -24,7 +24,7 @@
 
             <!-- Buttons menu -->
             <div class="forgot-password__button-block">
-                <button @click="sendResetLink" :disabled="disabled" v-if="successful.length === 0">
+                <button :disabled="disabled" @click="sendResetLink" v-if="successful.length === 0">
                     Send reset link
                 </button>
 
@@ -38,7 +38,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import forgotPasswordRequest from '~/api/forgotPasswordRequest';
+import forgotPasswordRequest from '../api/auth/forgotPasswordRequest';
 import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {

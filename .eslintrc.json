@@ -33,6 +33,7 @@
         "vue"
     ],
     "rules": {
+        "no-underscore-dangle": "off",
         "no-trailing-spaces": "off",
         "consistent-return": 1,
         "no-useless-return": 0,

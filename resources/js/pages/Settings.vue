@@ -14,15 +14,18 @@
 
                 <div class="settings-card__change-result-message">
                     <p class="settings-card__error-message">{{ errors.message }}</p>
-                    <p class="settings-card__successful-message" v-if="isChangeSuccessful">Changes have been
-                        successful.</p>
+
+                    <p class="settings-card__successful-message" v-if="isChangeSuccessful">
+                        Changes have been successful.
+                    </p>
                 </div>
 
                 <form>
 
                     <div class="settings-card__input-block">
                         <label for="name">Name</label>
-                        <input type="text" id="name"
+                        <input id="name"
+                               type="text"
                                :disabled="disabled"
                                v-model="editedFields.name"
                         >
@@ -31,7 +34,8 @@
 
                     <div class="settings-card__input-block">
                         <label for="new-password">New password</label>
-                        <input type="password" id="new-password"
+                        <input id="new-password"
+                               type="password"
                                :disabled="disabled"
                                v-model="editedFields.newPassword"
                         >
@@ -40,7 +44,8 @@
 
                     <div class="settings-card__input-block">
                         <label for="new-password-confirmation">New password confirmation</label>
-                        <input type="password" id="new-password-confirmation"
+                        <input id="new-password-confirmation"
+                               type="password"
                                :disabled="disabled"
                                v-model="editedFields.newPasswordConfirmation"
                         >
@@ -48,7 +53,8 @@
 
                     <div class="settings-card__input-block">
                         <label for="current-password">Current password</label>
-                        <input type="password" id="current-password"
+                        <input id="current-password"
+                               type="password"
                                :disabled="disabled"
                                v-model="currentPassword"
                         >
@@ -106,21 +112,19 @@ export default {
                 return;
             }
 
-            for (const key in resErrors) {
-                if (errors.hasOwnProperty(key) && resErrors.hasOwnProperty(key)) {
-                    errors[key] = resErrors[key];
+            Object.getOwnPropertyNames(resErrors).forEach((el) => {
+                if (errors.hasOwnProperty(el) === true) {
+                    errors[el] = resErrors[el];
                 } else {
-                    errors.message = resErrors[key];
+                    errors.message = resErrors[el];
                 }
-            }
+            });
         };
 
         const clearErrors = () => {
-            for (const key in errors) {
-                if (errors.hasOwnProperty(key)) {
-                    errors[key] = '';
-                }
-            }
+            Object.getOwnPropertyNames(errors).forEach((el) => {
+                errors[el] = '';
+            });
         };
 
         /* Editing */
@@ -292,6 +296,7 @@ export default {
             @apply block font-medium text-sm text-gray-700;
         }
     }
+
     &__change-result-message {
         @apply relative h-8;
 

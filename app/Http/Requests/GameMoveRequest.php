@@ -29,7 +29,7 @@ class GameMoveRequest extends FormRequest
 
             if ($exists === false) {
                 $response = new JsonResponse([
-                    'status' => false,
+                    'status'  => false,
                     'message' => 'Incorrect data',
                 ], 422);
 
@@ -49,6 +49,4 @@ class GameMoveRequest extends FormRequest
             'move' => 'array',
         ];
     }
-
-
 }

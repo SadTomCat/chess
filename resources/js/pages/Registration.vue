@@ -1,5 +1,5 @@
 <template>
-    <auth-card :title="'Registration'" :actionBtnName="'register'" @authAction="registerHandler">
+    <auth-card :title="'Registration'" :action-btn-name="'register'" @authAction="registerHandler">
 
         <div class="registration__top">
             <auth-input-wrapper>
@@ -16,12 +16,11 @@
 
             <auth-input-wrapper>
                 <label for="name">name</label>
-                <input
-                    id="name"
-                    type="text"
-                    placeholder="name"
-                    v-model="userInput.name"
-                    @input="inputError.name = ''"
+                <input id="name"
+                       type="text"
+                       placeholder="name"
+                       v-model="userInput.name"
+                       @input="inputError.name = ''"
                 >
                 <p class="auth__error-message">{{ inputError.name }}</p>
             </auth-input-wrapper>
@@ -57,7 +56,7 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import AuthCard from '~/components/AuthCard.vue';
-import registerRequest from '~/api/registerRequest';
+import registerRequest from '../api/auth/registerRequest';
 import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {
@@ -115,7 +114,10 @@ export default {
         };
     },
 
-    components: { AuthCard, AuthInputWrapper },
+    components: {
+        AuthCard,
+        AuthInputWrapper,
+    },
 };
 </script>
 

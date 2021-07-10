@@ -40,6 +40,6 @@ class GameNewMessageEvent implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return ['message' => $this->message];
+        return ['message' => $this->message, 'id' => $this->user->id];
     }
 }

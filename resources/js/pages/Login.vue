@@ -1,5 +1,5 @@
 <template>
-    <auth-card :title="'Login'" :actionBtnName="'login'" @authAction="loginHandler">
+    <auth-card :title="'Login'" :action-btn-name="'login'" @authAction="loginHandler">
 
         <!-- Email input  -->
         <auth-input-wrapper class="login__email-block">
@@ -37,7 +37,7 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import AuthCard from '~/components/AuthCard.vue';
-import loginRequest from '~/api/loginRequest';
+import loginRequest from '../api/auth/loginRequest';
 import AuthInputWrapper from '~/components/inputs/AuthInputWrapper.vue';
 
 export default {

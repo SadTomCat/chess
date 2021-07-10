@@ -28,6 +28,7 @@ export default {
 <style lang="scss">
 .error-pop-up__wrapper {
     background: rgba(1, 1, 1, 0.2);
+    backdrop-filter: blur(13px);
 
     @apply fixed h-screen w-screen z-50 top-0;
     @apply flex justify-center items-center;

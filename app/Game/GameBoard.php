@@ -15,14 +15,14 @@ use Exception;
 
 class GameBoard
 {
-    private const CASTLING_AVAILABLE_DEFAULT =[
+    private const CASTLING_AVAILABLE_DEFAULT = [
         'white' => [
-            'k' => true,
+            'k'  => true,
             'lr' => true,
             'rr' => true,
         ],
         'black' => [
-            'k' => true,
+            'k'  => true,
             'lr' => true,
             'rr' => true,
         ],
@@ -46,7 +46,7 @@ class GameBoard
         'r' => Rook::class,
         'b' => Bishop::class,
         'n' => Knight::class,
-        '' => NullChessman::class
+        ''  => NullChessman::class
     ];
 
     private array $lastMove = [];
@@ -60,6 +60,7 @@ class GameBoard
 
     /**
      * GameBoard factory.
+     *
      * @param Game $game
      * @return GameBoard
      */
@@ -75,9 +76,11 @@ class GameBoard
      * GameBoard factory.
      *
      * @param array $board Should be  8 - x and 8 - y
+     * @param array $lastMove
+     * @param array $castlingAvailable
      * @return null|GameBoard
      */
-    public static function createByBoard(array $board, $lastMove = [], $castlingAvailable = []): ?GameBoard
+    public static function createByBoard(array $board, array $lastMove = [], array $castlingAvailable = []): ?GameBoard
     {
         $instance = new self();
 
@@ -93,12 +96,18 @@ class GameBoard
     }
 
     /**
-     * @param array $board
      * @param array $from
-     * @param $to
+     * @param array $to
+     * @param array $lastMove
+     * @param array $castlingAvailable
      * @return GameBoard|null
      */
-    public function createAfterMove(array $from, $to, $lastMove = [], $castlingAvailable = []): ?GameBoard
+    public function createAfterMove(
+        array $from,
+        array $to,
+        array $lastMove = [],
+        array $castlingAvailable = []
+    ): ?GameBoard
     {
         $newBoard = $this->board;
 
@@ -116,6 +125,10 @@ class GameBoard
         return $this->board;
     }
 
+    /**
+     * @param string $color
+     * @return array
+     */
     public function getAllChessmenByColor(string $color): array
     {
         $chessmen = [];
@@ -163,7 +176,7 @@ class GameBoard
     }
 
     /**
-     * @param $color
+     * @param string $color
      * @return King
      * @throws Exception
      */
@@ -295,6 +308,7 @@ class GameBoard
     /**
      * This method dont check last diagonal because it got one cell
      *
+     * @param int $d
      * @param array $startPos
      * @param array $endPos
      * @param string $color
@@ -343,6 +357,7 @@ class GameBoard
     /**
      * This method dont check last diagonal because it got one cell
      *
+     * @param int $d
      * @param array $startPos
      * @param array $endPos
      * @param string $color
@@ -393,7 +408,7 @@ class GameBoard
      * @param int $start
      * @param int $end
      * @param string $color
-     * @return array|int[]
+     * @return array
      */
     public function getFirstOnHorizontal(int $x, int $start = 0, int $end = 7, string $color = ''): array
     {
@@ -419,11 +434,11 @@ class GameBoard
     }
 
     /**
-     * @param int $x
+     * @param int $y
      * @param int $start
      * @param int $end
      * @param string $color
-     * @return array|int[]
+     * @return array
      */
     public function getFirstOnVertical(int $y, int $start = 0, int $end = 7, string $color = ''): array
     {
@@ -450,6 +465,7 @@ class GameBoard
     /**
      * This method doesn't check the last diagonal because it got one cell.
      *
+     * @param int $d
      * @param array $startPos
      * @param array $endPos
      * @param string $color
@@ -497,6 +513,7 @@ class GameBoard
     /**
      * This method doesn't check the last diagonal because it got one cell.
      *
+     * @param int $d
      * @param array $startPos
      * @param array $endPos
      * @param string $color
@@ -593,8 +610,8 @@ class GameBoard
     /**
      * This method move chessman
      *
-     * @param object $from
-     * @param object $to
+     * @param array $from
+     * @param array $to
      */
     private function move(array $from, array $to): void
     {

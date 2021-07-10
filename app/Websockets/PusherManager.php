@@ -3,7 +3,6 @@
 
 namespace App\Websockets;
 
-use App\Exceptions\WebsocketManagerException;
 use Pusher\ApiErrorException;
 use Pusher\Pusher;
 use Pusher\PusherException;
@@ -12,29 +11,27 @@ class PusherManager implements IWebsocketManager
 {
     private Pusher $conn;
 
+    /**
+     * @throws PusherException
+     */
     public function __construct()
     {
-        try {
-            $connection = config('broadcasting.connections.pusher');
+        $connection = config('broadcasting.connections.pusher');
 
-            $this->conn = new Pusher(
-                $connection['key'],
-                $connection['secret'],
-                $connection['app_id'],
-                [
-                    'cluster' => $connection['options']['cluster'],
-                ]
-            );
-
-        } catch (PusherException $e) {
-            abort(500, 'What went wrong');
-        }
+        $this->conn = new Pusher(
+            $connection['key'],
+            $connection['secret'],
+            $connection['app_id'],
+            [
+                'cluster' => $connection['options']['cluster'],
+            ]
+        );
     }
 
     /**
      * @param string $prefix
      * @return array
-     * @throws WebsocketManagerException
+     * @throws PusherException
      */
     public function getAllChannels(string $prefix = ''): array
     {
@@ -47,7 +44,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param string $prefix
      * @return array
-     * @throws WebsocketManagerException
+     * @throws PusherException
      */
     public function getAllPrivateChannels(string $prefix = ''): array
     {
@@ -60,7 +57,7 @@ class PusherManager implements IWebsocketManager
     /**
      * @param string $prefix
      * @return array
-     * @throws WebsocketManagerException
+     * @throws PusherException
      */
     public function getAllPresenceChannels(string $prefix = ''): array
     {
@@ -73,30 +70,25 @@ class PusherManager implements IWebsocketManager
     /**
      * @param array|string $channels
      * @return array
-     * @throws WebsocketManagerException
+     * @throws PusherException
      */
     public function getChannelsInfo(string|array $channels): array
     {
         $channels = is_array($channels) ? $channels : [$channels];
         $channelsInfo = [];
 
-        try {
-            foreach ($channels as $channel) {
-                $parameters = ['subscription_count'];
+        foreach ($channels as $channel) {
+            $parameters = ['subscription_count'];
 
-                if (str_starts_with($channel, 'presence-')) {
-                    $parameters[] = 'user_count';
-                }
-
-                $info = (array)$this->conn->get_channel_info($channel, [
-                    'info' => $parameters
-                ]);
-
-                $channelsInfo[$channel] = $info;
+            if (str_starts_with($channel, 'presence-')) {
+                $parameters[] = 'user_count';
             }
 
-        } catch (PusherException | ApiErrorException $e) {
-            throw new WebsocketManagerException('Exception in pusher', 500);
+            $info = (array)$this->conn->get_channel_info($channel, [
+                'info' => $parameters
+            ]);
+
+            $channelsInfo[$channel] = $info;
         }
 
         return $channelsInfo;
@@ -105,24 +97,19 @@ class PusherManager implements IWebsocketManager
     /**
      * @param array|string $channels
      * @return array
-     * @throws WebsocketManagerException
+     * @throws PusherException
      */
     public function getUsers(string|array $channels): array
     {
         $channels = is_array($channels) ? $channels : [$channels];
         $userInfoByChannel = [];
 
-        try {
-            foreach ($channels as $channel) {
-                if (str_starts_with($channel, 'presence-')) {
-                    $info = (array)$this->conn->get_users_info($channel);
-                    $formatInfo = $this->formatUsers($info);
-                    $userInfoByChannel[$channel] = $formatInfo;
-                }
+        foreach ($channels as $channel) {
+            if (str_starts_with($channel, 'presence-')) {
+                $info = (array)$this->conn->get_users_info($channel);
+                $formatInfo = $this->formatUsers($info);
+                $userInfoByChannel[$channel] = $formatInfo;
             }
-
-        } catch (ApiErrorException | PusherException $e) {
-            throw new WebsocketManagerException('Exception in pusher', 500);
         }
 
         return $userInfoByChannel;
@@ -132,26 +119,19 @@ class PusherManager implements IWebsocketManager
      * @param string $type
      * @param string $prefix
      * @return array
-     * @throws WebsocketManagerException
+     * @throws PusherException
      */
     private function getChannelsByChannelType(string $type = '', string $prefix = ''): array
     {
         $type = ($type === 'presence' || $type === 'private') ? $type . '-' : '';
 
-        try {
-            $fullPrefix = $type . $prefix;
-            $channels = (array)$this->conn->get_channels(['filter_by_prefix' => $fullPrefix]);
+        $fullPrefix = $type . $prefix;
 
-        } catch (PusherException | ApiErrorException $e) {
-            throw new WebsocketManagerException('Exception in pusher', 500);
-        }
-
-        return $channels;
+        return (array)$this->conn->get_channels(['filter_by_prefix' => $fullPrefix]);
     }
 
     /**
      * @param array $channels
-     * @param string $type
      * @return array
      */
     private function formatChannels(array $channels): array
@@ -186,6 +166,10 @@ class PusherManager implements IWebsocketManager
         return $result;
     }
 
+    /**
+     * @param array $users
+     * @return array
+     */
     private function formatUsers(array $users): array
     {
         $formatUsers = [];

@@ -19,13 +19,7 @@ class BelongsToGame
     {
         $user = $request->user();
         $token = $request->token;
-
-        $game = Game::where('token', $token)->latest()->first();
-
-        if ($game === null) {
-            abort(400, 'Incorrect request');
-        }
-
+        $game = Game::getGameByToken($token);
         $belongs = $game->users()->find($user->id);
 
         if ($belongs === null) {

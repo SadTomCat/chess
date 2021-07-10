@@ -1,5 +1,5 @@
 <template>
-    <div class="view-profile">
+    <div class="view-profile" @click.stop>
         <img src="" class="view-profile__img" @click="switchViewProfileStatus">
 
         <!-- Menu -->
@@ -15,23 +15,29 @@
                 <!-- List of links -->
                 <ul>
                     <li>
-                        <router-link to="/settings">settings</router-link>
+                        <router-link to="/admin" v-if="showAdminPanelLink === true">admin panel</router-link>
                     </li>
-                    <li>
-                        <router-link to="/statistic">statistic</router-link>
+                    <li v-for="link in links" :key="link.name">
+                        <router-link :to="link.path">{{ link.name }}</router-link>
                     </li>
                 </ul>
 
             </div>
 
             <!-- Logout -->
+            <a href="#" class="mb-4" @click.prevent.stop="clearCache">clear cache</a>
             <a href="/logout" @click.prevent="$emit('logout')">logout</a>
         </div>
     </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import {
+    computed, onBeforeUnmount, onMounted, ref,
+} from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import router from '../router';
 
 export default {
     name: 'ViewProfile',
@@ -43,16 +49,53 @@ export default {
     },
 
     setup() {
-        // View profile user menu
+        const store = useStore();
+
+        const links = [
+            {
+                name: 'settings',
+                path: { name: 'settings' },
+            },
+            {
+                name: 'statistics',
+                path: { name: 'statistics' },
+            },
+        ];
+
+        const showAdminPanelLink = computed(() => store.state.user.role !== 'user');
+
         const viewProfileStatus = ref(false);
 
         const switchViewProfileStatus = () => {
             viewProfileStatus.value = !viewProfileStatus.value;
         };
 
+        const closeViewProfile = () => {
+            viewProfileStatus.value = false;
+        };
+
+        const clearCache = () => {
+            sessionStorage.clear();
+            window.location.reload();
+        };
+
+        onMounted(() => {
+            window.addEventListener('click', closeViewProfile);
+            window.addEventListener('keydown', closeViewProfile);
+        });
+
+        onBeforeUnmount(() => {
+            window.removeEventListener('click', closeViewProfile);
+            window.addEventListener('keydown', closeViewProfile);
+        });
+
         return {
+            links,
+            showAdminPanelLink,
             viewProfileStatus,
             switchViewProfileStatus,
+            closeViewProfile,
+            clearCache,
         };
     },
 };
@@ -68,12 +111,20 @@ export default {
     }
 
     &__menu {
-        @apply flex flex-col justify-between;
-        @apply absolute right-0 w-64 h-64 px-3 py-4 mt-1 shadow-md;
-        @apply text-lg bg-white shadow-md z-30;
+        max-height: var(--view-profile-menu-max-height);
+        transform-origin: top center;
+        animation: growDown .1s linear;
+
+        -webkit-box-shadow: 0px 4px 15px -3px rgba(31, 37, 41, 0.32);
+        -moz-box-shadow: 0px 4px 15px -3px rgba(31, 37, 41, 0.32);
+        box-shadow: 0px 4px 15px -3px rgba(31, 37, 41, 0.32);
+
+        @apply flex flex-col justify-between overflow-y-hidden;
+        @apply absolute right-0 w-64 px-3 py-4 mt-1 rounded-lg;
+        @apply text-lg bg-white z-30;
 
         .view-profile-menu__top {
-            @apply space-y-6;
+            @apply space-y-6 mb-2 pb-2 border-b border-gray-300;
         }
 
         .view-profile-menu__welcome {
@@ -83,9 +134,14 @@ export default {
 
     ul {
         @apply space-y-5;
+    }
 
-        li {
-            @apply border-b border-gray-400;
+    @keyframes growDown {
+        0% {
+            height: 0;
+        }
+        100% {
+            height: var(--view-profile-menu-height);
         }
     }
 }

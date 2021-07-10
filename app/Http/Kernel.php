@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\BelongsToGame;
 use App\Http\Middleware\GameNotEnded;
+use App\Http\Middleware\Roles;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
 
         'belongs.game' => BelongsToGame::class,
         'game.not.ended' => GameNotEnded::class,
+        'roles' => Roles::class,
     ];
 }
